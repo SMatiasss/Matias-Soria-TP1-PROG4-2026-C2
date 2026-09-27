@@ -1,1 +1,36 @@
-<p>listado works!</p>
+<app-header seccionActiva="Cartelera" />
+
+<main class="pagina-cartelera">
+  <!-- Buscador y filtro por género -->
+  <div class="barra-cartelera">
+    <h1 class="titulo-cartelera">Cartelera</h1>
+    <input
+      class="buscador"
+      type="text"
+      placeholder="Buscar por título"
+      [value]="textoBusqueda()"
+      (input)="alBuscar($event)"
+    />
+    <app-selector-chips [opciones]="generosDisponibles()" [(seleccionadas)]="generosSeleccionados" />
+  </div>
+
+  <div class="grilla-cartelera">
+    @for (p of peliculasFiltradas(); track p.id) {
+      <div class="item-cartelera">
+        <app-card-pelicula class="tarjeta-con-enlace" [pelicula]="p" [routerLink]="['/pelicula', p.id]" />
+        <!-- Géneros de la película, no lo tiene la card. -->
+        <div class="generos-pelicula">
+          @for (genero of p.generos; track genero) {
+            <app-badge [texto]="genero" />
+          }
+        </div>
+      </div>
+    } @empty {
+      @if (hayPeliculas()) {
+        <app-estado-vacio mensaje="No hay películas que coincidan con la búsqueda." />
+      } @else {
+        <app-estado-vacio mensaje="No hay películas." />
+      }
+    }
+  </div>
+</main>

@@ -1,0 +1,34 @@
+<div class="selector-desplegable">
+  <button
+    type="button"
+    class="selector-boton"
+    [class.abierto]="panelAbierto()"
+    (click)="alternarPanel()"
+  >
+    <span>
+      {{ etiqueta() }}@if (seleccionadas().length > 0) { ({{ seleccionadas().length }})}
+    </span>
+    <!-- Este svg es una flecha que pedí hacerla con ia, para que se entienda mejor que es un dropdown, puedo dejarlo? -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m6 9 6 6 6-6"></path>
+    </svg>
+  </button>
+
+  @if (panelAbierto()) {
+    <div class="selector-panel">
+      @for (opcion of opciones(); track opcion) {
+        <label class="selector-opcion"> <!-- Usé label pa que toque todo lo que está dentro como cuando usas campos de forms -->
+          <!-- Este input checkbox tiene el detector check que me sirve bastante y el change para cada vez que simplemente cambia de estado -->
+          <input  
+            type="checkbox"
+            [value]="opcion"
+            [checked]="seleccionadas().includes(opcion)" 
+            (change)="alternarOpcion(opcion)"
+          />
+          <span class="selector-casilla"></span> <!-- Es el cuadradito vacio que se ponen bordes con el css y tambien se colorea. -->
+          <span>{{ opcion }}</span>
+        </label>
+      }
+    </div>
+  }
+</div>

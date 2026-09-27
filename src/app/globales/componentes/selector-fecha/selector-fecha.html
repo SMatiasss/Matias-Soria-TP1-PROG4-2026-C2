@@ -1,0 +1,68 @@
+<div class="caja-fecha">
+  <div class="ruedas">
+    <div class="rueda-col">
+      <span class="rueda-etiqueta">Día</span>
+      <div class="rueda dia">
+        <div class="rueda-scroll" #scrollDia
+          (scroll)="alScrollearDia($event)"
+          (wheel)="alGirar($event, scrollDia)"
+          (pointerdown)="alApretar($event, scrollDia)"
+          (pointermove)="alArrastrar($event, scrollDia)"
+          (pointerup)="alSoltar(scrollDia)"
+          (pointercancel)="alSoltar(scrollDia)"
+        >
+          <div class="relleno-rueda"></div>
+          @for (dia of dias(); track dia) {
+            <div class="opcion-rueda" [class.activo]="dia === indiceDia() + 1">{{ dia }}</div>
+          }
+          <div class="relleno-rueda"></div>
+        </div>
+        <div class="marca-rueda"></div>
+      </div>
+    </div>
+
+    <div class="rueda-col">
+      <span class="rueda-etiqueta">Mes</span>
+      <div class="rueda mes">
+        <div class="rueda-scroll" #scrollMes
+          (scroll)="alScrollearMes($event)"
+          (wheel)="alGirar($event, scrollMes)"
+          (pointerdown)="alApretar($event, scrollMes)"
+          (pointermove)="alArrastrar($event, scrollMes)"
+          (pointerup)="alSoltar(scrollMes)"
+          (pointercancel)="alSoltar(scrollMes)"
+        >
+          <div class="relleno-rueda"></div>
+          @for (mes of mesesDisponibles(); track mes; let i = $index) {
+            <div class="opcion-rueda" [class.activo]="i === indiceMes()">{{ mes }}</div>
+          }
+          <div class="relleno-rueda"></div>
+        </div>
+        <div class="marca-rueda"></div>
+      </div>
+    </div>
+
+    <div class="rueda-col">
+      <span class="rueda-etiqueta">Año</span>
+      <div class="rueda anio">
+        <div class="rueda-scroll" #scrollAnio
+          (scroll)="alScrollearAnio($event)"
+          (wheel)="alGirar($event, scrollAnio)"
+          (pointerdown)="alApretar($event, scrollAnio)"
+          (pointermove)="alArrastrar($event, scrollAnio)"
+          (pointerup)="alSoltar(scrollAnio)"
+          (pointercancel)="alSoltar(scrollAnio)"
+        >
+          <div class="relleno-rueda"></div>
+          @for (anio of anios; track anio; let i = $index) {
+            <div class="opcion-rueda" [class.activo]="i === indiceAnio()">{{ anio }}</div>
+          }
+          <div class="relleno-rueda"></div>
+        </div>
+        <div class="marca-rueda"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="resumen-fecha">Mové las ruedas para elegir la fecha</p>
+</div>

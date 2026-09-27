@@ -1,0 +1,14 @@
+<div class="campo">
+  <label [for]="idCampo()">{{ etiqueta() }}</label>
+  <select [id]="idCampo()" [formControl]="control()">
+    <option value="" disabled>Seleccioná</option>
+    @for (opcion of opciones(); track opcion) {
+      <option [value]="opcion">{{ opcion }}</option>
+    }
+  </select>
+  <p class="error-campo">
+    @if (control().invalid && control().touched) {
+      Campo obligatorio
+    }
+  </p>
+</div>

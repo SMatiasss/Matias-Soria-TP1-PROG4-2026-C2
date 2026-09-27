@@ -1,0 +1,48 @@
+/* excepción al display:block: el host es la lista de los 3 puestos, que reparte el alto de la columna */
+:host {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* --alto-puesto lo define inicio.css: los 3 puestos juntos ocupan toda la columna */
+.pelicula-mas-vendida {
+  height: var(--alto-puesto);
+  display: flex;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pelicula-mas-vendida app-card-pelicula {
+  --ancho-card: calc(var(--alto-puesto) * 2 / 3);
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* ancho fijo: los 3 puestos miden lo mismo y el borde derecho de la columna queda parejo */
+.info-pelicula-mas-vendida {
+  width: 130px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.puesto-mas-vendida {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-dorado);
+}
+
+.titulo-pelicula-mas-vendida {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}

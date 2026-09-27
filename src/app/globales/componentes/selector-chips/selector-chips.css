@@ -1,0 +1,102 @@
+:host {
+  display: inline-block;
+}
+
+.selector-desplegable {
+  position: relative;
+  display: inline-block;
+  font-family: var(--fuente);
+}
+
+.selector-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid var(--borde-fuerte);
+  background: transparent;
+  color: var(--color-texto);
+  font: 400 15px var(--fuente);
+  cursor: pointer;
+}
+
+.selector-boton:hover {
+  border-color: var(--color-texto);
+}
+
+.selector-boton.abierto {
+  background: var(--color-superficie);
+  border-color: var(--color-texto);
+}
+
+.selector-boton svg {
+  transition: transform 0.15s;
+}
+
+.selector-boton.abierto svg {
+  transform: rotate(180deg);
+}
+
+.selector-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  /* se abre hacia la izquierda: el selector está en el borde derecho de la barra de cartelera */
+  right: 0;
+  z-index: 10;
+  width: 260px;
+  max-height: 320px;
+  overflow-y: auto;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  background: var(--color-superficie);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.selector-opcion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--color-texto);
+  font-size: 15px;
+}
+
+.selector-opcion:hover {
+  background: rgba(243, 239, 231, 0.06);
+}
+
+.selector-opcion input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.selector-casilla {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  border: 1px solid var(--borde-fuerte);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selector-opcion input:checked + .selector-casilla {
+  background: var(--color-texto);
+  border-color: var(--color-texto);
+}
+
+.selector-opcion input:focus-visible + .selector-casilla {
+  outline: 2px solid var(--color-texto);
+  outline-offset: 2px;
+}

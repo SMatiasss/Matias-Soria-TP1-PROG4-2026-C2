@@ -1,1 +1,153 @@
-<p>registro works!</p>
+<app-header />
+
+<main class="contenedor-formulario">
+  <!-- Formulario de registro -->
+  <form class="panel formulario-registro" [formGroup]="formulario" (submit)="$event.preventDefault(); registrarme()">
+    <div class="encabezado-formulario">
+      <h1>Crear cuenta</h1>
+      <p>Completá tus datos para registrarte. Todos los campos son obligatorios.</p>
+    </div>
+
+    <div class="columnas-registro">
+      <div class="columna-registro">
+        <h2 class="titulo-columna-registro">Datos personales</h2>
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" placeholder="Tu nombre" formControlName="nombre" />
+            <p class="error-campo">
+              @if (formulario.controls.nombre.invalid && formulario.controls.nombre.touched) {
+                Campo obligatorio
+              }
+            </p>
+          </div>
+          <div class="campo">
+            <label for="apellido">Apellido</label>
+            <input id="apellido" type="text" placeholder="Tu apellido" formControlName="apellido" />
+            <p class="error-campo">
+              @if (formulario.controls.apellido.invalid && formulario.controls.apellido.touched) {
+                Campo obligatorio
+              }
+            </p>
+          </div>
+        </div>
+        <div class="fila-campos">
+          <app-campo-seleccion
+            etiqueta="Tipo de sangre"
+            idCampo="sangre"
+            [opciones]="tiposDeSangre"
+            [control]="formulario.controls.tipoSangre"
+          />
+          <div class="campo">
+            <label for="vacaciones">Vacaciones (días/año)</label>
+            <input id="vacaciones" type="number" min="0" placeholder="Ej: 14" formControlName="diasVacacionesPorAnio" />
+            <p class="error-campo">
+              @if (formulario.controls.diasVacacionesPorAnio.touched) {
+                @if (formulario.controls.diasVacacionesPorAnio.hasError('required')) {
+                  Campo obligatorio
+                } @else if (formulario.controls.diasVacacionesPorAnio.hasError('min')) {
+                  No puede ser negativo
+                }
+              }
+            </p>
+          </div>
+        </div>
+        <app-campo-seleccion
+          etiqueta="Color de ojos"
+          idCampo="ojos"
+          [opciones]="coloresDeOjos"
+          [control]="formulario.controls.colorOjos"
+        />
+      </div>
+
+      <div class="columna-registro">
+        <h2 class="titulo-columna-registro">Fecha de nacimiento</h2>
+        <app-selector-fecha
+          [fecha]="formulario.controls.fechaNacimiento.value"
+          (fechaChange)="formulario.controls.fechaNacimiento.setValue($event)"
+        />
+        <p class="error-campo">
+          @if (formulario.controls.fechaNacimiento.touched) {
+            @if (formulario.controls.fechaNacimiento.hasError('required')) {
+              Mové las ruedas para elegir tu fecha de nacimiento
+            } @else if (formulario.controls.fechaNacimiento.hasError('menorDeEdad')) {
+              Tenés que tener al menos 13 años
+            }
+          }
+        </p>
+      </div>
+
+      <div class="columna-registro">
+        <h2 class="titulo-columna-registro">Cuenta</h2>
+        <div class="campo">
+          <label for="email">Correo electrónico</label>
+          <input id="email" type="email" placeholder="tu@correo.com" formControlName="email" />
+          <p class="error-campo">
+            @if (formulario.controls.email.touched) {
+              @if (formulario.controls.email.hasError('required')) {
+                Campo obligatorio
+              } @else if (formulario.controls.email.hasError('email')) {
+                Ingresá un email válido
+              }
+            }
+          </p>
+        </div>
+        <div class="campo">
+          <label for="contrasena">Contraseña</label>
+          <input id="contrasena" type="password" placeholder="Mínimo 6 caracteres" formControlName="contrasena" />
+          <p class="error-campo">
+            @if (formulario.controls.contrasena.touched) {
+              @if (formulario.controls.contrasena.hasError('required')) {
+                Campo obligatorio
+              } @else if (formulario.controls.contrasena.hasError('minlength')) {
+                Mínimo 6 caracteres
+              }
+            }
+          </p>
+        </div>
+        <div class="campo">
+          <label for="confirmar">Confirmar contraseña</label>
+          <input id="confirmar" type="password" placeholder="Repetí la contraseña" formControlName="confirmarContrasena" />
+          @if (
+            formulario.controls.confirmarContrasena.touched &&
+            !formulario.controls.confirmarContrasena.hasError('required') &&
+            !formulario.hasError('noCoinciden')
+          ) {
+            <p class="pista-ok">Las contraseñas coinciden</p>
+          } @else {
+            <p class="error-campo">
+              @if (formulario.controls.confirmarContrasena.touched) {
+                @if (formulario.controls.confirmarContrasena.hasError('required')) {
+                  Campo obligatorio
+                } @else {
+                  Las contraseñas no coinciden
+                }
+              }
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="pie-registro">
+      <button type="submit" class="boton-principal boton-pie-registro" [disabled]="cargando()">
+        {{ cargando() ? 'Creando cuenta...' : 'Registrarse' }}
+      </button>
+      <div class="pie-registro-derecha">
+        <p>¿Ya tenés cuenta?</p>
+        <a routerLink="/login" class="boton-secundario boton-pie-registro">Volver a iniciar sesión</a>
+      </div>
+    </div>
+  </form>
+</main>
+
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta
+      titulo="No pudimos crear la cuenta"
+      [descripcion]="mensaje"
+      textoBoton="Entendido"
+      (continuar)="error.set(null)"
+    />
+  </div>
+}

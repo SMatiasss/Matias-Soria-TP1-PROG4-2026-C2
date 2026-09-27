@@ -1,0 +1,5 @@
+<div class="contador">
+  <button type="button" class="boton-contador" [disabled]="cantidad() === 0" (click)="restar()">−</button>
+  <span class="valor-contador">{{ cantidad() }}</span>
+  <button type="button" class="boton-contador" (click)="sumar()">+</button>
+</div>

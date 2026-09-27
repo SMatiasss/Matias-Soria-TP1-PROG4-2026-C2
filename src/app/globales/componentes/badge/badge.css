@@ -1,0 +1,27 @@
+:host {
+  display: inline-block;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.38em 0.77em;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  background: var(--color-fondo);
+  color: #fff;
+  font-family: var(--fuente);
+  font-size: var(--tamano-badge, 13px);
+  line-height: 1.2;
+}
+
+.badge.rojo {
+  background: var(--color-acento);
+  border-color: var(--color-error);
+}
+
+.badge.dorado {
+  background: var(--color-dorado);
+  border-color: var(--color-dorado);
+  color: var(--color-fondo);
+  font-weight: 600;
+}

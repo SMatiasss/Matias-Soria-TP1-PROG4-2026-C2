@@ -1,0 +1,115 @@
+/* excepción al display:block: la caja ocupa todo el alto que le dé el padre (ej: la columna del registro) */
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.caja-fecha {
+  flex: 1;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  background: var(--color-fondo);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--fuente);
+}
+
+.ruedas {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.rueda-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.rueda-etiqueta {
+  font-size: 11.5px;
+  color: var(--color-placeholder);
+}
+
+.rueda {
+  position: relative;
+  height: 180px;
+}
+
+.rueda.dia {
+  width: 58px;
+}
+
+.rueda.mes {
+  width: 118px;
+}
+
+.rueda.anio {
+  width: 72px;
+}
+
+.rueda-scroll {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+}
+
+/* Mientras se arrastra se apaga el snap: si no, el navegador "salta" al ítem más cercano en cada movimiento */
+.rueda-scroll.arrastrando {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+
+.rueda-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.relleno-rueda {
+  height: 72px;
+}
+
+.opcion-rueda {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-texto-suave);
+  opacity: 0.3;
+  transition: opacity 0.1s, font-size 0.1s, font-weight 0.1s, color 0.1s;
+}
+
+.opcion-rueda.activo {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-texto);
+  opacity: 1;
+}
+
+.marca-rueda {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 72px;
+  height: 36px;
+  border-top: 1px solid rgba(243, 239, 231, 0.25);
+  border-bottom: 1px solid rgba(243, 239, 231, 0.25);
+  pointer-events: none;
+}
+
+.resumen-fecha {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--color-texto-apagado);
+}

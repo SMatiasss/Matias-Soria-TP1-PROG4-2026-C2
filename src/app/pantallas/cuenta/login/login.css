@@ -1,0 +1,64 @@
+/* excepción al display:block: el formulario se centra en el alto que queda debajo del header */
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+.formulario-login {
+  width: 400px;
+  max-width: 100%;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.encabezado-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+/* los mensajes de error ya reservan su alto: por eso el gap es chico */
+.campos-login {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.error-formulario {
+  margin-top: -8px;
+  text-align: center;
+}
+
+.bloque-registrarse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde-panel);
+}
+
+.bloque-registrarse p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-texto-apagado);
+}
+
+/* pantallas bajas: se permite scroll antes que recortar el formulario */
+@media (max-height: 560px) {
+  :host {
+    height: auto;
+    min-height: 100vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .formulario-login {
+    padding: 24px;
+  }
+}

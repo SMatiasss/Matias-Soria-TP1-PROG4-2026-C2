@@ -1,0 +1,21 @@
+@for (numero of estrellas; track numero) {
+  <button
+    type="button"
+    class="estrella"
+    [class.editable]="editable()"
+    [disabled]="!editable()"
+    [style.width.px]="tamano()"
+    [style.height.px]="tamano()"
+    (click)="elegir(numero)"
+    (mouseenter)="apuntar(numero)"
+  >
+    <svg class="estrella-base" viewBox="0 0 24 24" [attr.width]="tamano()" [attr.height]="tamano()">
+      <path [attr.d]="formaEstrella" />
+    </svg>
+    <span class="estrella-relleno" [style.width.%]="relleno(numero)">
+      <svg viewBox="0 0 24 24" [attr.width]="tamano()" [attr.height]="tamano()">
+        <path [attr.d]="formaEstrella" />
+      </svg>
+    </span>
+  </button>
+}

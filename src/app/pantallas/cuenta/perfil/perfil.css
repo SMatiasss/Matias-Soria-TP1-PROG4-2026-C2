@@ -1,0 +1,70 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.pagina-perfil {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px 56px;
+}
+
+.titulo-perfil {
+  margin: 0 0 24px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.grilla-perfil {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.datos-perfil {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 16px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.datos-perfil dt {
+  color: var(--color-texto-apagado);
+}
+
+.datos-perfil dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.saldos {
+  display: flex;
+  gap: 32px;
+}
+
+.saldo {
+  display: flex;
+  flex-direction: column;
+}
+
+.valor-saldo {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-dorado);
+}
+
+.etiqueta-saldo {
+  font-size: 13px;
+  color: var(--color-texto-suave);
+}
+
+@media (max-width: 640px) {
+  .pagina-perfil {
+    padding: 24px 16px 48px;
+  }
+
+  .grilla-perfil {
+    grid-template-columns: 1fr;
+  }
+}

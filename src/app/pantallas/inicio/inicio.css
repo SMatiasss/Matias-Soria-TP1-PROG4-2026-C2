@@ -1,0 +1,93 @@
+/* excepción al display:block: en escritorio la pantalla ocupa justo el alto de la ventana, sin scroll de página */
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+/* --columnas y --ancho-poster: el póster de la cartelera se achica si no alcanza el alto (2 filas) o el ancho.
+   --alto-puesto: los 3 puestos de "Más vendidas" reparten el alto de su columna (lo usa mas-vendidas.css) */
+.grilla-inicio {
+  --columnas: 4;
+  --separacion: 16px;
+  --ancho-poster: clamp(
+    100px,
+    min(calc((100vh - 312px) / 3), calc((100vw - 770px - (var(--columnas) - 1) * var(--separacion)) / var(--columnas))),
+    220px
+  );
+  /* se resta: header (+1 de borde), padding de arriba y abajo (48), título de la columna (44 + 12 de separación)
+     y las 2 separaciones entre puestos (24) */
+  --alto-puesto: calc((100vh - var(--alto-header) - 1px - 48px - 56px - 24px) / 3);
+
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* auto: las columnas de los costados miden lo que su contenido, así el espacio libre queda
+     repartido igual a los dos lados de la cartelera (que va centrada) */
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 28px;
+  padding: 24px 32px;
+}
+
+.columna {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seccion-cartelera-de-inicio {
+  align-items: center;
+}
+
+/* el título "Cartelera" mide lo mismo que el tablero, así queda alineado con la primera película */
+.seccion-cartelera-de-inicio .cabecera-columna {
+  width: calc(var(--columnas) * var(--ancho-poster) + (var(--columnas) - 1) * var(--separacion));
+}
+
+
+.tablero-cartelera-de-inicio {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--columnas), var(--ancho-poster));
+  align-content: center;
+  gap: 18px var(--separacion);
+}
+
+.tablero-cartelera-de-inicio app-card-pelicula {
+  --ancho-card: var(--ancho-poster);
+  --tamano-titulo-card: 14px;
+  --espacio-card: 8px;
+  --tamano-badge: 11px;
+}
+
+/* 2 filas de 4: el resto está en /cartelera */
+.tablero-cartelera-de-inicio app-card-pelicula:nth-child(n + 9) {
+  display: none;
+}
+
+/* pantallas angostas: las columnas se apilan y vuelve el scroll de página */
+@media (max-width: 1100px) {
+  :host {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .grilla-inicio {
+    --columnas: 3;
+    --ancho-poster: calc((100vw - 64px - 2 * var(--separacion)) / 3);
+    --alto-puesto: 180px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .grilla-inicio {
+    --columnas: 2;
+    --ancho-poster: calc((100vw - 32px - var(--separacion)) / 2);
+    padding: 20px 16px;
+  }
+}

@@ -1,0 +1,103 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* --ancho-poster: el póster se achica si el alto de la ventana no alcanza para 2 filas completas */
+.pagina-cartelera {
+  --ancho-poster: clamp(110px, calc((100vh - 320px) / 3), 190px);
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 22px 48px 28px;
+}
+
+/* título, buscador y géneros en una sola fila */
+.barra-cartelera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* margin-right: auto empuja el buscador y los géneros a la derecha */
+.titulo-cartelera {
+  margin: 0 auto 0 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.buscador {
+  width: 340px;
+  max-width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 14px;
+}
+
+.buscador::placeholder {
+  color: var(--color-texto-apagado);
+}
+
+.buscador:focus {
+  outline: none;
+  border-color: var(--color-texto);
+}
+
+.grilla-cartelera {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--ancho-poster));
+  justify-content: space-between;
+  gap: 22px 20px;
+}
+
+.item-cartelera {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item-cartelera app-card-pelicula {
+  --ancho-card: var(--ancho-poster);
+  --tamano-titulo-card: 14px;
+  --espacio-card: 8px;
+  --tamano-badge: 11px;
+}
+
+/* una sola fila de géneros (los que no entran se cortan a la derecha): todas las películas ocupan el mismo alto */
+.generos-pelicula {
+  display: flex;
+  gap: 4px;
+  overflow: hidden;
+  --tamano-badge: 11px;
+}
+
+.grilla-cartelera app-estado-vacio {
+  grid-column: 1 / -1;
+  padding: 40px 0;
+}
+
+@media (max-width: 640px) {
+  .pagina-cartelera {
+    --ancho-poster: calc((100vw - 48px) / 2);
+    padding: 20px 16px;
+  }
+
+  .titulo-cartelera {
+    width: 100%;
+  }
+
+  .buscador {
+    flex: 1;
+    width: auto;
+  }
+
+  .grilla-cartelera {
+    gap: 20px 16px;
+  }
+}

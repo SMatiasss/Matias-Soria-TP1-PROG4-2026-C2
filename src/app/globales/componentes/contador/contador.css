@@ -1,0 +1,43 @@
+/* sin width: 100% a propósito: el contador mide lo que miden sus botones */
+:host {
+  display: inline-block;
+}
+
+.contador {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 4px;
+  border-radius: var(--radio);
+  border: 1px solid var(--borde);
+}
+
+.boton-contador {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-texto);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.boton-contador:hover:enabled {
+  background: color-mix(in srgb, var(--color-texto) 10%, transparent);
+}
+
+.boton-contador:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.valor-contador {
+  min-width: 16px;
+  text-align: center;
+  font-size: 14px;
+}

@@ -1,0 +1,9 @@
+@for (pelicula of peliculas(); track pelicula.id; let i = $index) {
+  <a class="pelicula-mas-vendida" [routerLink]="['/pelicula', pelicula.id]">
+    <app-card-pelicula class="tarjeta-con-enlace" [sinTitulo]="true" [pelicula]="pelicula" />
+    <div class="info-pelicula-mas-vendida">
+      <span class="puesto-mas-vendida">{{ i + 1 }}</span>
+      <h3 class="titulo-pelicula-mas-vendida">{{ pelicula.titulo }}</h3>
+    </div>
+  </a>
+}

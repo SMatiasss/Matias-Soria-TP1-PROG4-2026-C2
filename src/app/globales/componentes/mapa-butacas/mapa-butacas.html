@@ -1,0 +1,55 @@
+<div class="pantalla">
+  <div class="arco-pantalla"></div>
+  <span class="texto-pantalla">PANTALLA</span>
+</div>
+
+<div class="scroll-mapa">
+  <div class="grilla-butacas">
+    @for (fila of filas(); track fila.letra) {
+      <div class="fila-butacas">
+        <span class="letra-fila" [class.vip]="fila.tipo === tipos.VIP" [class.accesible]="fila.tipo === tipos.ACCESIBLE">
+          {{ fila.tipo === tipos.ACCESIBLE ? '♿' : fila.letra }}
+        </span>
+
+        <div class="bloques-fila">
+          @for (bloque of fila.bloques; track $index) {
+            <div class="bloque-butacas" [class.ancho]="bloque.length === 20">
+              @for (butaca of bloque; track $index) {
+                @if (butaca) {
+                  <button
+                    type="button"
+                    class="butaca"
+                    [class.vip]="butaca.tipo === tipos.VIP"
+                    [class.accesible]="butaca.tipo === tipos.ACCESIBLE"
+                    [class.seleccionada]="seleccionadas().includes(butaca.id)"
+                    [disabled]="ocupadas().includes(butaca.id)"
+                    [title]="fila.letra + butaca.columna"
+                    (click)="alternar(butaca)"
+                  ></button>
+                } @else {
+                  <span class="butaca hueco"></span>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <span class="letra-fila" [class.vip]="fila.tipo === tipos.VIP" [class.accesible]="fila.tipo === tipos.ACCESIBLE">
+          {{ fila.tipo === tipos.ACCESIBLE ? '♿' : fila.letra }}
+        </span>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Leyenda y contenido proyectado -->
+<div class="pie-mapa">
+  <div class="leyenda-butacas">
+    <div class="item-leyenda"><span class="muestra-butaca"></span>Libre</div>
+    <div class="item-leyenda"><span class="muestra-butaca seleccionada"></span>Seleccionada</div>
+    <div class="item-leyenda"><span class="muestra-butaca ocupada"></span>Ocupada</div>
+    <div class="item-leyenda"><span class="muestra-butaca accesible"></span>Accesible</div>
+    <div class="item-leyenda"><span class="muestra-butaca vip"></span>VIP</div>
+  </div>
+  <ng-content />
+</div>

@@ -1,0 +1,13 @@
+<div class="tarjeta-pelicula">
+  <div class="poster-pelicula">
+    <img [src]="pelicula().imagen_url" [alt]="pelicula().titulo" />
+    <app-badge class="badge-duracion" [texto]="pelicula().duracion_minutos + ' min'" />
+    
+    @if (pelicula().restriccion_edad) { <!-- Sin restricción de edad no se muestra el badge rojo -->
+      <app-badge class="badge-restriccion" [texto]="pelicula().restriccion_edad + '+'" color="rojo" />
+    }
+  </div>
+  @if (!sinTitulo()) {
+    <h3 class="titulo-tarjeta-pelicula">{{ pelicula().titulo }}</h3>
+  }
+</div>

@@ -1,1 +1,46 @@
-<p>perfil works!</p>
+<app-header seccionActiva="Perfil" />
+
+@if (usuario(); as usuario) {
+  <main class="pagina-perfil">
+    <h1 class="titulo-perfil">{{ usuario.nombre }} {{ usuario.apellido }}</h1>
+
+    <div class="grilla-perfil">
+      <section class="panel">
+        <h2 class="titulo-panel">Mis datos</h2>
+        <dl class="datos-perfil">
+          <dt>Correo</dt>
+          <dd>{{ usuario.email }}</dd>
+          <dt>Fecha de nacimiento</dt>
+          <dd>{{ fechaNacimientoTexto() }}</dd>
+        </dl>
+      </section>
+
+      <!-- Puntos y crédito -->
+      <section class="panel">
+        <h2 class="titulo-panel">Puntos y crédito</h2>
+        <div class="saldos">
+          <div class="saldo">
+            <span class="valor-saldo">{{ usuario.puntos }}</span>
+            <span class="etiqueta-saldo">puntos</span>
+          </div>
+          <div class="saldo">
+            <span class="valor-saldo">{{ usuario.credito | currency: 'ARS' : 'symbol' : '1.0-2' : 'es-AR' }}</span>
+            <span class="etiqueta-saldo">de crédito</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Historial de canjes -->
+      <section class="panel">
+        <h2 class="titulo-panel">Historial de canjes</h2>
+        <app-estado-vacio mensaje="Todavía no canjeaste puntos." />
+      </section>
+
+      <!-- Mis películas -->
+      <section class="panel">
+        <h2 class="titulo-panel">Mis películas</h2>
+        <app-estado-vacio mensaje="Todavía no viste ninguna película." />
+      </section>
+    </div>
+  </main>
+}

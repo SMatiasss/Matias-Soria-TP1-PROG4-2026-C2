@@ -1,0 +1,214 @@
+/* excepción al display:block: ocupa todo el alto de su contenedor (pantalla arriba, leyenda abajo, mapa en el medio).
+   --butaca: tamaño de cada butaca, se achica para que el mapa entre completo en el alto de la ventana */
+:host {
+  --butaca: clamp(13px, calc((100vh - 340px) / 24), 22px);
+  --separacion-butaca: calc(var(--butaca) * 0.26);
+
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.pantalla {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.arco-pantalla {
+  width: 70%;
+  max-width: 520px;
+  height: 12px;
+  border-radius: 0 0 999px 999px / 0 0 60px 60px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-texto) 55%, transparent),
+    color-mix(in srgb, var(--color-texto) 5%, transparent)
+  );
+}
+
+.texto-pantalla {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--color-placeholder);
+}
+
+/* si aun así no entra (ej: celular), el mapa scrollea dentro de su caja y no la página */
+.scroll-mapa {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: auto;
+}
+
+/* margin auto centra el mapa sin cortar el lado izquierdo al scrollear */
+.grilla-butacas {
+  flex-shrink: 0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--separacion-butaca);
+}
+
+.fila-butacas {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.letra-fila {
+  width: 16px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-placeholder);
+}
+
+.letra-fila.vip {
+  color: var(--color-dorado);
+}
+
+.letra-fila.accesible {
+  color: var(--color-accesible);
+}
+
+/* el pasillo entre bloques mide lo mismo que una butaca */
+.bloques-fila {
+  display: flex;
+  align-items: center;
+  gap: var(--butaca);
+}
+
+.bloque-butacas {
+  display: grid;
+  grid-template-columns: repeat(4, var(--butaca));
+  gap: var(--separacion-butaca);
+}
+
+.bloque-butacas.ancho {
+  grid-template-columns: repeat(20, var(--butaca));
+}
+
+.butaca {
+  width: var(--butaca);
+  height: var(--butaca);
+  padding: 0;
+  border-radius: 27% 27% 36% 36%;
+  border: 1px solid var(--borde-fuerte);
+  background: transparent;
+  cursor: pointer;
+}
+
+.butaca:hover:enabled {
+  border-color: var(--color-texto);
+}
+
+.butaca.hueco {
+  visibility: hidden;
+}
+
+.butaca.vip {
+  border-color: color-mix(in srgb, var(--color-dorado) 55%, transparent);
+}
+
+.butaca.accesible {
+  border-color: color-mix(in srgb, var(--color-accesible) 60%, transparent);
+}
+
+.butaca.seleccionada {
+  border-color: var(--color-texto);
+  background: var(--color-texto);
+}
+
+.butaca.vip.seleccionada {
+  border-color: var(--color-dorado);
+  background: var(--color-dorado);
+}
+
+.butaca.accesible.seleccionada {
+  border-color: var(--color-accesible);
+  background: var(--color-accesible);
+}
+
+/* ocupada */
+.butaca:disabled {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-texto) 8%, transparent);
+  cursor: not-allowed;
+}
+
+.butaca.vip:disabled {
+  background: color-mix(in srgb, var(--color-dorado) 12%, transparent);
+}
+
+.butaca.accesible:disabled {
+  background: color-mix(in srgb, var(--color-accesible) 12%, transparent);
+}
+
+/* leyenda a la izquierda, lo proyectado (aviso, botón) a la derecha */
+.pie-mapa {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--borde-panel);
+}
+
+.leyenda-butacas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-right: auto;
+}
+
+.item-leyenda {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--color-texto-suave);
+}
+
+.muestra-butaca {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px 4px 6px 6px;
+  border: 1px solid var(--borde-fuerte);
+}
+
+.muestra-butaca.seleccionada {
+  border-color: var(--color-texto);
+  background: var(--color-texto);
+}
+
+.muestra-butaca.ocupada {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-texto) 8%, transparent);
+}
+
+.muestra-butaca.accesible {
+  border-color: color-mix(in srgb, var(--color-accesible) 60%, transparent);
+}
+
+.muestra-butaca.vip {
+  border-color: color-mix(in srgb, var(--color-dorado) 55%, transparent);
+}
+
+@media (max-width: 760px) {
+  :host {
+    --butaca: 20px;
+  }
+
+  .pie-mapa {
+    flex-wrap: wrap;
+  }
+}

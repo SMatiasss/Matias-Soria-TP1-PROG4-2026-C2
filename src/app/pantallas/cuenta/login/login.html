@@ -1,1 +1,49 @@
-<p>login works!</p>
+<app-header [enLogin]="true" />
+
+<main class="contenedor-formulario">
+  <!-- Formulario de login -->
+  <form class="panel formulario-login" [formGroup]="formulario" (submit)="$event.preventDefault(); ingresar()">
+    <div class="encabezado-formulario">
+      <h1>Iniciar sesión</h1>
+      <p>Ingresá tus datos para continuar</p>
+    </div>
+
+    <div class="campos-login">
+
+      <div class="campo"> <!-- Todo del correo electrónico -->
+        <label for="correo">Correo electrónico</label>
+        <input id="correo" type="email" placeholder="tu@correo.com" formControlName="email" />
+        <p class="error-campo">
+          @if (formulario.controls.email.touched) {
+            @if (formulario.controls.email.hasError('required')) {
+              Campo obligatorio
+            } @else if (formulario.controls.email.hasError('email')) {
+              Ingresá un email válido
+            }
+          }
+        </p>
+      </div>
+
+      <div class="campo"> <!-- Todo de la contraseña -->
+        <label for="contrasena">Contraseña</label>
+        <input id="contrasena" type="password" autocomplete="current-password" placeholder="••••••••" formControlName="contrasena" />
+        <p class="error-campo">
+          @if (formulario.controls.contrasena.touched && formulario.controls.contrasena.hasError('required')) {
+            Campo obligatorio
+          }
+        </p>
+      </div>
+    </div>
+
+    <button type="submit" class="boton-principal ancho-completo" [disabled]="cargando()">
+      {{ cargando() ? 'Ingresando...' : 'Iniciar sesión' }}
+    </button>
+    <!-- Error del servidor -->
+    <p class="error-campo error-formulario">{{ error() }}</p>
+
+    <div class="bloque-registrarse">
+      <p>¿No tenés cuenta?</p>
+      <a routerLink="/registro" class="boton-secundario ancho-completo">Registrarse</a>
+    </div>
+  </form>
+</main>

@@ -1,0 +1,23 @@
+<div class="cabecera-columna">
+  <h2 class="titulo-columna">Próximamente</h2>
+  <div class="flechas-proximamente">
+    <button type="button" class="boton-flecha flecha-proximamente" (click)="mover(-1)">‹</button>
+    <button type="button" class="boton-flecha flecha-proximamente" (click)="mover(1)">›</button>
+  </div>
+</div>
+
+<ul class="lista-estrenos" #listaEstrenos>
+  @for (pelicula of peliculas(); track pelicula.id) {
+    <li class="tarjeta-estreno">
+      <app-card-pelicula class="tarjeta-con-enlace" [sinTitulo]="true" [pelicula]="pelicula" [routerLink]="['/pelicula', pelicula.id]" />
+      <div class="info-estreno">
+        <h3 class="titulo-estreno">{{ pelicula.titulo }}</h3>
+        @if (idsPeliculasConAlerta().includes(pelicula.id)) {
+          <button type="button" class="boton-avisar activado" disabled>Te vamos a avisar</button>
+        } @else {
+          <button type="button" class="boton-avisar" (click)="alertaSolicitada.emit(pelicula)">Avisarme</button>
+        }
+      </div>
+    </li>
+  }
+</ul>

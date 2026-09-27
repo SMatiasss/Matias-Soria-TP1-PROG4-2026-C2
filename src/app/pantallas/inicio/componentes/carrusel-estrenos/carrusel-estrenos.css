@@ -1,0 +1,110 @@
+/* excepción al display:block: ocupa toda la columna (cabecera arriba, lista abajo) y la lista scrollea por dentro */
+:host {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.flechas-proximamente {
+  display: flex;
+  gap: 6px;
+}
+
+/* ‹ y › girados: el carrusel es vertical */
+.flecha-proximamente {
+  width: 34px;
+  height: 34px;
+  transform: rotate(90deg);
+}
+
+/* es el único scroll de la pantalla de inicio */
+.lista-estrenos {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* sin viñetas ni la sangría que trae la ul por defecto */
+  margin: 0;
+  padding: 0 4px 0 0;
+  list-style: none;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--borde) transparent;
+}
+
+/* mismo alto que un puesto de "Más vendidas" (--alto-puesto lo define inicio.css): entran 3 justos */
+.tarjeta-estreno {
+  flex-shrink: 0;
+  height: var(--alto-puesto);
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--borde-panel);
+  background: var(--color-superficie);
+  scroll-snap-align: start;
+}
+
+/* el póster ocupa el alto del recuadro menos el padding (8 + 8) y el borde (1 + 1) */
+.tarjeta-estreno app-card-pelicula {
+  --ancho-card: calc((var(--alto-puesto) - 18px) * 2 / 3);
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* ancho fijo: todos los estrenos miden lo mismo y la columna no cambia de ancho según el título */
+.info-estreno {
+  width: 140px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.titulo-estreno {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.boton-avisar {
+  margin-top: auto;
+  height: 34px;
+  border: 0;
+  border-radius: var(--radio);
+  background: var(--color-texto);
+  color: var(--color-fondo);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.boton-avisar:hover:enabled {
+  background: #fff;
+}
+
+.boton-avisar.activado {
+  border: 1px solid var(--borde-fuerte);
+  background: transparent;
+  color: var(--color-texto);
+  cursor: default;
+}
+
+/* pantallas angostas: el carrusel pasa a ser horizontal */
+@media (max-width: 1100px) {
+  .flechas-proximamente {
+    display: none;
+  }
+
+  .lista-estrenos {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+  }
+}

@@ -1,0 +1,38 @@
+/* sin width: 100% a propósito: mide lo que miden sus 5 estrellas */
+:host {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.estrella {
+  position: relative;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  line-height: 0;
+  cursor: default;
+}
+
+.estrella.editable {
+  cursor: pointer;
+}
+
+.estrella svg {
+  display: block;
+  fill: currentColor;
+}
+
+.estrella-base {
+  color: color-mix(in srgb, var(--color-texto) 18%, transparent);
+}
+
+/* capa dorada encima de la gris: su ancho decide cuánto de la estrella se ve pintado */
+.estrella-relleno {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  color: var(--color-dorado);
+}

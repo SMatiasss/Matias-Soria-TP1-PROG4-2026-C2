@@ -1,0 +1,125 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.encabezado-sitio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  min-height: var(--alto-header);
+  padding: 0 48px;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente);
+  font-weight: 400;
+  border-bottom: 1px solid rgba(243, 239, 231, 0.1);
+}
+
+.encabezado-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.logo-allo {
+  color: var(--color-texto);
+}
+
+.logo-mund {
+  margin-left: -0.1em;
+  color: var(--color-acento);
+  mix-blend-mode: screen;
+}
+
+.navegacion-sitio {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 15px;
+}
+
+.navegacion-sitio a {
+  text-decoration: none;
+  padding: 12px 0;
+  color: var(--color-texto-suave);
+  border-bottom: 2px solid transparent;
+}
+
+.navegacion-sitio a:hover {
+  color: var(--color-texto);
+}
+
+.navegacion-sitio a.active {
+  color: var(--color-texto);
+  border-bottom-color: var(--color-acento);
+}
+
+.cuenta-usuario {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 15px;
+}
+
+.nombre-usuario {
+  padding: 12px 0;
+  color: var(--color-texto);
+  border-bottom: 2px solid transparent;
+}
+
+.nombre-usuario:hover,
+.nombre-usuario.active {
+  border-bottom-color: var(--color-acento);
+}
+
+@media (max-width: 640px) {
+  .encabezado-sitio {
+    padding: 0 16px;
+  }
+
+  .encabezado-izquierda {
+    gap: 20px;
+  }
+
+  .navegacion-sitio {
+    gap: 16px;
+  }
+
+  .boton-sesion {
+    padding: 0 14px;
+  }
+}
+
+/* en celulares chicos solo entran el logo y la cuenta */
+@media (max-width: 480px) {
+  .encabezado-sitio {
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .navegacion-sitio {
+    display: none;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+}
