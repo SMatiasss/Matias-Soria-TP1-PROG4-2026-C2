@@ -89,13 +89,13 @@ app-selector-fecha {
   border-top: 1px solid var(--borde-panel);
 }
 
-.pie-registro-derecha {
+.pie-registro-izquierda {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-.pie-registro-derecha p {
+.pie-registro-izquierda p {
   margin: 0;
   font-size: 14px;
   color: var(--color-texto-apagado);
@@ -135,7 +135,7 @@ app-selector-fecha {
   }
 
   .pie-registro,
-  .pie-registro-derecha {
+  .pie-registro-izquierda {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;

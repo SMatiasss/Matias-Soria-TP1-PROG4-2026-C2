@@ -1,0 +1,52 @@
+<div class="cabecera-funciones">
+  <h2 class="titulo-bloque">Funciones</h2>
+  @if (diasConFunciones().length) {
+    <!-- Filtros, la opción vacía es "sin filtro" -->
+    <select class="selector-filtro" #selectorFormato (change)="filtroFormato.set(selectorFormato.value)">
+      <option value="">Todos los formatos</option>
+      @for (formato of opcionesFormato(); track formato) {
+        <option [value]="formato">{{ formato }}</option>
+      }
+    </select>
+    <select class="selector-filtro" #selectorIdioma (change)="filtroIdioma.set(selectorIdioma.value)">
+      <option value="">Todos los idiomas</option>
+      @for (idioma of opcionesIdioma(); track idioma) {
+        <option [value]="idioma">{{ idioma }}</option>
+      }
+    </select>
+    <button type="button" class="boton-flecha" [disabled]="primerDiaVisible() === 0" (click)="moverDias(-1)">‹</button>
+    <button type="button" class="boton-flecha" [disabled]="!hayDiasSiguientes()" (click)="moverDias(1)">›</button>
+  }
+</div>
+
+@if (diasConFunciones().length) {
+  <div class="dias-funciones">
+    @for (dia of diasVisibles(); track dia) {
+      <button type="button" class="dia-funcion" [class.activo]="dia === diaActivo()" (click)="diaElegido.set(dia)">
+        <strong>{{ diaNombre(dia) }}</strong>
+        <span>{{ diaFecha(dia) }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Lista de funciones (alto fijo) -->
+  <div class="lista-grupos">
+    @for (grupo of gruposDeFunciones(); track grupo.formato + grupo.idioma) {
+      <div class="grupo-funciones">
+        <p class="etiqueta-grupo"><b>{{ grupo.formato }}</b> · {{ grupo.idioma }}</p>
+        <div class="horarios">
+          @for (funcion of grupo.funciones; track funcion.id) {
+            <a class="horario" [routerLink]="['/reservas', funcion.id]">
+              <b>{{ horaTexto(funcion) }}</b>
+              <small>{{ funcion.sala.nombre }}</small>
+            </a>
+          }
+        </div>
+      </div>
+    } @empty {
+      <p class="sin-funciones">No hay funciones con estos filtros para este día.</p>
+    }
+  </div>
+} @else {
+  <p class="sin-funciones">Esta película no tiene funciones programadas.</p>
+}

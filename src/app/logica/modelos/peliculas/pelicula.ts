@@ -1,4 +1,4 @@
-// actualmente en uso en: peliculas.service.ts, inicio.ts, card-pelicula.ts, mas-vendidas.ts, carrusel-estrenos.ts
+// actualmente en uso en: peliculas.service.ts, inicio.ts, detalle.ts, card-pelicula.ts, mas-vendidas.ts, carrusel-estrenos.ts
 
 // restriccion_edad usa los valores de RESTRICCIONES_EDAD (restriccion-edad.ts)
 // el precio normal está en cada función (precio_base / precio_vip), preventa_precio solo se usa

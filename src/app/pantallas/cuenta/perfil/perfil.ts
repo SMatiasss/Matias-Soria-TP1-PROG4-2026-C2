@@ -26,6 +26,9 @@ export class Perfil {
 
   fechaNacimientoTexto = computed(() => {
     const usuario = this.usuario();
-    return usuario ? new Date(`${usuario.fecha_nacimiento}T00:00`).toLocaleDateString('es-AR') : '';
+    if (!usuario) return '';
+    // la base la guarda como AAAA-MM-DD y acá se muestra como DD/MM/AAAA
+    const [año, mes, dia] = usuario.fecha_nacimiento.split('-');
+    return `${dia}/${mes}/${año}`;
   });
 }

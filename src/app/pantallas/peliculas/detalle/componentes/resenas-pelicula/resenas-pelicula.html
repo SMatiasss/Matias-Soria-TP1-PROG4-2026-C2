@@ -1,0 +1,49 @@
+<!-- Lista de reseñas -->
+<div class="panel panel-opiniones">
+  <h3 class="titulo-panel">Opiniones</h3>
+  <div class="scroll-opiniones">
+    @for (resena of resenas(); track resena.id) {
+      <article class="resena">
+        <app-calificacion-estrellas [valor]="resena.calificacion" [tamano]="13" />
+        @if (resena.comentario) {
+          <p class="texto-resena">{{ resena.comentario }}</p>
+        }
+      </article>
+    } @empty {
+      <app-estado-vacio mensaje="Todavía no hay reseñas de esta película." />
+    }
+  </div>
+</div>
+
+<!-- Formulario de reseña -->
+<div class="panel formulario-resena">
+  <h3 class="titulo-panel">Dejá tu reseña</h3>
+  <!-- Solo con sesión -->
+  @if (usuario()) {
+    <div class="fila-estrellas">
+      <app-calificacion-estrellas [editable]="true" [tamano]="26" [(valor)]="calificacion" />
+      <span class="pista-resena">{{ calificacion() ? calificacion() + ' de 5' : 'Elegí de 1 a 5' }}</span>
+    </div>
+    <textarea
+      class="campo-comentario"
+      placeholder="Contá brevemente qué te pareció la película (opcional)"
+      maxlength="60"
+      [(ngModel)]="comentario"
+    ></textarea>
+    <p class="error-campo">{{ error() }}</p>
+    <div class="pie-formulario-resena">
+      <span class="contador-caracteres">{{ comentario().length }} / 60</span>
+      <button
+        type="button"
+        class="boton-principal boton-publicar"
+        [disabled]="!calificacion() || publicando()"
+        (click)="publicarResena()"
+      >
+        {{ publicando() ? 'Publicando...' : 'Publicar reseña' }}
+      </button>
+    </div>
+  } @else {
+    <p class="pista-resena">Iniciá sesión para calificar la película y dejar un comentario.</p>
+    <a routerLink="/login" class="boton-secundario boton-chico">Iniciar sesión</a>
+  }
+</div>

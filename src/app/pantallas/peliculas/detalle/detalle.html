@@ -1,1 +1,68 @@
-<p>detalle works!</p>
+<app-header seccionActiva="Cartelera" />
+
+@if (pelicula(); as p) {
+  <main class="pagina-detalle">
+    <!-- Ficha de la película -->
+    <section class="panel ficha">
+      <h1 class="titulo-pelicula">{{ p.titulo }}</h1>
+
+      <div class="ficha-superior">
+        <div class="columna-poster">
+          <app-card-pelicula [sinTitulo]="true" [pelicula]="p" />
+
+          <!-- Puntuación promedio -->
+          <div class="panel panel-puntaje">
+            <span class="numero-promedio">{{ promedioTexto() }}</span>
+            <app-calificacion-estrellas [valor]="promedio()" [tamano]="20" />
+            <span class="cantidad-resenas">
+              {{ resenas().length === 1 ? 'Promedio de 1 reseña' : 'Promedio de ' + resenas().length + ' reseñas' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="info-pelicula">
+          <div class="datos-pelicula">
+            <div class="grupo-dato">
+              <span class="etiqueta-dato">Géneros</span>
+              <div class="badges-dato">
+                @for (genero of p.generos; track genero) {
+                  <app-badge [texto]="genero" />
+                }
+              </div>
+            </div>
+            @if (formatos().length) {
+              <div class="grupo-dato">
+                <span class="etiqueta-dato">Formatos</span>
+                <div class="badges-dato">
+                  @for (formato of formatos(); track formato) {
+                    <app-badge [texto]="formato" />
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (p.restriccion_edad) {
+            <p class="aviso-edad">
+              Película apta para mayores de {{ p.restriccion_edad }} años. Debe ir acompañado de un adulto.
+            </p>
+          }
+
+          <app-funciones-pelicula [funciones]="funciones()" />
+
+          <div class="sinopsis">
+            <h2 class="titulo-bloque">Sinopsis</h2>
+            <p class="texto-sinopsis">{{ p.sinopsis }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reseñas -->
+    <app-resenas-pelicula [peliculaId]="p.id" />
+  </main>
+} @else if (!cargando()) {
+  <div class="sin-pelicula">
+    <app-estado-vacio mensaje="No encontramos esa película." />
+  </div>
+}

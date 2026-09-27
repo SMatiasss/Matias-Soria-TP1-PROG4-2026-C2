@@ -1,0 +1,136 @@
+/* excepción al display:block: es la columna derecha del detalle y reparte su alto entre los 3 paneles */
+:host {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.formulario-resena {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formulario-resena .boton-secundario {
+  align-self: flex-start;
+}
+
+/* dos renglones reservados: estos mensajes son más largos que los de un campo, y así no achican la lista al aparecer */
+.formulario-resena .error-campo {
+  min-height: 36px;
+}
+
+.fila-estrellas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.pista-resena {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-texto-apagado);
+}
+
+.campo-comentario {
+  height: 70px;
+  padding: 10px 12px;
+  border-radius: var(--radio);
+  border: 1px solid var(--borde);
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-size: 14px;
+  line-height: 1.45;
+  resize: none;
+}
+
+.campo-comentario::placeholder {
+  color: var(--color-placeholder);
+}
+
+.campo-comentario:focus {
+  outline: none;
+  border-color: var(--color-texto);
+}
+
+.pie-formulario-resena {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.contador-caracteres {
+  font-size: 12px;
+  color: var(--color-placeholder);
+}
+
+.boton-publicar {
+  height: 40px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+/* ocupa lo que queda de la columna */
+.panel-opiniones {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+}
+
+.panel-opiniones .titulo-panel {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+/* con muchas reseñas scrollea de a una */
+.scroll-opiniones {
+  flex: 1;
+  min-height: 0;
+  padding-right: 6px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scroll-snap-type: y mandatory;
+}
+
+.resena {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 0;
+  border-top: 1px solid var(--borde-panel);
+  scroll-snap-align: start;
+}
+
+.resena:first-child {
+  padding-top: 4px;
+  border-top: 0;
+}
+
+.texto-resena {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--color-texto-suave);
+}
+
+.panel-opiniones app-estado-vacio {
+  padding: 24px 0;
+}
+
+/* con scroll de página (ver detalle.css), la lista tiene alto máximo propio */
+@media (max-height: 720px), (max-width: 1180px) {
+  .panel-opiniones {
+    flex: none;
+  }
+
+  .scroll-opiniones {
+    max-height: 320px;
+  }
+}

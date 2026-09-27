@@ -130,13 +130,13 @@
     </div>
 
     <div class="pie-registro">
-      <button type="submit" class="boton-principal boton-pie-registro" [disabled]="cargando()">
-        {{ cargando() ? 'Creando cuenta...' : 'Registrarse' }}
-      </button>
-      <div class="pie-registro-derecha">
+      <div class="pie-registro-izquierda">
         <p>¿Ya tenés cuenta?</p>
         <a routerLink="/login" class="boton-secundario boton-pie-registro">Volver a iniciar sesión</a>
       </div>
+      <button type="submit" class="boton-principal boton-pie-registro" [disabled]="cargando()">
+        {{ cargando() ? 'Creando cuenta...' : 'Registrarse' }}
+      </button>
     </div>
   </form>
 </main>

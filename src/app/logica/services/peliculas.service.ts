@@ -2,6 +2,7 @@ import { computed, inject, Service, signal } from '@angular/core';
 import { Pelicula } from '../modelos/peliculas/pelicula';
 import { SupabaseService } from './supabase';
 import { DbService } from './db.service';
+import { sinRepetidos } from '../utilidades/sin-repetidos.util';
 
 @Service()
 export class PeliculasService {
@@ -13,13 +14,9 @@ export class PeliculasService {
   // ids de películas con alerta de estreno activada por el usuario actual
   idsPeliculasConAlerta = signal<string[]>([]);
 
-  // Géneros sin repetir de todas las películas cargadas, en orden alfabético.
-  // indexOf da la primera posición de ese género: si no es la actual, ya apareció antes y se descarta
+  // Géneros sin repetir de todas las películas cargadas, en orden alfabético
   generosDisponibles = computed(() =>
-    this.peliculasVisibles()
-      .flatMap((p) => p.generos)
-      .filter((genero, i, todos) => todos.indexOf(genero) === i)
-      .sort((a, b) => a.localeCompare(b)),
+    sinRepetidos(this.peliculasVisibles().flatMap((p) => p.generos)).sort((a, b) => a.localeCompare(b)),
   );
 
   // Top 3 por entradas vendidas, ya ordenadas desde la consulta
