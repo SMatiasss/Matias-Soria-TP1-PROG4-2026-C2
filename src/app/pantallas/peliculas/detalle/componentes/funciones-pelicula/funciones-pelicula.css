@@ -48,7 +48,6 @@
 .lista-grupos {
   height: 208px;
   overflow-y: auto;
-  scrollbar-width: thin;
   scroll-snap-type: y mandatory;
 }
 

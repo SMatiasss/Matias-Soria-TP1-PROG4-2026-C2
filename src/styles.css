@@ -24,6 +24,12 @@
   --alto-header: 76px;
 }
 
+/* scroll fino y del color del tema en toda la app (Chrome, Edge y Firefox) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--borde-fuerte) transparent;
+}
+
 *,
 *::before,
 *::after {

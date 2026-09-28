@@ -4,8 +4,8 @@ import { EstadoVacio } from '../../../globales/componentes/estado-vacio/estado-v
 
 @Component({
   imports: [SeccionAdmin, EstadoVacio],
-  selector: 'app-admin-cupones',
-  styleUrl: './admin-cupones.css',
-  templateUrl: './admin-cupones.html',
+  selector: 'app-admin-salas',
+  styleUrl: './admin-salas.css',
+  templateUrl: './admin-salas.html',
 })
-export class AdminCupones {}
+export class AdminSalas {}

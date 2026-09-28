@@ -13,6 +13,7 @@ import { SelectorFecha } from '../../../globales/componentes/selector-fecha/sele
 import { CampoSeleccion } from './componentes/campo-seleccion/campo-seleccion';
 import { AuthService } from '../../../logica/services/auth.service';
 import { UsuarioRegistro } from '../../../logica/modelos/usuarios/usuario-registro';
+import { calcularEdad } from '../../../logica/utilidades/calcular-edad.util';
 
 function contraseñasCoincidenValidator(grupo: AbstractControl) {
   const contraseña = grupo.get('contrasena')?.value;
@@ -20,13 +21,10 @@ function contraseñasCoincidenValidator(grupo: AbstractControl) {
   return contraseña === confirmar ? null : { noCoinciden: true };
 }
 
-// La fecha llega como YYYY-MM-DD desde selector-fecha, ya validada como fecha real
+// La fecha llega como AAAA-MM-DD desde selector-fecha
 function edadMinimaValidator(control: AbstractControl) {
   if (!control.value) return null;
-  const [año, mes, dia] = (control.value as string).split('-').map(Number);
-  const hoy = new Date();
-  const limite = new Date(hoy.getFullYear() - 13, hoy.getMonth(), hoy.getDate());
-  return new Date(año, mes - 1, dia) <= limite ? null : { menorDeEdad: true };
+  return calcularEdad(control.value) >= 13 ? null : { menorDeEdad: true };
 }
 
 @Component({

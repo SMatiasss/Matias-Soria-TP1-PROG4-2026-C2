@@ -7,72 +7,45 @@ import { adminGuard } from './logica/guards/admin-guard';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./pantallas/inicio/inicio').then((m) => m.Inicio),
+    loadComponent: () => import('./pantallas/inicio/inicio').then((a) => a.Inicio),
   },
   {
     path: 'cartelera',
-    loadComponent: () => import('./pantallas/peliculas/listado/listado').then((m) => m.Listado),
+    loadComponent: () => import('./pantallas/peliculas/listado/listado').then((a) => a.Listado),
   },
   {
     path: 'pelicula/:peliculaId',
-    loadComponent: () => import('./pantallas/peliculas/detalle/detalle').then((m) => m.Detalle),
+    loadComponent: () => import('./pantallas/peliculas/detalle/detalle').then((a) => a.Detalle),
   },
   {
     path: 'reservas/:funcionId',
-    loadComponent: () => import('./pantallas/reservas/reservas').then((m) => m.Reservas),
+    loadComponent: () => import('./pantallas/reservas/reservas').then((a) => a.Reservas),
   },
   {
     path: 'login',
-    loadComponent: () => import('./pantallas/cuenta/login/login').then((m) => m.Login),
+    loadComponent: () => import('./pantallas/cuenta/login/login').then((a) => a.Login),
     canActivate: [invitadoGuard],
   },
   {
     path: 'registro',
-    loadComponent: () => import('./pantallas/cuenta/registro/registro').then((m) => m.Registro),
+    loadComponent: () => import('./pantallas/cuenta/registro/registro').then((a) => a.Registro),
     canActivate: [invitadoGuard],
   },
   {
     path: 'perfil',
-    loadComponent: () => import('./pantallas/cuenta/perfil/perfil').then((m) => m.Perfil),
+    loadComponent: () => import('./pantallas/cuenta/perfil/perfil').then((a) => a.Perfil),
     canActivate: [authGuard],
   },
   {
     path: 'validar',
-    loadComponent: () => import('./pantallas/empleado/validar/validar').then((m) => m.Validar),
+    loadComponent: () => import('./pantallas/empleado/validar/validar').then((a) => a.Validar),
     canActivate: [empleadoGuard],
   },
   {
     path: 'admin',
-    loadComponent: () => import('./pantallas/admin/admin/admin').then((m) => m.Admin),
+    loadComponent: () => import('./pantallas/admin/admin').then((a) => a.Admin),
     canActivate: [adminGuard],
-    children: [
-      { path: '', redirectTo: 'peliculas', pathMatch: 'full' },
-      {
-        path: 'peliculas',
-        loadComponent: () => import('./pantallas/admin/admin-peliculas/admin-peliculas').then((m) => m.AdminPeliculas),
-      },
-      {
-        path: 'funciones',
-        loadComponent: () => import('./pantallas/admin/admin-funciones/admin-funciones').then((m) => m.AdminFunciones),
-      },
-      {
-        path: 'candy',
-        loadComponent: () => import('./pantallas/admin/admin-candy/admin-candy').then((m) => m.AdminCandy),
-      },
-      {
-        path: 'cupones',
-        loadComponent: () => import('./pantallas/admin/admin-cupones/admin-cupones').then((m) => m.AdminCupones),
-      },
-      {
-        path: 'reportes',
-        loadComponent: () => import('./pantallas/admin/admin-reportes/admin-reportes').then((m) => m.AdminReportes),
-      },
-      {
-        path: 'actividad',
-        loadComponent: () =>
-          import('./pantallas/admin/admin-log-actividad/admin-log-actividad').then((m) => m.AdminLogActividad),
-      },
-    ],
+    loadChildren: () => import('./pantallas/admin/admin.routes').then((a) => a.adminRoutes),
   },
   { path: '**', redirectTo: '' },
 ];

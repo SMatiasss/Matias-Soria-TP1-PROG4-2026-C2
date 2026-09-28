@@ -1,0 +1,40 @@
+/* excepción al display:block: ocupa todo el alto del contenido del admin y el panel se estira hasta abajo */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 100%;
+}
+
+.cabecera-seccion-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.titulo-seccion-admin {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.descripcion-seccion-admin {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--color-texto-apagado);
+}
+
+.cuerpo-seccion-admin {
+  flex: 1;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 760px) {
+  .titulo-seccion-admin {
+    font-size: 20px;
+  }
+}

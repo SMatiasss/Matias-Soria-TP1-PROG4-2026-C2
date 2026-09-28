@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, computed, effect, model, signal, viewChild } from '@angular/core';
-import { dosDigitos } from '../../../logica/utilidades/dos-digitos.util';
 
 @Component({
   imports: [],
@@ -93,6 +92,7 @@ export class SelectorFecha implements AfterViewInit {
       if (!this.ruedaMovida()) return; // Para asegurarse de activar el effect ya que ruedamovida es un signal.
       const año = this.anios[this.indiceAnio()];
       const mes = this.indiceMes() + 1;
+      const dosDigitos = (n: number) => (n < 10 ? '0' + n : String(n)); // 9 → "09", el formato AAAA-MM-DD lleva dos dígitos
       this.fecha.set(`${año}-${dosDigitos(mes)}-${dosDigitos(this.diaElegido())}`); // Esta es la fecha que elige el usuario
     });
   }

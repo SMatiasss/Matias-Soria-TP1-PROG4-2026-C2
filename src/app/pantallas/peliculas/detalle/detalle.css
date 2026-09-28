@@ -147,7 +147,6 @@
   line-height: 1.7;
   color: var(--color-texto-suave);
   white-space: pre-line;
-  scrollbar-width: thin;
 }
 
 .sin-pelicula {

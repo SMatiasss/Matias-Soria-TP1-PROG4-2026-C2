@@ -1,0 +1,144 @@
+/* excepción al display:block: el menú queda fijo y solo scrollea el contenido de la sección */
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+.layout-admin {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+}
+
+.barra-lateral {
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+  border-right: 1px solid var(--borde-panel);
+  overflow-y: auto;
+}
+
+.etiqueta-barra {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0 22px 12px;
+  font-size: 11px;
+  color: var(--color-texto-apagado);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* los botones se reparten todo el alto, iguales. Si la ventana es baja no bajan de 56px y la barra scrollea */
+.menu-admin {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-menu {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  color: var(--color-texto-suave);
+  font-size: 19px;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.item-menu:hover {
+  background: color-mix(in srgb, var(--color-texto) 6%, transparent);
+  color: var(--color-texto);
+}
+
+.item-menu.activo {
+  background: color-mix(in srgb, var(--color-acento) 14%, transparent);
+  color: var(--color-texto);
+}
+
+/* barra roja a la izquierda del ítem activo */
+.item-menu.activo::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--color-acento);
+}
+
+/* todo el ancho, sin max-width. Es grid para que la sección elegida se estire hasta abajo:
+   la primera fila es el router-outlet (vacío) y la segunda la sección que carga */
+.contenido-admin {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 28px 32px 56px;
+  overflow-y: auto;
+}
+
+/* celular: el menú pasa a ser una fila de pestañas arriba del contenido */
+@media (max-width: 760px) {
+  .layout-admin {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .barra-lateral {
+    flex-shrink: 0;
+    display: block;
+    padding: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--borde-panel);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  .etiqueta-barra {
+    display: none;
+  }
+
+  .menu-admin {
+    flex-direction: row;
+    gap: 0;
+    width: max-content;
+    padding: 0 8px;
+  }
+
+  .item-menu {
+    flex: none;
+    min-height: 0;
+    height: 50px;
+    padding: 0 14px;
+    font-size: 13.5px;
+    white-space: nowrap;
+  }
+
+  .item-menu:hover,
+  .item-menu.activo {
+    background: transparent;
+  }
+
+  .item-menu.activo::before {
+    left: 10px;
+    right: 10px;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+  }
+
+  .contenido-admin {
+    flex: 1;
+    padding: 22px 16px 48px;
+  }
+}

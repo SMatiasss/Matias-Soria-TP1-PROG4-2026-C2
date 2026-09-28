@@ -4,8 +4,6 @@
 
 export interface LineaEntrada {
   tipo: string;
-  texto: string;
-  vip: boolean;
   cantidad: number;
   subtotal: number;
 }

@@ -33,8 +33,6 @@
   list-style: none;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
-  scrollbar-width: thin;
-  scrollbar-color: var(--borde) transparent;
 }
 
 /* mismo alto que un puesto de "Más vendidas" (--alto-puesto lo define inicio.css): entran 3 justos */

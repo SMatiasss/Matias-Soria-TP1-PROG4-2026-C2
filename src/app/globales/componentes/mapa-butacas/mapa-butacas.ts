@@ -1,6 +1,7 @@
 import { Component, computed, input, model } from '@angular/core';
 import { Butaca } from '../../../logica/modelos/salas/butaca';
 import { TIPOS_BUTACA } from '../../../logica/modelos/salas/tipo-butaca';
+import { sinRepetidos } from '../../../logica/utilidades/sin-repetidos.util';
 
 // Todas las filas usan bloques de 4·20·4 butacas. La fila accesible es de 2·10·2
 // y se centra dentro de esos mismos bloques para que los pasillos queden alineados.
@@ -22,7 +23,7 @@ export class MapaButacas {
 
   // null = hueco para alinear la fila accesible
   filas = computed(() => {
-    const letras = [...new Set(this.butacas().map((b) => b.fila))].sort((a, b) => a.localeCompare(b));
+    const letras = sinRepetidos(this.butacas().map((b) => b.fila)).sort((a, b) => a.localeCompare(b));
 
     return letras.map((letra) => {
       const ordenadas = this.butacas()

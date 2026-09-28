@@ -1,16 +1,12 @@
 import { Component, computed, inject } from '@angular/core';
-import { CurrencyPipe, registerLocaleData } from '@angular/common';
-import localeEsAr from '@angular/common/locales/es-AR';
+// El pipe currency usa el formato 'es-AR', que se registra con registerLocaleData en app.config.ts
+// Si no puedo usar esto, hago una pipe custom?
+import { CurrencyPipe } from '@angular/common';
 import { Header } from '../../../globales/componentes/header/header';
 import { EstadoVacio } from '../../../globales/componentes/estado-vacio/estado-vacio';
 import { AuthService } from '../../../logica/services/auth.service';
 
 // Esto es un placeholder hecho con ia, ignorar completamente.
-
-
-
-// Formato argentino para el pipe currency del crédito (ej: "$ 4.500")
-registerLocaleData(localeEsAr);
 
 @Component({
   imports: [Header, EstadoVacio, CurrencyPipe],

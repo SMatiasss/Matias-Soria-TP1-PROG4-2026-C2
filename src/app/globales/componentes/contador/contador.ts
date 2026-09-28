@@ -10,7 +10,8 @@ export class Contador {
   cantidad = model(0);
 
   restar() {
-    this.cantidad.update((c) => Math.max(0, c - 1));
+    // El botón ya está apagado en 0, pero igual nunca baja de 0
+    if (this.cantidad() > 0) this.cantidad.update((c) => c - 1);
   }
 
   sumar() {

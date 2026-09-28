@@ -1,0 +1,18 @@
+<app-header seccionActiva="Admin" />
+
+<div class="layout-admin">
+  <!-- Menú de administración -->
+  <aside class="barra-lateral">
+    <p class="etiqueta-barra">Administración</p>
+    <nav class="menu-admin">
+      @for (seccion of secciones; track seccion.ruta) {
+        <a class="item-menu" [routerLink]="seccion.ruta" routerLinkActive="activo">{{ seccion.texto }}</a>
+      }
+    </nav>
+  </aside>
+
+  <!-- Sección de admin elegida -->
+  <main class="contenido-admin">
+    <router-outlet />
+  </main>
+</div>
