@@ -18,6 +18,7 @@
     @for (p of peliculasFiltradas(); track p.id) {
       <div class="item-cartelera">
         <app-card-pelicula class="tarjeta-con-enlace" [pelicula]="p" [routerLink]="['/pelicula', p.id]" />
+        <h3 class="titulo-tarjeta-pelicula" [routerLink]="['/pelicula', p.id]">{{ p.titulo }}</h3>
         <!-- Géneros de la película, no lo tiene la card. -->
         <div class="generos-pelicula">
           @for (genero of p.generos; track genero) {

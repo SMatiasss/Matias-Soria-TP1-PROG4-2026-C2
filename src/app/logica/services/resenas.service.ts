@@ -1,6 +1,6 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { SupabaseService } from './supabase';
-import { Reseña } from '../modelos/resenas/resena';
+import { Reseña } from '../modelos/resenas';
 
 @Service()
 export class ReseñasService {

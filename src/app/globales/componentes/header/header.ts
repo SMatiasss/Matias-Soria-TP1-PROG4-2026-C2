@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../logica/services/auth.service';
-import { ROLES_USUARIO } from '../../../logica/modelos/usuarios/rol-usuario';
+import { ROLES_USUARIO } from '../../../logica/modelos/usuarios';
 
 @Component({
   imports: [RouterLink],

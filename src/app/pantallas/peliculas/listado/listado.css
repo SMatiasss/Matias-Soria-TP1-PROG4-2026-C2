@@ -64,9 +64,13 @@
 
 .item-cartelera app-card-pelicula {
   --ancho-card: var(--ancho-poster);
-  --tamano-titulo-card: 14px;
-  --espacio-card: 8px;
   --tamano-badge: 11px;
+}
+
+/* el item separa 6px entre cada cosa, el título va a 8px del póster */
+.item-cartelera .titulo-tarjeta-pelicula {
+  margin-top: 2px;
+  --tamano-titulo-card: 14px;
 }
 
 /* una sola fila de géneros (los que no entran se cortan a la derecha): todas las películas ocupan el mismo alto */

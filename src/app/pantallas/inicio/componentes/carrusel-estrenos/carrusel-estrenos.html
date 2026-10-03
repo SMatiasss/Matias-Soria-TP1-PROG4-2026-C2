@@ -9,7 +9,7 @@
 <ul class="lista-estrenos" #listaEstrenos>
   @for (pelicula of peliculas(); track pelicula.id) {
     <li class="tarjeta-estreno">
-      <app-card-pelicula class="tarjeta-con-enlace" [sinTitulo]="true" [pelicula]="pelicula" [routerLink]="['/pelicula', pelicula.id]" />
+      <app-card-pelicula class="tarjeta-con-enlace" [pelicula]="pelicula" [routerLink]="['/pelicula', pelicula.id]" />
       <div class="info-estreno">
         <h3 class="titulo-estreno">{{ pelicula.titulo }}</h3>
         @if (idsPeliculasConAlerta().includes(pelicula.id)) {

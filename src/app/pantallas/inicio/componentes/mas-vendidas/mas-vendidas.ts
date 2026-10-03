@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CardPelicula } from '../../../../globales/componentes/card-pelicula/card-pelicula';
-import { Pelicula } from '../../../../logica/modelos/peliculas/pelicula';
+import { Pelicula } from '../../../../logica/modelos/peliculas';
 
 @Component({
   imports: [RouterLink, CardPelicula],

@@ -7,7 +7,7 @@ import { MasVendidas } from './componentes/mas-vendidas/mas-vendidas';
 import { CarruselEstrenos } from './componentes/carrusel-estrenos/carrusel-estrenos';
 import { PeliculasService } from '../../logica/services/peliculas.service';
 import { AuthService } from '../../logica/services/auth.service';
-import { Pelicula } from '../../logica/modelos/peliculas/pelicula';
+import { Pelicula } from '../../logica/modelos/peliculas';
 
 @Component({
   imports: [Header, CardPelicula, EstadoVacio, MasVendidas, CarruselEstrenos, RouterLink],

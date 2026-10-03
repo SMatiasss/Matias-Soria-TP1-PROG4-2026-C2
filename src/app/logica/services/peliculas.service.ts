@@ -1,5 +1,5 @@
 import { computed, inject, Service, signal } from '@angular/core';
-import { Pelicula } from '../modelos/peliculas/pelicula';
+import { Pelicula } from '../modelos/peliculas';
 import { SupabaseService } from './supabase';
 import { DbService } from './db.service';
 import { sinRepetidos } from '../utilidades/sin-repetidos.util';
@@ -75,5 +75,16 @@ export class PeliculasService {
     });
 
     if (creada) this.idsPeliculasConAlerta.update((ids) => [...ids, peliculaId]);
+  }
+
+  // Crea (id null) o modifica una película. Como db.create / db.update, pero devuelve el error de la base
+  // (o null si salió bien) para que el admin pueda ver el mensaje de un trigger que rechazó el cambio
+  async guardarPelicula(id: string | null, datos: object) {
+    const { error } = id
+      ? await this.sup.Sup.from('peliculas').update(datos).eq('id', id)
+      : await this.sup.Sup.from('peliculas').insert(datos);
+
+    if (error) console.error('No se pudo guardar la película', error);
+    return error;
   }
 }

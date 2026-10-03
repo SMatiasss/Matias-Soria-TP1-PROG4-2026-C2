@@ -12,7 +12,7 @@ import { Alerta } from '../../../globales/componentes/alerta/alerta';
 import { SelectorFecha } from '../../../globales/componentes/selector-fecha/selector-fecha';
 import { CampoSeleccion } from './componentes/campo-seleccion/campo-seleccion';
 import { AuthService } from '../../../logica/services/auth.service';
-import { UsuarioRegistro } from '../../../logica/modelos/usuarios/usuario-registro';
+import { UsuarioRegistro } from '../../../logica/modelos/usuarios';
 import { calcularEdad } from '../../../logica/utilidades/calcular-edad.util';
 
 function contraseñasCoincidenValidator(grupo: AbstractControl) {
@@ -37,6 +37,8 @@ export class Registro {
   private auths = inject(AuthService);
   private router = inject(Router);
 
+  // la fecha de nacimiento se elige desde hoy hasta 100 años para atrás
+  readonly hoy = new Date();
   readonly tiposDeSangre = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   readonly coloresDeOjos = ['Marrón', 'Azul', 'Verde', 'Gris', 'Avellana', 'Ámbar', 'Heterocromía'];
 

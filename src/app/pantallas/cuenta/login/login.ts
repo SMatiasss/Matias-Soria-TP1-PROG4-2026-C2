@@ -3,7 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Header } from '../../../globales/componentes/header/header';
 import { AuthService } from '../../../logica/services/auth.service';
-import { UsuarioLogin } from '../../../logica/modelos/usuarios/usuario-login';
+import { UsuarioLogin } from '../../../logica/modelos/usuarios';
 
 @Component({
   imports: [Header, RouterLink, ReactiveFormsModule],

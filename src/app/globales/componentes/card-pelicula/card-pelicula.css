@@ -13,16 +13,9 @@
   outline-offset: 2px;
 }
 
-/* el ancho y el tamaño del título se cambian desde afuera con --ancho-card y --tamano-titulo-card.
-   El póster mantiene la proporción 2:3 */
+/* el ancho se cambia desde afuera con --ancho-card. El póster mantiene la proporción 2:3 */
 .tarjeta-pelicula {
   width: var(--ancho-card, 300px);
-  display: flex;
-  flex-direction: column;
-  gap: var(--espacio-card, 14px);
-  color: var(--color-texto);
-  text-decoration: none;
-  font-family: var(--fuente);
 }
 
 .poster-pelicula {
@@ -54,17 +47,4 @@
 
 .badge-restriccion {
   right: 4px;
-}
-
-.titulo-tarjeta-pelicula {
-  margin: 0;
-  padding: 0 2px;
-  font-size: var(--tamano-titulo-card, 20px);
-  font-weight: 400;
-  line-height: 1.25;
-  color: var(--color-texto);
-  /* una sola línea: las cards de una misma fila quedan de la misma altura */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }

@@ -2,9 +2,7 @@ import { Service, inject, signal } from '@angular/core';
 import { User } from '@supabase/supabase-js';
 import { SupabaseService } from './supabase';
 import { DbService } from './db.service';
-import { Usuario } from '../modelos/usuarios/usuario';
-import { UsuarioLogin } from '../modelos/usuarios/usuario-login';
-import { UsuarioRegistro } from '../modelos/usuarios/usuario-registro';
+import { Usuario, UsuarioLogin, UsuarioRegistro } from '../modelos/usuarios';
 
 @Service()
 export class AuthService {

@@ -23,6 +23,8 @@ export class ReseñasPelicula {
   usuario = this.auths.usuarioActual;
 
   resenas = this.res.resenasDePelicula;
+  promedio = this.res.promedio;
+  promedioTexto = this.res.promedioTexto;
   calificacion = signal(0);
   comentario = signal('');
   publicando = signal(false);

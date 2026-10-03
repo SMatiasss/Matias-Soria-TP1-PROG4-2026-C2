@@ -45,39 +45,11 @@
   gap: 24px;
 }
 
-/* el póster y el puntaje comparten la primera columna de la ficha */
-.columna-poster {
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* ocupa todo el alto que sobra abajo del póster, con el número centrado */
-.panel-puntaje {
-  flex: 1;
-  align-content: center;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 6px 18px;
-}
-
-.numero-promedio {
-  grid-row: span 2;
-  font-size: 48px;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.cantidad-resenas {
-  font-size: 12.5px;
-  color: var(--color-texto-apagado);
-}
-
-/* el póster (2:3) se achica si el alto de la ventana no le alcanza */
+/* el póster (2:3) lo más grande que entre, lo que llegue primero:
+   por alto, el alto de la ficha (100vh menos el header y los márgenes, 217px),
+   por ancho, que a las funciones les queden ~660px para 5 horarios por fila (la ficha mide el ancho de la página menos 512px) */
 .ficha-superior app-card-pelicula {
-  --ancho-card: clamp(200px, min(22vw, calc((100vh - 230px) * 2 / 3)), 300px);
+  --ancho-card: clamp(200px, min(calc((100vh - 217px) * 2 / 3), calc(min(100vw, 1680px) - 1200px)), 600px);
   --tamano-badge: 12px;
   width: auto;
 }
@@ -87,7 +59,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .datos-pelicula {
@@ -127,7 +99,7 @@
   min-height: 80px;
   display: flex;
   flex-direction: column;
-  padding-top: 12px;
+  padding-top: 8px;
   border-top: 1px solid var(--borde-panel);
 }
 
@@ -164,7 +136,7 @@
   }
 
   .ficha-superior app-card-pelicula {
-    --ancho-card: clamp(180px, calc((100vh - 230px) * 2 / 3), 200px);
+    --ancho-card: clamp(180px, min(calc((100vh - 217px) * 2 / 3), calc(100vw - 1140px)), 300px);
   }
 }
 

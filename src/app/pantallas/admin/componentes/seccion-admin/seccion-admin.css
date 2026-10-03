@@ -1,9 +1,9 @@
-/* excepción al display:block: ocupa todo el alto del contenido del admin y el panel se estira hasta abajo */
+/* excepción al display:block: mide justo el alto del contenido del admin y el panel se estira hasta abajo */
 :host {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  min-height: 100%;
+  gap: 12px;
+  height: 100%;
 }
 
 .cabecera-seccion-admin {
@@ -25,12 +25,15 @@
   color: var(--color-texto-apagado);
 }
 
+/* si lo de adentro no entra, scrollea el panel y no toda la página */
 .cuerpo-seccion-admin {
   flex: 1;
-  min-height: 300px;
+  min-height: 0;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow-y: auto;
 }
 
 @media (max-width: 760px) {

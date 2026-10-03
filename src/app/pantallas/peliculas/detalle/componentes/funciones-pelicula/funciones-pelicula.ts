@@ -1,6 +1,6 @@
 import { Component, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Funcion } from '../../../../../logica/modelos/peliculas/funcion';
+import { Funcion } from '../../../../../logica/modelos/peliculas';
 import { sinRepetidos } from '../../../../../logica/utilidades/sin-repetidos.util';
 
 @Component({

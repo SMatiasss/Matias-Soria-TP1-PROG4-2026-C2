@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, ElementRef, computed, effect, model, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, computed, effect, input, model, signal, viewChild } from '@angular/core';
+// date-fns: librería chica de funciones sueltas para fechas. Cada función hace una sola cosa y se importa solo lo que se usa.
+// addYears: suma o resta años a una fecha. Si cae en un 29 de febrero de un año que no es bisiesto, lo pasa al 28 solo.
+// getDaysInMonth: cuántos días tiene un mes (28, 29, 30 o 31), ya contando los años bisiestos.
+// startOfDay: la misma fecha a las 00:00, para comparar días sin que moleste la hora.
+// parseISO: lee "AAAA-MM-DD" como fecha local. new Date("AAAA-MM-DD") la lee en UTC y en Argentina quedaría el día anterior.
+// format: arma el texto de una fecha con el formato pedido. "yyyy-MM-dd" ya pone los dos dígitos (9 → "09").
+import { addYears, format, getDaysInMonth, parseISO, startOfDay } from 'date-fns';
 
 @Component({
   imports: [],
@@ -6,12 +13,10 @@ import { AfterViewInit, Component, ElementRef, computed, effect, model, signal, 
   styleUrl: './selector-fecha.css',
   templateUrl: './selector-fecha.html',
 })
-export class SelectorFecha implements AfterViewInit {
+export class SelectorFecha implements OnInit, AfterViewInit {
   // Quiero aclarar de antemano, que está siendo una pesadilla explicar esto y son las 1 am con solo 4 horas de sueño.
   // Asique perdon de antemano si explico mal, pero estos comentarios tambien son para guiarme a mí mismo jaja.
   // Es una pesadilla este componente. No sé si aceptaban incluir librerías, pero por ahora quedó funcional.
-
-
 
   // Tiene que ser igual al alto de .opcion-rueda en el CSS (tambien .relleno-rueda y .marca-rueda )
   private readonly altoItem = 36;
@@ -19,56 +24,90 @@ export class SelectorFecha implements AfterViewInit {
   // Formato YYYY-MM-DD, null hasta que se mueve alguna rueda.
   fecha = model<string | null>(null);
 
-  private readonly hoy = new Date();
+  // El rango que se puede elegir: desde fechaBase (ej: hoy), cuántos años para atrás (negativo) o para adelante (positivo).
+  // El componente no sabe para qué es la fecha, solo respeta este rango. Ej: registro -100, estreno de una película 1
+  fechaBase = input.required<Date>();
+  anios = input.required<number>();
+
+  // Primera y última fecha que se pueden elegir
+  private fechaMinima = computed(() => {
+    const base = startOfDay(this.fechaBase());
+    return this.anios() < 0 ? addYears(base, this.anios()) : base;
+  });
+  private fechaMaxima = computed(() => {
+    const base = startOfDay(this.fechaBase());
+    return this.anios() < 0 ? base : addYears(base, this.anios());
+  });
 
   readonly meses = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
   ];
-  // Es para agregar los últimos 100 años al scroll. Se llenan en el constructor
-  readonly anios: number[] = [];
 
-  // Arranca en la fecha de hoy
-  indiceDia = signal(this.hoy.getDate() - 1);
-  indiceMes = signal(this.hoy.getMonth());
-  indiceAnio = signal(99); // ya que busco 100 años, la posicion 99 es la última, osea la actual.
+  // Los años de la rueda, del más viejo al más nuevo
+  listaAnios = computed(() => {
+    const lista: number[] = [];
+    for (let año = this.fechaMinima().getFullYear(); año <= this.fechaMaxima().getFullYear(); año++) {
+      lista.push(año);
+    }
+    return lista;
+  });
+
+  // Posición elegida en cada rueda. Arrancan en ngOnInit, cuando ya llegó el rango
+  indiceDia = signal(0);
+  indiceMes = signal(0);
+  indiceAnio = signal(0);
 
   ruedaMovida = signal(false);
 
-  // Tomo el array anios, busco por indice actual de año y comparo con el año de "hoy" que contiene la fecha actual.
-  // Para luego, trabajar con los mmeses y evitar meses del futuro.
-  // Scrollear el año modifica indiceAnio, que me diría el año, por indice, en la lista "anios" por eso lo usamos para comparar.
-  private esAñoActual = computed(() => this.anios[this.indiceAnio()] === this.hoy.getFullYear());
+  private anioElegido = computed(() => this.listaAnios()[this.indiceAnio()]);
 
-  // No se muestran fechas futuras: en el año actual, solo hasta el mes de hoy
-  mesesDisponibles = computed(() => (this.esAñoActual() ? this.meses.slice(0, this.hoy.getMonth() + 1) : this.meses));
+  // Los meses que se pueden elegir en el año elegido, del 1 al 12.
+  // Solo se recortan en el primer año (desde el mes de la mínima) y en el último (hasta el mes de la máxima)
+  mesesDisponibles = computed(() => {
+    const año = this.anioElegido();
+    const desde = año === this.fechaMinima().getFullYear() ? this.fechaMinima().getMonth() + 1 : 1;
+    const hasta = año === this.fechaMaxima().getFullYear() ? this.fechaMaxima().getMonth() + 1 : 12;
+    const meses: number[] = [];
+    for (let mes = desde; mes <= hasta; mes++) {
+      meses.push(mes);
+    }
+    return meses;
+  });
+
+  // Recibe el mes elegido. Igual que el día, por seguridad no se pasa del último de la lista
+  private mesElegido = computed(() => {
+    const ultimo = this.mesesDisponibles().length - 1;
+    if (this.indiceMes() > ultimo) return this.mesesDisponibles()[ultimo];
+    return this.mesesDisponibles()[this.indiceMes()];
+  });
 
   // Se encarga de calcular cuantos días va a tener el scroll.
+  // Solo se recortan en el mes de la fecha mínima (desde su día) y en el de la máxima (hasta su día)
   dias = computed(() => {
-    const mes = this.indiceMes() + 1; //meses empiezan por el 1, indices empiezan por el 0. Hay que agregar 1
-    const año = this.anios[this.indiceAnio()]; // No requiere de + 1 porque anios en un array de años. como ejemplo "1967"
-    const esMesActual = this.esAñoActual() && mes === this.hoy.getMonth() + 1;
+    const año = this.anioElegido();
+    const mes = this.mesElegido(); // del 1 al 12
+    const minima = this.fechaMinima();
+    const maxima = this.fechaMaxima();
+    const esMesDeLaMinima = año === minima.getFullYear() && mes === minima.getMonth() + 1;
+    const esMesDeLaMaxima = año === maxima.getFullYear() && mes === maxima.getMonth() + 1;
 
-    //Acá hay un truco, profe te juro que esto lo estoy escribiendo yo jaja marea mucho este selector.
-    //En los Date los meses valen 0 a 11, siendo 0 enero. Pero acá a mes ya le sumamos uno por lo que toma
-    //el mes siguiente. Pero yo quiero la cantidad de dias del mes anterior. Entonces, coloco dia "0".
-    //Como día 0 no existe, no tiene sentido, igual lo toma como el día anterior a 1. En todos los
-    //meses, el dia anterior a 1 es el ultimo dia del mes anterior. Entonces si no es el mes actual, 
-    //muestra todos los dias de ese mes. Si es actual, solo muestra hasta el dia de hoy con this.hoy.getDate().
-    const cantidadDeDias = esMesActual ? this.hoy.getDate() : new Date(año, mes, 0).getDate(); 
+    const desde = esMesDeLaMinima ? minima.getDate() : 1;
+    // getDaysInMonth recibe cualquier fecha de ese mes y devuelve cuántos días tiene.
+    // En Date los meses van de 0 a 11, por eso mes - 1
+    const hasta = esMesDeLaMaxima ? maxima.getDate() : getDaysInMonth(new Date(año, mes - 1));
 
     const dias: number[] = []; // Acá el array de los dias para el scroll con el for.
-    for (let dia = 1; dia <= cantidadDeDias; dia++) {
+    for (let dia = desde; dia <= hasta; dia++) {
       dias.push(dia);
     }
     return dias;
   });
-  // En caso de tener seleccionado un mes mas adelante al actual, pero con año anterior. Si vuelve al año actual,
-  // Al recortarse la lista por estar en actual, el snap del css no permite que esté en un elemento con índice inexistente.
+  // Si al cambiar el año o el mes la lista se achica y la rueda queda en un índice que ya no existe,
+  // el snap del css no permite que esté en un elemento con índice inexistente.
   // Entonces el snap del css realiza un evento scroll para ir al ultimo elemento disponible corrigiendo todo.
   // Es un poco dificil de explicar por texto, pero como lo de css tambien cuenta como scroll, tambien se disparan los
   // "alScrollear.."
-
 
   //  Recibe el dia elegido
   private diaElegido = computed(() => {
@@ -83,18 +122,26 @@ export class SelectorFecha implements AfterViewInit {
   private readonly scrollAnio = viewChild.required<ElementRef<HTMLDivElement>>('scrollAnio');
 
   constructor() {
-    for (let i = 0; i < 100; i++) { // Últimos 100 años hasta hoy, del más viejo al actual. 
-      this.anios.push(this.hoy.getFullYear() - 99 + i);
-    }
-
     // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
     effect(() => {
       if (!this.ruedaMovida()) return; // Para asegurarse de activar el effect ya que ruedamovida es un signal.
-      const año = this.anios[this.indiceAnio()];
-      const mes = this.indiceMes() + 1;
-      const dosDigitos = (n: number) => (n < 10 ? '0' + n : String(n)); // 9 → "09", el formato AAAA-MM-DD lleva dos dígitos
-      this.fecha.set(`${año}-${dosDigitos(mes)}-${dosDigitos(this.diaElegido())}`); // Esta es la fecha que elige el usuario
+      const elegida = new Date(this.anioElegido(), this.mesElegido() - 1, this.diaElegido());
+      this.fecha.set(format(elegida, 'yyyy-MM-dd')); // Esta es la fecha que elige el usuario
     });
+  }
+
+  // Acá ya llegaron los inputs, en el constructor todavía no
+  ngOnInit() {
+    // Si ya llega una fecha dentro del rango (ej: al editar una película), las ruedas arrancan ahí. Si no, en la fecha base
+    const fecha = this.fecha();
+    const recibida = fecha ? parseISO(fecha) : null;
+    const dentroDelRango = recibida && recibida >= this.fechaMinima() && recibida <= this.fechaMaxima();
+    const inicial = dentroDelRango ? recibida : startOfDay(this.fechaBase());
+
+    // Primero el año, porque los meses dependen del año y los días del mes
+    this.indiceAnio.set(this.listaAnios().indexOf(inicial.getFullYear()));
+    this.indiceMes.set(this.mesesDisponibles().indexOf(inicial.getMonth() + 1));
+    this.indiceDia.set(this.dias().indexOf(inicial.getDate()));
   }
 
   // No lo vimos en clase, pero yo en las primeras clases vi la documentacion pensando que entraba todo y nada que ver.
@@ -148,13 +195,13 @@ export class SelectorFecha implements AfterViewInit {
   alArrastrar(evento: PointerEvent, rueda: HTMLDivElement) {
     // Se asegura de que fue se apretó click.
     // Porque el pointermove detecta el mouse con solo pasar por arriba
-    if (!this.arrastre) return; 
+    if (!this.arrastre) return;
     rueda.scrollTop = this.arrastre.scrollTop - (evento.clientY - this.arrastre.y);
   }
 
   alSoltar(rueda: HTMLDivElement) {
     if (!this.arrastre) return;
-    this.arrastre = null; // como suelta el click, se limpia 
+    this.arrastre = null; // como suelta el click, se limpia
     rueda.classList.remove('arrastrando'); // al volver el snap, la rueda se acomoda sola al ítem más cercano
   }
 }

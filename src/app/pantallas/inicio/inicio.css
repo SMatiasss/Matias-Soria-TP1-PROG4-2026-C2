@@ -56,15 +56,18 @@
   gap: 18px var(--separacion);
 }
 
-.tablero-cartelera-de-inicio app-card-pelicula {
+/* cada película: la card y su título abajo */
+.item-cartelera-de-inicio {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   --ancho-card: var(--ancho-poster);
   --tamano-titulo-card: 14px;
-  --espacio-card: 8px;
   --tamano-badge: 11px;
 }
 
 /* 2 filas de 4: el resto está en /cartelera */
-.tablero-cartelera-de-inicio app-card-pelicula:nth-child(n + 9) {
+.item-cartelera-de-inicio:nth-child(n + 9) {
   display: none;
 }
 

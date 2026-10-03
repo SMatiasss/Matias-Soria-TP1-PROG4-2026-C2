@@ -1,4 +1,43 @@
 <app-seccion-admin titulo="Películas" descripcion="Alta, edición y visibilidad de las películas, con su preventa">
-  <!-- Pendiente -->
-  <app-estado-vacio mensaje="Todavía no hay nada acá." />
+  @if (formularioAbierto()) {
+    <app-formulario-pelicula
+      [pelicula]="peliculaEditada()" [generosExistentes]="generosExistentes()"
+      (cancelado)="cerrarFormulario()" (guardado)="alGuardar()"
+    />
+  } @else {
+    <!-- Lista de películas -->
+    <div class="columna-lista">
+      <div class="cabecera-seccion">
+        <h2 class="titulo-panel">Todas las películas</h2>
+        <p class="error-campo">{{ errorLista() }}</p>
+        <button type="button" class="boton-principal boton-chico" (click)="abrirNueva()">Agregar película</button>
+      </div>
+
+      @if (peliculas().length) {
+        <ul class="lista-peliculas">
+          @for (pelicula of peliculas(); track pelicula.id) {
+            <li class="fila-pelicula">
+              <img class="miniatura" [src]="pelicula.imagen_url" alt="" />
+              <div class="datos-fila">
+                <span class="titulo-fila">{{ pelicula.titulo }}</span>
+                <span class="detalle-fila">
+                  Estreno {{ fechaTexto(pelicula.fecha_estreno) }} · {{ pelicula.duracion_minutos }} min
+                  @if (pelicula.preventa_habilitada) {
+                    · Con preventa
+                  }
+                </span>
+              </div>
+              <label class="casilla">
+                <input type="checkbox" [checked]="pelicula.visible" (change)="cambiarVisible(pelicula, $event)" />
+                Visible
+              </label>
+              <button type="button" class="boton-secundario boton-chico" (click)="editar(pelicula)">Editar</button>
+            </li>
+          }
+        </ul>
+      } @else if (!cargando()) {
+        <app-estado-vacio mensaje="Todavía no hay películas cargadas." />
+      }
+    </div>
+  }
 </app-seccion-admin>

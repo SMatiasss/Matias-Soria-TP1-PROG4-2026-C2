@@ -21,7 +21,10 @@
     @if (peliculasEnCartelera().length) {
       <div class="tablero-cartelera-de-inicio">
         @for (pelicula of peliculasEnCartelera(); track pelicula.id) {
-          <app-card-pelicula class="tarjeta-con-enlace" [pelicula]="pelicula" [routerLink]="['/pelicula', pelicula.id]" />
+          <div class="item-cartelera-de-inicio">
+            <app-card-pelicula class="tarjeta-con-enlace" [pelicula]="pelicula" [routerLink]="['/pelicula', pelicula.id]" />
+            <h3 class="titulo-tarjeta-pelicula" [routerLink]="['/pelicula', pelicula.id]">{{ pelicula.titulo }}</h3>
+          </div>
         }
       </div>
       <a class="boton-secundario boton-chico" routerLink="/cartelera">Ver más</a>

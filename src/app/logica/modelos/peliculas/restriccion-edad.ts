@@ -1,4 +1,4 @@
-// aún no se usa (puedo modificarlo)
+// actualmente en uso en: formulario-pelicula.ts
 
 export const RESTRICCIONES_EDAD = {
   NINGUNA: null,

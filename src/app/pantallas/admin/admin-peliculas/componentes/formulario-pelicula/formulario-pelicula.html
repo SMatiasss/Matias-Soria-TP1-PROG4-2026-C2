@@ -1,0 +1,177 @@
+<!-- Formulario de alta o edición: ocupa todo el panel, Cancelar vuelve a la lista -->
+<form class="formulario-pelicula" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+  <div class="cabecera-seccion">
+    <h2 class="titulo-panel">{{ pelicula() ? 'Editar ' + pelicula()?.titulo : 'Nueva película' }}</h2>
+    <button type="button" class="boton-secundario boton-chico" (click)="cancelado.emit()">Cancelar</button>
+    <button type="submit" class="boton-principal boton-chico" [disabled]="guardando()">
+      {{ guardando() ? 'Guardando...' : 'Guardar' }}
+    </button>
+  </div>
+
+  <div class="columnas-formulario">
+    <!-- Datos -->
+    <div class="columna-formulario">
+      <div class="campo">
+        <label for="titulo">Título</label>
+        <input id="titulo" type="text" formControlName="titulo" />
+        <p class="error-campo">
+          @if (formulario.controls.titulo.invalid && formulario.controls.titulo.touched) {
+            Campo obligatorio
+          }
+        </p>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="duracion">Duración (minutos)</label>
+          <input id="duracion" type="number" min="1" formControlName="duracion_minutos" />
+          <p class="error-campo">
+            @if (formulario.controls.duracion_minutos.invalid && formulario.controls.duracion_minutos.touched) {
+              Poné cuántos minutos dura
+            }
+          </p>
+        </div>
+        <div class="campo">
+          <label for="restriccion">Edad mínima</label>
+          <select id="restriccion" formControlName="restriccion_edad">
+            <option [ngValue]="null">Todo público</option>
+            @for (edad of restricciones; track edad) {
+              <option [ngValue]="edad">+{{ edad }}</option>
+            }
+          </select>
+          <p class="error-campo"></p>
+        </div>
+      </div>
+
+      <!-- Géneros: con el datalist el navegador sugiere los que ya existen mientras se escribe -->
+      <div class="campo">
+        <label for="generos">Géneros</label>
+        <div class="fila-genero">
+          <input
+            id="generos" type="text" list="generos-existentes" placeholder="Escribí o elegí un género" #campoGenero
+            (keydown.enter)="$event.preventDefault(); agregarGenero(campoGenero)"
+          />
+          <button type="button" class="boton-secundario" (click)="agregarGenero(campoGenero)">Agregar</button>
+        </div>
+        <datalist id="generos-existentes">
+          @for (genero of generosExistentes(); track genero) {
+            <option [value]="genero"></option>
+          }
+        </datalist>
+        <!-- Los elegidos, se sacan tocándolos -->
+        <div class="generos-elegidos">
+          @for (genero of formulario.controls.generos.value; track genero) {
+            <button type="button" class="quitar-genero" [title]="'Sacar ' + genero" (click)="quitarGenero(genero)">
+              <app-badge [texto]="genero + ' ✕'" />
+            </button>
+          } @empty {
+            <p class="error-campo">
+              @if (intentoGuardar()) {
+                Agregá al menos un género
+              }
+            </p>
+          }
+        </div>
+      </div>
+
+      <div class="campo campo-sinopsis">
+        <label for="sinopsis">Sinopsis</label>
+        <textarea id="sinopsis" formControlName="sinopsis"></textarea>
+        <p class="error-campo">
+          @if (formulario.controls.sinopsis.invalid && formulario.controls.sinopsis.touched) {
+            Campo obligatorio
+          }
+        </p>
+      </div>
+    </div>
+
+    <!-- Imagen, con la vista previa para confirmar que es la correcta -->
+    <div class="columna-formulario">
+      <div class="campo campo-imagen">
+        <span class="etiqueta">Imagen</span>
+        <div class="vista-imagen">
+          @if (vistaPrevia(); as url) {
+            <img [src]="url" alt="Vista previa de la imagen" />
+          } @else {
+            <span class="sin-imagen">Todavía no elegiste una imagen</span>
+          }
+        </div>
+        <div class="fila-imagen">
+          <label class="boton-secundario boton-chico" for="imagen">Elegir imagen</label>
+          <input id="imagen" class="entrada-oculta" type="file" accept="image/*" (change)="alElegirImagen($event)" />
+          <span class="nombre-imagen">
+            {{ imagen()?.name ?? (pelicula() ? 'Se mantiene la imagen actual' : 'Ninguna elegida') }}
+          </span>
+        </div>
+        <p class="error-campo">
+          @if (!pelicula() && !imagen() && intentoGuardar()) {
+            Elegí la imagen de la película
+          }
+        </p>
+      </div>
+    </div>
+
+    <!-- Estreno, preventa y visibilidad -->
+    <div class="columna-formulario">
+      <div class="campo">
+        <span class="etiqueta">Fecha de estreno</span>
+        <app-selector-fecha
+          [fechaBase]="fechaBaseEstreno()" [anios]="2"
+          [fecha]="fechaInicial()"
+          (fechaChange)="formulario.controls.fecha_estreno.setValue($event)"
+        />
+        <p class="error-campo">
+          @if (formulario.controls.fecha_estreno.invalid && intentoGuardar()) {
+            Mové las ruedas para elegir la fecha de estreno
+          }
+        </p>
+      </div>
+
+      <!-- Preventa: solo si el estreno es después de hoy. Sus campos aparecen solo si está tildada, y lo de abajo se corre solo -->
+      @if (puedeTenerPreventa()) {
+        <div class="bloque-preventa">
+          <label class="casilla">
+            <input type="checkbox" formControlName="preventa_habilitada" />
+            Tiene preventa
+          </label>
+          @if (formulario.controls.preventa_habilitada.value) {
+            <div class="fila-campos">
+              <div class="campo">
+                <label for="precio-preventa">Precio de preventa</label>
+                <input id="precio-preventa" type="number" min="1" formControlName="preventa_precio" />
+              </div>
+              <div class="campo">
+                <label for="dias-preventa">Días antes del estreno</label>
+                <input id="dias-preventa" type="number" min="1" formControlName="preventa_dias_antes" />
+              </div>
+            </div>
+            <p class="error-campo">
+              @if (formulario.hasError('preventaIncompleta') && intentoGuardar()) {
+                Poné el precio y cuántos días antes abre la preventa
+              }
+            </p>
+          }
+        </div>
+      } @else {
+        <p class="aviso-preventa">La preventa solo se puede habilitar si el estreno es después de hoy</p>
+      }
+
+      <label class="casilla">
+        <input type="checkbox" formControlName="visible" />
+        Visible en la página
+      </label>
+    </div>
+  </div>
+</form>
+
+<!-- Si no se pudo guardar, el aviso va en un modal. Si lo rechazó un trigger de la base, muestra su mensaje -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta
+      titulo="No se guardó la película"
+      [descripcion]="mensaje"
+      textoBoton="Entendido"
+      (continuar)="error.set(null)"
+    />
+  </div>
+}

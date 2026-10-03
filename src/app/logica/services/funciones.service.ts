@@ -1,6 +1,6 @@
 import { inject, Service } from '@angular/core';
 import { SupabaseService } from './supabase';
-import { Funcion } from '../modelos/peliculas/funcion';
+import { Funcion } from '../modelos/peliculas';
 
 @Service()
 export class FuncionesService {

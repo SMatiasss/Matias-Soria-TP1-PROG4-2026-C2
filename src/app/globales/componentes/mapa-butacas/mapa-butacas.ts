@@ -1,6 +1,5 @@
 import { Component, computed, input, model } from '@angular/core';
-import { Butaca } from '../../../logica/modelos/salas/butaca';
-import { TIPOS_BUTACA } from '../../../logica/modelos/salas/tipo-butaca';
+import { Butaca, TIPOS_BUTACA } from '../../../logica/modelos/salas';
 import { sinRepetidos } from '../../../logica/utilidades/sin-repetidos.util';
 
 // Todas las filas usan bloques de 4·20·4 butacas. La fila accesible es de 2·10·2

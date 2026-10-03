@@ -62,7 +62,7 @@
 
       <div class="columna-registro">
         <h2 class="titulo-columna-registro">Fecha de nacimiento</h2>
-        <app-selector-fecha
+        <app-selector-fecha [fechaBase]="hoy" [anios]="-100"
           [fecha]="formulario.controls.fechaNacimiento.value"
           (fechaChange)="formulario.controls.fechaNacimiento.setValue($event)"
         />

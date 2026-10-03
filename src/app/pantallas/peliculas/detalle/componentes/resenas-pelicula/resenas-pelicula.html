@@ -1,3 +1,12 @@
+<!-- Puntuación promedio -->
+<div class="panel panel-puntaje">
+  <span class="numero-promedio">{{ promedioTexto() }}</span>
+  <app-calificacion-estrellas [valor]="promedio()" [tamano]="20" />
+  <span class="cantidad-resenas">
+    {{ resenas().length === 1 ? 'Promedio de 1 reseña' : 'Promedio de ' + resenas().length + ' reseñas' }}
+  </span>
+</div>
+
 <!-- Lista de reseñas -->
 <div class="panel panel-opiniones">
   <h3 class="titulo-panel">Opiniones</h3>

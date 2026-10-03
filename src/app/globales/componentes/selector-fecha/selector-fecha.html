@@ -12,8 +12,8 @@
           (pointercancel)="alSoltar(scrollDia)"
         >
           <div class="relleno-rueda"></div>
-          @for (dia of dias(); track dia) {
-            <div class="opcion-rueda" [class.activo]="dia === indiceDia() + 1">{{ dia }}</div>
+          @for (dia of dias(); track dia; let i = $index) {
+            <div class="opcion-rueda" [class.activo]="i === indiceDia()">{{ dia }}</div>
           }
           <div class="relleno-rueda"></div>
         </div>
@@ -34,7 +34,7 @@
         >
           <div class="relleno-rueda"></div>
           @for (mes of mesesDisponibles(); track mes; let i = $index) {
-            <div class="opcion-rueda" [class.activo]="i === indiceMes()">{{ mes }}</div>
+            <div class="opcion-rueda" [class.activo]="i === indiceMes()">{{ meses[mes - 1] }}</div>
           }
           <div class="relleno-rueda"></div>
         </div>
@@ -54,7 +54,7 @@
           (pointercancel)="alSoltar(scrollAnio)"
         >
           <div class="relleno-rueda"></div>
-          @for (anio of anios; track anio; let i = $index) {
+          @for (anio of listaAnios(); track anio; let i = $index) {
             <div class="opcion-rueda" [class.activo]="i === indiceAnio()">{{ anio }}</div>
           }
           <div class="relleno-rueda"></div>

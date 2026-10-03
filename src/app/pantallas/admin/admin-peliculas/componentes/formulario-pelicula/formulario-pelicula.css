@@ -1,0 +1,182 @@
+/* excepción al display:block: ocupa todo el panel, igual que la lista a la que reemplaza */
+:host {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.formulario-pelicula {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* los errores de guardado van en un modal, así que el título empuja los botones a la derecha */
+.cabecera-seccion .titulo-panel {
+  flex: 1;
+}
+
+/* tres columnas para que entre todo sin scroll */
+.columnas-formulario {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 28px;
+}
+
+.columna-formulario {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* el mismo aspecto que un label de .campo, para lo que no es un campo de texto (selector de fecha e imagen) */
+.etiqueta {
+  font-size: 14px;
+  color: var(--color-texto-suave);
+}
+
+.fila-genero {
+  display: flex;
+  gap: 10px;
+}
+
+/* guarda el alto de un badge, para que al elegir el primero no se corra la sinopsis */
+.generos-elegidos {
+  min-height: 27px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  --tamano-badge: 12px;
+}
+
+/* el botón no se ve, solo el badge de adentro */
+.quitar-genero {
+  display: flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.quitar-genero:hover {
+  opacity: 0.7;
+}
+
+/* la sinopsis ocupa lo que queda de su columna, sin pasarse de 240px */
+.campo-sinopsis {
+  flex: 1;
+  min-height: 0;
+  max-height: 240px;
+}
+
+.campo textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 70px;
+  padding: 12px 14px;
+  border-radius: var(--radio);
+  border: 1px solid var(--borde);
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente);
+  font-size: 15px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.campo textarea:focus {
+  outline: none;
+  border-color: var(--color-texto);
+}
+
+.campo textarea.ng-invalid.ng-touched {
+  border-color: var(--color-error);
+}
+
+.fila-imagen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* la vista previa ocupa todo el alto que queda en la columna */
+.campo-imagen {
+  flex: 1;
+  min-height: 0;
+}
+
+.vista-imagen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radio);
+  border: 1px dashed var(--borde);
+  background: var(--color-fondo);
+  overflow: hidden;
+}
+
+/* el póster con su proporción 2:3, lo más grande que entre */
+.vista-imagen img {
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.sin-imagen {
+  font-size: 13px;
+  color: var(--color-placeholder);
+}
+
+/* el input de archivo nativo se esconde y se usa el label como botón */
+.entrada-oculta {
+  display: none;
+}
+
+.nombre-imagen {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--color-texto-apagado);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bloque-preventa {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aviso-preventa {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-texto-apagado);
+}
+
+/* pantallas angostas: una sola columna, y si no entra scrollea el panel */
+@media (max-width: 1100px) {
+  .columnas-formulario {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .campo-sinopsis {
+    flex: none;
+  }
+}
