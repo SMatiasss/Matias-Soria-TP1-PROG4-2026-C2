@@ -1,0 +1,155 @@
+<!-- Programar funciones: ocupa todo el panel, Cancelar vuelve a la lista -->
+<form class="formulario-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); programar()">
+  <div class="cabecera-seccion">
+    <h2 class="titulo-panel">Programar funciones</h2>
+    <button type="button" class="boton-secundario boton-chico" (click)="cancelado.emit()">Cancelar</button>
+    <button type="submit" class="boton-principal boton-chico" [disabled]="programando()">
+      {{ programando() ? 'Programando...' : 'Programar' }}
+    </button>
+  </div>
+
+  <div class="columnas-formulario">
+    <!-- Qué se proyecta y a qué precio -->
+    <div class="columna-formulario">
+      <div class="campo">
+        <label for="pelicula">Película</label>
+        <select id="pelicula" formControlName="pelicula_id">
+          <option [ngValue]="null" disabled>Elegí una película</option>
+          @for (pelicula of peliculas(); track pelicula.id) {
+            <option [ngValue]="pelicula.id">{{ pelicula.titulo }}</option>
+          }
+        </select>
+        <p class="error-campo">
+          @if (formulario.controls.pelicula_id.invalid && intentoGuardar()) {
+            Elegí qué película se proyecta
+          }
+        </p>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="formato">Formato</label>
+          <select id="formato" formControlName="formato">
+            @for (formato of formatos; track formato) {
+              <option [ngValue]="formato">{{ formato }}</option>
+            }
+          </select>
+        </div>
+        <div class="campo">
+          <label for="idioma">Idioma</label>
+          <!-- en la base va en minúscula ("castellano"), acá se muestra con la primera en mayúscula -->
+          <select id="idioma" formControlName="idioma">
+            @for (idioma of idiomas; track idioma) {
+              <option [ngValue]="idioma">{{ idioma[0].toUpperCase() + idioma.slice(1) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <p class="error-campo"></p>
+
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="precio-base">Precio normal</label>
+          <input id="precio-base" type="number" min="1" formControlName="precio_base" />
+        </div>
+        <div class="campo">
+          <label for="precio-vip">Precio VIP</label>
+          <input id="precio-vip" type="number" min="1" formControlName="precio_vip" />
+        </div>
+      </div>
+      <p class="error-campo">
+        @if ((formulario.controls.precio_base.invalid || formulario.controls.precio_vip.invalid) && intentoGuardar()) {
+          Poné los dos precios
+        } @else if (formulario.hasError('vipMasBarato') && intentoGuardar()) {
+          La butaca VIP tiene que costar más que la normal
+        }
+      </p>
+    </div>
+
+    <!-- Cuándo: días de la semana, hora y cuántas semanas se repite -->
+    <div class="columna-formulario">
+      <div class="campo">
+        <span class="etiqueta">Días de la semana</span>
+        <div class="dias-semana">
+          @for (dia of diasSemana; track dia.numero) {
+            <label class="dia-semana" [class.elegido]="diaElegido(dia.numero)">
+              <input
+                type="checkbox"
+                [checked]="diaElegido(dia.numero)"
+                (change)="alternarDia(dia.numero)"
+              />
+              {{ dia.nombre }}
+            </label>
+          }
+        </div>
+        <p class="error-campo">
+          @if (formulario.controls.dias.invalid && intentoGuardar()) {
+            Elegí al menos un día
+          }
+        </p>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="hora">Hora</label>
+          <div class="fila-hora">
+            <select id="hora" formControlName="hora">
+              <option [ngValue]="null" disabled>--</option>
+              @for (hora of horas; track hora) {
+                <option [ngValue]="hora">{{ hora.toString().padStart(2, '0') }}</option>
+              }
+            </select>
+            <span>:</span>
+            <select formControlName="minutos" aria-label="Minutos">
+              @for (minuto of minutos; track minuto) {
+                <option [ngValue]="minuto">{{ minuto.toString().padStart(2, '0') }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="semanas">Durante (semanas)</label>
+          <input id="semanas" type="number" min="1" max="12" formControlName="semanas" />
+        </div>
+      </div>
+      <p class="error-campo">
+        @if (formulario.controls.hora.invalid && intentoGuardar()) {
+          Elegí la hora
+        } @else if (formulario.controls.semanas.invalid && intentoGuardar()) {
+          Entre 1 y 12 semanas
+        }
+      </p>
+    </div>
+
+    <!-- Desde qué día -->
+    <div class="columna-formulario">
+      <div class="campo">
+        <span class="etiqueta">Desde</span>
+        <app-selector-fecha
+          [fechaBase]="hoy" [anios]="1"
+          [fecha]="formulario.controls.desde.value"
+          (fechaChange)="formulario.controls.desde.setValue($event)"
+        />
+        <p class="error-campo">
+          @if (desdeAntesDelEstreno()) {
+            Estrena el {{ estrenoTexto() }}, no puede haber funciones antes
+          }
+        </p>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- No se creó ninguna: el aviso se cierra y sigue en el formulario para cambiar el horario -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se programaron funciones" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}
+
+<!-- Se crearon algunas y otras no: al cerrar el aviso vuelve a la lista -->
+@if (resultado(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="Algunas funciones no se crearon" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="programadas.emit()" />
+  </div>
+}

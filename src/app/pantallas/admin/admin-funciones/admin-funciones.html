@@ -1,4 +1,47 @@
 <app-seccion-admin titulo="Funciones" descripcion="Días, horarios, formato, idioma y precio de cada función. La sala se asigna sola">
-  <!-- Pendiente -->
-  <app-estado-vacio mensaje="Todavía no hay nada acá." />
+  @if (formularioAbierto()) {
+    <app-formulario-funciones (cancelado)="formularioAbierto.set(false)" (programadas)="alProgramar()" />
+  } @else {
+    <!-- Próximas funciones -->
+    <div class="columna-lista">
+      <div class="cabecera-seccion">
+        <h2 class="titulo-panel">Próximas funciones</h2>
+        <button type="button" class="boton-principal boton-chico" (click)="formularioAbierto.set(true)">Programar funciones</button>
+      </div>
+
+      @if (funciones().length) {
+        <ul class="lista-admin">
+          @for (funcion of funciones(); track funcion.id) {
+            <li class="fila-admin">
+              <span class="horario-funcion">{{ fechaTexto(funcion.inicio) }}</span>
+              <div class="datos-fila">
+                <span class="titulo-fila">{{ funcion.pelicula.titulo }}</span>
+                <span class="detalle-fila">
+                  {{ funcion.sala.nombre }} · {{ funcion.formato }} · <span class="idioma-funcion">{{ funcion.idioma }}</span>
+                </span>
+              </div>
+              <span class="precio-fila precio-funcion"><span>$</span>{{ funcion.precio_base }}</span>
+              <span class="precio-fila precio-funcion precio-vip"><span>VIP $</span>{{ funcion.precio_vip }}</span>
+              <!-- Cancelar pide confirmar en la misma fila. Con entradas vendidas, la base no la deja borrar -->
+              @if (idACancelar() === funcion.id) {
+                <button type="button" class="boton-secundario boton-chico" (click)="idACancelar.set(null)">No</button>
+                <button type="button" class="boton-principal boton-chico" (click)="cancelar(funcion)">Sí, cancelar</button>
+              } @else {
+                <button type="button" class="boton-secundario boton-chico" (click)="idACancelar.set(funcion.id)">Cancelar</button>
+              }
+            </li>
+          }
+        </ul>
+      } @else if (!cargando()) {
+        <app-estado-vacio mensaje="No hay funciones programadas." />
+      }
+    </div>
+  }
 </app-seccion-admin>
+
+<!-- Si no se pudo cancelar, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se canceló la función" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

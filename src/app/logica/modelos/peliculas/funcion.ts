@@ -1,4 +1,4 @@
-// actualmente en uso en: funciones.service.ts, detalle.ts, funciones-pelicula.ts
+// actualmente en uso en: funciones.service.ts, detalle.ts, funciones-pelicula.ts, admin-funciones.ts
 import { Pelicula } from './pelicula';
 import { Sala } from '../salas/sala';
 

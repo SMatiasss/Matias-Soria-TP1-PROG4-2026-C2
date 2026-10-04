@@ -1,5 +1,5 @@
 <!-- Formulario de alta o edición: ocupa todo el panel, Cancelar vuelve a la lista -->
-<form class="formulario-pelicula" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+<form class="formulario-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
   <div class="cabecera-seccion">
     <h2 class="titulo-panel">{{ pelicula() ? 'Editar ' + pelicula()?.titulo : 'Nueva película' }}</h2>
     <button type="button" class="boton-secundario boton-chico" (click)="cancelado.emit()">Cancelar</button>
@@ -60,6 +60,9 @@
         </datalist>
         <!-- Los elegidos, se sacan tocándolos -->
         <div class="generos-elegidos">
+          @if (errorGenero()) {
+            <p class="error-campo">Solo letras y espacios</p>
+          }
           @for (genero of formulario.controls.generos.value; track genero) {
             <button type="button" class="quitar-genero" [title]="'Sacar ' + genero" (click)="quitarGenero(genero)">
               <app-badge [texto]="genero + ' ✕'" />

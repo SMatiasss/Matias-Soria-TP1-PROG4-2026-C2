@@ -1,10 +1,9 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { SeccionAdmin } from '../componentes/seccion-admin/seccion-admin';
 import { FormularioPelicula } from './componentes/formulario-pelicula/formulario-pelicula';
 import { EstadoVacio } from '../../../globales/componentes/estado-vacio/estado-vacio';
 import { DbService } from '../../../logica/services/db.service';
 import { Pelicula } from '../../../logica/modelos/peliculas';
-import { sinRepetidos } from '../../../logica/utilidades/sin-repetidos.util';
 
 @Component({
   imports: [SeccionAdmin, FormularioPelicula, EstadoVacio],
@@ -19,10 +18,8 @@ export class AdminPeliculas {
   peliculas = signal<Pelicula[]>([]);
   cargando = signal(true);
   errorLista = signal<string | null>(null);
-  // Los géneros que ya usa alguna película (también las ocultas), en orden alfabético como en la cartelera
-  generosExistentes = computed(() =>
-    sinRepetidos(this.peliculas().flatMap((p) => p.generos)).sort((a, b) => a.localeCompare(b)),
-  );
+  // para sugerirlos en el formulario, en orden alfabético como en la cartelera
+  generosExistentes = signal<string[]>([]);
 
   // el formulario reemplaza a la lista mientras está abierto
   formularioAbierto = signal(false);
@@ -31,6 +28,14 @@ export class AdminPeliculas {
 
   constructor() {
     this.cargarPeliculas();
+    this.cargarGeneros();
+  }
+
+  // Los de la tabla generos, también los que todavía no usa ninguna película.
+  // Cuando una película trae uno nuevo, la base lo agrega sola (trigger generos_validos)
+  private async cargarGeneros() {
+    const generos = await this.db.findAll('generos');
+    this.generosExistentes.set(generos.map((genero) => genero.nombre).sort((a, b) => a.localeCompare(b)));
   }
 
   private async cargarPeliculas() {
@@ -56,6 +61,8 @@ export class AdminPeliculas {
   async alGuardar() {
     this.formularioAbierto.set(false);
     await this.cargarPeliculas();
+    // por si la película trajo un género nuevo
+    await this.cargarGeneros();
   }
 
   async cambiarVisible(pelicula: Pelicula, evento: Event) {

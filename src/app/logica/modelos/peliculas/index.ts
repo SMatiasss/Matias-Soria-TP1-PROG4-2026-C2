@@ -3,6 +3,7 @@
 export * from './alerta-estreno';
 export * from './formato-funcion';
 export * from './funcion';
+export * from './funcion-formulario';
 export * from './idioma-funcion';
 export * from './pelicula';
 export * from './pelicula-formulario';

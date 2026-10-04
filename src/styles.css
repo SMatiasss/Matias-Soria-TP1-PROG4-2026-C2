@@ -228,7 +228,9 @@ textarea {
   gap: 10px;
 }
 
+/* el título empuja los botones a la derecha (los formularios muestran sus errores en un modal) */
 .cabecera-seccion .titulo-panel {
+  flex: 1;
   margin: 0;
 }
 
@@ -237,9 +239,170 @@ textarea {
   text-align: right;
 }
 
+/* ===== Lista y formulario de las secciones del admin (películas, funciones) ===== */
+
+/* la lista y el formulario se turnan: cada uno ocupa todo el panel */
+.columna-lista,
+.formulario-admin {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* con muchas filas scrollea de a una */
+.lista-admin {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0 6px 0 0;
+  list-style: none;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.fila-admin {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--borde-panel);
+  scroll-snap-align: start;
+}
+
+.fila-admin:first-child {
+  border-top: 0;
+}
+
+.datos-fila {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.titulo-fila {
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.detalle-fila {
+  font-size: 14.5px;
+  color: var(--color-texto-apagado);
+}
+
+/* un dato en su propia columna, con su nombre chico arriba (estreno, duración...): reparte la fila a lo ancho como una tabla */
+.dato-fila {
+  flex-shrink: 0;
+  width: 125px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 16px;
+}
+
+.etiqueta-dato-fila {
+  font-size: 11.5px;
+  color: var(--color-placeholder);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* los botones y checkboxes de las filas, más grandes que en los formularios: la lista ocupa todo el ancho del panel */
+.fila-admin .boton-chico {
+  height: 50px;
+  padding: 0 26px;
+  font-size: 16px;
+}
+
+.fila-admin .casilla {
+  gap: 10px;
+  font-size: 16px;
+}
+
+.fila-admin .casilla input {
+  width: 19px;
+  height: 19px;
+}
+
+/* precio en una columna de ancho fijo: el $ siempre en el mismo lugar y el número pegado a la derecha,
+   así no se corre aunque cambie la cantidad de cifras (en esta fuente cada número tiene su propio ancho) */
+.precio-fila {
+  flex-shrink: 0;
+  width: 88px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* formulario chico (candy bar): un recuadro que aparece arriba de la lista, en vez de reemplazarla */
+.modal-admin {
+  width: 440px;
+  max-width: 100%;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--borde-panel);
+  background: var(--color-superficie);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-admin .titulo-panel {
+  margin: 0 0 8px;
+}
+
+/* eliminar a la izquierda, cancelar y guardar a la derecha */
+.botones-modal {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.botones-modal > div {
+  display: flex;
+  gap: 10px;
+}
+
+/* tres columnas para que entre todo sin scroll */
+.columnas-formulario {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 28px;
+}
+
+.columna-formulario {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fila-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* el mismo aspecto que un label de .campo, para lo que no es un campo de texto (selector de fecha, imagen, días) */
+.etiqueta {
+  font-size: 14px;
+  color: var(--color-texto-suave);
+}
+
+/* pantallas angostas: una sola columna, y si no entra scrollea el panel */
 @media (max-width: 1100px) {
   .cabecera-seccion {
     flex-wrap: wrap;
+  }
+
+  .columnas-formulario {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
   }
 }
 

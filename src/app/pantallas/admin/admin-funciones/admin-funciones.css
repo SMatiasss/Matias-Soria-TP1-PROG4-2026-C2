@@ -1,0 +1,26 @@
+/* la lista y sus filas usan las clases globales del admin (.lista-admin, .fila-admin) */
+
+/* ancho fijo para que los títulos queden alineados, sin partir la fecha de la hora */
+.horario-funcion {
+  flex-shrink: 0;
+  width: 185px;
+  white-space: nowrap;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+/* en la base se guarda en minúscula ("castellano"), acá se muestra con mayúscula */
+.idioma-funcion {
+  text-transform: capitalize;
+}
+
+/* el ancho y la alineación los pone la clase global .precio-fila */
+.precio-funcion {
+  font-size: 18px;
+  color: var(--color-texto-suave);
+}
+
+/* además del número lleva "VIP", necesita más lugar */
+.precio-vip {
+  width: 118px;
+}

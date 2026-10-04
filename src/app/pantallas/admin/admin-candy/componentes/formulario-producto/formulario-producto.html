@@ -1,0 +1,66 @@
+<!-- Producto nuevo o editado, en un recuadro arriba de la lista -->
+<form class="modal-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+  <h2 class="titulo-panel">{{ producto() ? 'Editar ' + producto()?.nombre : 'Nuevo producto' }}</h2>
+
+  <div class="campo">
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="text" placeholder="Pochoclos mediano" formControlName="nombre" />
+    <p class="error-campo">
+      @if (formulario.controls.nombre.invalid && intentoGuardar()) {
+        Campo obligatorio
+      }
+    </p>
+  </div>
+
+  <div class="fila-campos">
+    <div class="campo">
+      <label for="categoria">Categoría</label>
+      <select id="categoria" formControlName="categoria">
+        @for (categoria of categorias; track categoria) {
+          <option [ngValue]="categoria">{{ categoria }}</option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="precio">Precio</label>
+      <input id="precio" type="number" min="1" formControlName="precio" />
+    </div>
+  </div>
+  <p class="error-campo">
+    @if (formulario.controls.precio.invalid && intentoGuardar()) {
+      Poné el precio
+    }
+  </p>
+
+  <label class="casilla">
+    <input type="checkbox" formControlName="disponible" />
+    Disponible para la venta
+  </label>
+
+  <div class="botones-modal">
+    <!-- Eliminar solo al editar, y pide confirmar. Si ya se vendió, la base no lo deja borrar -->
+    <div>
+      @if (producto()) {
+        @if (confirmandoEliminar()) {
+          <button type="button" class="boton-secundario boton-chico" (click)="confirmandoEliminar.set(false)">No</button>
+          <button type="button" class="boton-principal boton-chico" (click)="eliminar()">Sí, eliminar</button>
+        } @else {
+          <button type="button" class="boton-secundario boton-chico" (click)="confirmandoEliminar.set(true)">Eliminar</button>
+        }
+      }
+    </div>
+    <div>
+      <button type="button" class="boton-secundario boton-chico" (click)="cancelado.emit()">Cancelar</button>
+      <button type="submit" class="boton-principal boton-chico" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Si no se pudo guardar o eliminar, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se guardaron los cambios" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

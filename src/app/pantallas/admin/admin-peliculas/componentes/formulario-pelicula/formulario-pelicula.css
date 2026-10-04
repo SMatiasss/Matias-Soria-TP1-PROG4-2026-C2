@@ -6,46 +6,7 @@
   flex-direction: column;
 }
 
-.formulario-pelicula {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* los errores de guardado van en un modal, así que el título empuja los botones a la derecha */
-.cabecera-seccion .titulo-panel {
-  flex: 1;
-}
-
-/* tres columnas para que entre todo sin scroll */
-.columnas-formulario {
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0 28px;
-}
-
-.columna-formulario {
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.fila-campos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-/* el mismo aspecto que un label de .campo, para lo que no es un campo de texto (selector de fecha e imagen) */
-.etiqueta {
-  font-size: 14px;
-  color: var(--color-texto-suave);
-}
+/* el formulario y sus columnas usan las clases globales del admin (.formulario-admin, .columnas-formulario) */
 
 .fila-genero {
   display: flex;
@@ -170,12 +131,8 @@
 }
 
 /* pantallas angostas: una sola columna, y si no entra scrollea el panel */
+/* pantallas angostas: las columnas quedan una abajo de la otra (global) y la sinopsis deja de estirarse */
 @media (max-width: 1100px) {
-  .columnas-formulario {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 6px;
-  }
-
   .campo-sinopsis {
     flex: none;
   }

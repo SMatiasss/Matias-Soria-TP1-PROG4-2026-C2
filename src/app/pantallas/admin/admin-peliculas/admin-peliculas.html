@@ -14,18 +14,30 @@
       </div>
 
       @if (peliculas().length) {
-        <ul class="lista-peliculas">
+        <ul class="lista-admin">
           @for (pelicula of peliculas(); track pelicula.id) {
-            <li class="fila-pelicula">
+            <li class="fila-admin">
               <img class="miniatura" [src]="pelicula.imagen_url" alt="" />
               <div class="datos-fila">
                 <span class="titulo-fila">{{ pelicula.titulo }}</span>
-                <span class="detalle-fila">
-                  Estreno {{ fechaTexto(pelicula.fecha_estreno) }} · {{ pelicula.duracion_minutos }} min
-                  @if (pelicula.preventa_habilitada) {
-                    · Con preventa
-                  }
-                </span>
+                <span class="detalle-fila">{{ pelicula.generos.join(', ') }}</span>
+              </div>
+              <!-- Cada dato en su columna, para que la fila se reparta a lo ancho -->
+              <div class="dato-fila">
+                <span class="etiqueta-dato-fila">Estreno</span>
+                {{ fechaTexto(pelicula.fecha_estreno) }}
+              </div>
+              <div class="dato-fila">
+                <span class="etiqueta-dato-fila">Duración</span>
+                {{ pelicula.duracion_minutos }} min
+              </div>
+              <div class="dato-fila">
+                <span class="etiqueta-dato-fila">Edad</span>
+                {{ pelicula.restriccion_edad ? '+' + pelicula.restriccion_edad : 'Todo público' }}
+              </div>
+              <div class="dato-fila">
+                <span class="etiqueta-dato-fila">Preventa</span>
+                {{ pelicula.preventa_habilitada ? '$ ' + pelicula.preventa_precio : 'No' }}
               </div>
               <label class="casilla">
                 <input type="checkbox" [checked]="pelicula.visible" (change)="cambiarVisible(pelicula, $event)" />

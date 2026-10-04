@@ -1,4 +1,84 @@
 <app-seccion-admin titulo="Candy bar" descripcion="Productos por categoría y combos con precio fijo">
-  <!-- Pendiente -->
-  <app-estado-vacio mensaje="Todavía no hay nada acá." />
+  <!-- Productos de la categoría elegida, o los combos -->
+  <div class="columna-lista lista-candy">
+    <div class="cabecera-seccion">
+      <div class="pestanas-candy">
+        @for (pestana of pestanas; track pestana) {
+          <button type="button" class="pestana-candy" [class.activa]="pestana === pestanaActiva()" (click)="pestanaActiva.set(pestana)">
+            {{ pestana }}
+          </button>
+        }
+      </div>
+      <button type="button" class="boton-principal boton-chico" (click)="agregar()">
+        {{ esCombos() ? 'Agregar combo' : 'Agregar producto' }}
+      </button>
+    </div>
+
+    @if (esCombos()) {
+      @if (combos().length) {
+        <ul class="lista-admin">
+          @for (combo of combos(); track combo.id) {
+            <li class="fila-admin">
+              <div class="datos-fila">
+                <span class="titulo-fila">{{ combo.nombre }}</span>
+                <span class="detalle-fila">{{ combo.descripcion }}</span>
+              </div>
+              <span class="precio-fila precio-candy"><span>$</span>{{ combo.precio }}</span>
+              <label class="casilla">
+                <input type="checkbox" [checked]="combo.disponible" (change)="cambiarDisponible('combos', combo, $event)" />
+                Disponible
+              </label>
+              <button type="button" class="boton-secundario boton-chico" (click)="editarCombo(combo)">Editar</button>
+            </li>
+          }
+        </ul>
+      } @else if (!cargando()) {
+        <app-estado-vacio mensaje="Todavía no hay combos." />
+      }
+    } @else {
+      @if (productosDeLaPestana().length) {
+        <ul class="lista-admin">
+          @for (producto of productosDeLaPestana(); track producto.id) {
+            <li class="fila-admin">
+              <div class="datos-fila">
+                <span class="titulo-fila">{{ producto.nombre }}</span>
+              </div>
+              <span class="precio-fila precio-candy"><span>$</span>{{ producto.precio }}</span>
+              <label class="casilla">
+                <input type="checkbox" [checked]="producto.disponible" (change)="cambiarDisponible('productos', producto, $event)" />
+                Disponible
+              </label>
+              <button type="button" class="boton-secundario boton-chico" (click)="editarProducto(producto)">Editar</button>
+            </li>
+          }
+        </ul>
+      } @else if (!cargando()) {
+        <app-estado-vacio mensaje="Todavía no hay productos en esta categoría." />
+      }
+    }
+
+    <!-- Agregar o editar: un recuadro arriba de la lista, que queda de fondo -->
+    @if (formularioAbierto()) {
+      <div class="superposicion-candy">
+        @if (esCombos()) {
+          <app-formulario-combo
+            [combo]="comboEditado()"
+            (cancelado)="formularioAbierto.set(false)" (guardado)="alGuardar()" (eliminado)="alGuardar()"
+          />
+        } @else {
+          <app-formulario-producto
+            [producto]="productoEditado()" [categoria]="pestanaActiva()"
+            (cancelado)="formularioAbierto.set(false)" (guardado)="alGuardar()" (eliminado)="alGuardar()"
+          />
+        }
+      </div>
+    }
+  </div>
 </app-seccion-admin>
+
+<!-- Si no se pudo cambiar la disponibilidad, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se guardó el cambio" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

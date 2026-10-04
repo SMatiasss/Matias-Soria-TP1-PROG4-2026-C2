@@ -1,0 +1,4 @@
+/* el recuadro lo arma la clase global .modal-admin, y admin-candy lo centra arriba de la lista */
+:host {
+  display: block;
+}

@@ -1,60 +1,11 @@
-/* la lista y el formulario se turnan: cada uno ocupa todo el panel */
-.columna-lista {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* con muchas películas scrollea de a una */
-.lista-peliculas {
-  flex: 1;
-  min-height: 0;
-  margin: 0;
-  padding: 0 6px 0 0;
-  list-style: none;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-}
-
-.fila-pelicula {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 12px;
-  border-top: 1px solid var(--borde-panel);
-  scroll-snap-align: start;
-}
-
-.fila-pelicula:first-child {
-  border-top: 0;
-}
+/* la lista y sus filas usan las clases globales del admin (.lista-admin, .fila-admin) */
 
 /* póster en chico, con la proporción 2:3 de la card */
 .miniatura {
   flex-shrink: 0;
-  width: 44px;
-  height: 66px;
+  width: 52px;
+  height: 78px;
   border-radius: 6px;
   object-fit: cover;
   background: var(--color-fondo);
-}
-
-.datos-fila {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.titulo-fila {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.detalle-fila {
-  font-size: 12.5px;
-  color: var(--color-texto-apagado);
 }

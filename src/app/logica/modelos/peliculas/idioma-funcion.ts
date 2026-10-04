@@ -1,4 +1,4 @@
-// aún no se usa (puedo modificarlo)
+// actualmente en uso en: formulario-funciones.ts
 
 export const IDIOMAS_FUNCION = {
   CASTELLANO: 'castellano',

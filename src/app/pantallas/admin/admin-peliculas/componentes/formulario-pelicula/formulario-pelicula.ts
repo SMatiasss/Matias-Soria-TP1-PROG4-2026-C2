@@ -38,7 +38,7 @@ export class FormularioPelicula implements OnInit {
 
   // null = película nueva
   pelicula = input<Pelicula | null>(null);
-  // los que ya usa alguna película, para sugerirlos mientras se escribe
+  // los de la tabla generos, para sugerirlos mientras se escribe
   generosExistentes = input<string[]>([]);
   // avisan a la lista para que cierre el formulario (y recargue, si se guardó)
   cancelado = output<void>();
@@ -56,6 +56,8 @@ export class FormularioPelicula implements OnInit {
   guardando = signal(false);
   // si no se pudo guardar, se muestra en un modal
   error = signal<string | null>(null);
+  // el género escrito tiene algo que la tabla generos no acepta (números o símbolos)
+  errorGenero = signal(false);
 
   readonly restricciones = [RESTRICCIONES_EDAD.TRECE, RESTRICCIONES_EDAD.DIECIOCHO];
 
@@ -100,12 +102,16 @@ export class FormularioPelicula implements OnInit {
     return estrenaDespuesDeHoy(this.formulario.controls.fecha_estreno.value);
   }
 
-  // Si ya hay un género igual, sin importar mayúsculas ni tildes, se usa ese.
-  // Así en la cartelera no aparecen "Drama" y "drama" como dos géneros distintos. Uno nuevo va con la primera letra en mayúscula
+  // Si ya hay un género igual, sin importar mayúsculas ni tildes, se usa ese. Uno nuevo va con la primera letra en mayúscula.
+  // La base hace lo mismo al guardar (compara con clave_genero y crea los nuevos), acá es para ver el nombre final antes
   agregarGenero(campo: HTMLInputElement) {
     const escrito = campo.value.trim();
-    campo.value = '';
     if (!escrito) return;
+    // la tabla generos solo acepta letras y espacios: con otra cosa fallaría todo el guardado
+    const soloLetras = /^[a-záéíóúüñ ]+$/i;
+    this.errorGenero.set(!soloLetras.test(escrito));
+    if (this.errorGenero()) return;
+    campo.value = '';
 
     const elegidos = this.formulario.controls.generos.value as string[];
     const comparable = (genero: string) => sinTildes(genero).toLowerCase();
