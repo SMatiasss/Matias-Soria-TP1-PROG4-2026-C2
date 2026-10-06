@@ -1,0 +1,116 @@
+/* excepción al display:block: ocupa todo el alto del panel lateral (líneas arriba, total y Pagar abajo) */
+:host {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.titulo-panel {
+  margin-bottom: 10px;
+}
+
+.etiqueta-preventa {
+  align-self: flex-start;
+  margin-bottom: 6px;
+}
+
+/* con muchas líneas scrollea de a una */
+.lineas-resumen {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 10px;
+  scroll-snap-type: y mandatory;
+}
+
+.pie-resumen {
+  flex-shrink: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--borde-panel);
+}
+
+/* el monto nunca se parte en dos renglones ("1.000 puntos") */
+.fila-resumen > span:last-child {
+  white-space: nowrap;
+}
+
+.fila-resumen {
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 16px;
+  color: var(--color-texto);
+}
+
+.fila-resumen.vip .etiqueta-resumen {
+  color: var(--color-dorado);
+  font-weight: 600;
+}
+
+.fila-resumen.descuento {
+  color: var(--color-ok);
+}
+
+.etiqueta-resumen {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cantidad-linea {
+  color: var(--color-placeholder);
+  font-weight: 400;
+}
+
+.nota-vacia {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-placeholder);
+}
+
+.divisor-resumen {
+  height: 1px;
+  margin: 8px 0;
+  background: var(--borde-panel);
+}
+
+.total-resumen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.motivo-bloqueo {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--color-error);
+}
+
+.boton-pagar {
+  margin-top: 14px;
+}
+
+@media (max-width: 1100px) {
+  .lineas-resumen {
+    overflow: visible;
+  }
+}
+
+/* lo canjeado, debajo del total en plata y un poco más chico */
+.total-puntos {
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.puntos-resumen {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--color-texto-apagado);
+}

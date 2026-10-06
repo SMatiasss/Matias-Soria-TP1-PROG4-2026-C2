@@ -1,1 +1,176 @@
-<p>reservas works!</p>
+<app-header />
+
+<!-- La compra salió bien: el QR y el PDF de la entrada -->
+@if (entradaComprada(); as entrada) {
+  <main class="contenedor-formulario">
+    <section class="panel compra-lista">
+      <h1 class="titulo-panel">¡Listo, compraste tus entradas!</h1>
+      <app-codigo-qr class="qr-compra" [texto]="entrada.codigo" />
+      <p>Tu código es <b class="codigo-compra">{{ entrada.codigo }}</b></p>
+      <p class="aviso-formulario">Mostrá el QR en la entrada de la sala y en el candy bar.</p>
+      <div class="botones-compra">
+        <button type="button" class="boton-principal" (click)="descargarPdf(entrada)">Descargar entrada (PDF)</button>
+        <a class="boton-secundario" routerLink="/">Volver al inicio</a>
+      </div>
+    </section>
+  </main>
+} @else if (funcion(); as f) {
+  <div class="pagina-reservas">
+    <div class="columna-pasos">
+      <!-- Pestañas de pasos -->
+      <nav class="pasos">
+        <button type="button" class="paso" [class.activo]="pasoActual() === 1" [class.hecho]="pasoActual() > 1" (click)="irAPaso(1)">
+          <span class="numero-paso">1</span>Butacas
+        </button>
+        <button
+          type="button"
+          class="paso"
+          [class.activo]="pasoActual() === 2"
+          [class.hecho]="pasoActual() > 2"
+          [disabled]="!puedeIrAPaso(2)"
+          (click)="irAPaso(2)"
+        >
+          <span class="numero-paso">2</span>Candy bar
+        </button>
+        <!-- Solo con sesión -->
+        @if (usuario()) {
+          <button
+            type="button"
+            class="paso"
+            [class.activo]="pasoActual() === 3"
+            [disabled]="!puedeIrAPaso(3)"
+            (click)="irAPaso(3)"
+          >
+            <span class="numero-paso">3</span>Beneficios
+          </button>
+        }
+      </nav>
+
+      @switch (pasoActual()) {
+        @case (1) {
+          <section class="contenido-paso contenido-paso-butacas">
+            <app-info-funcion [funcion]="f" />
+            <div class="panel panel-butacas">
+              <app-mapa-butacas
+                [butacas]="f.sala.butacas" [ocupadas]="butacasOcupadas()"
+                [seleccionadas]="butacasSeleccionadas()" (seleccionadasChange)="cambiarButacas($event)"
+              >
+                <p class="aviso-butacas">{{ butacasSeleccionadas().length ? '' : avisoButacas() }}</p>
+                <!-- Las butacas que elija mientras está en puntos se canjean. El mismo botón está en el candy bar -->
+                @if (usuario()) {
+                  <button type="button" class="boton-secundario boton-chico boton-moneda" (click)="conPuntos.set(!conPuntos())">
+                    {{ conPuntos() ? 'Pagar con plata' : 'Pagar con puntos' }}
+                  </button>
+                }
+                <button type="button" class="boton-principal boton-chico" (click)="irAPaso(2)">Continuar</button>
+              </app-mapa-butacas>
+            </div>
+          </section>
+        }
+        @case (2) {
+          <section class="contenido-paso contenido-paso-columna">
+            <div class="cuerpo-paso">
+              <!-- Combos destacados -->
+              @if (combos().length) {
+                <div>
+                  <h2 class="subtitulo-paso">Combos destacados</h2>
+                  <app-combos-destacados
+                    [combos]="combos()"
+                    [conPuntos]="conPuntos()"
+                    [cantidades]="cantidadesVisibles()" (cantidadesChange)="cambiarCandy($event)"
+                  />
+                </div>
+              }
+              @if (categoriasCandy().length) {
+                <div class="panel">
+                  <h2 class="subtitulo-paso">Candy bar</h2>
+                  <app-candy-bar
+                    [categorias]="categoriasCandy()"
+                    [conPuntos]="conPuntos()"
+                    [cantidades]="cantidadesVisibles()" (cantidadesChange)="cambiarCandy($event)"
+                  />
+                </div>
+              }
+              @if (!combos().length && !categoriasCandy().length) {
+                <app-estado-vacio mensaje="Por ahora no hay productos de candy bar." />
+              }
+            </div>
+            <div class="pie-paso">
+              <!-- Pasa los precios a puntos (lo que agregue así se canjea), o los vuelve a pesos -->
+              @if (usuario()) {
+                <button type="button" class="boton-secundario boton-chico boton-moneda" (click)="conPuntos.set(!conPuntos())">
+                  {{ conPuntos() ? 'Pagar con plata' : 'Pagar con puntos' }}
+                </button>
+              }
+              <button type="button" class="boton-secundario boton-chico" (click)="irAPaso(1)">Volver</button>
+              @if (usuario()) {
+                <button type="button" class="boton-principal boton-chico" (click)="irAPaso(3)">Continuar</button>
+              }
+            </div>
+          </section>
+        }
+        @case (3) {
+          @if (usuario(); as u) {
+            <section class="contenido-paso contenido-paso-columna">
+              <div class="cuerpo-paso">
+                <app-beneficios-cuenta
+                  [usuario]="u"
+                  [cuponPrimeraCompra]="cuponPrimeraCompra()"
+                  [cuponesMayores]="cuponesMayores()"
+                  [(cuponAplicado)]="cuponAplicado"
+                />
+              </div>
+              <div class="pie-paso">
+                <button type="button" class="boton-secundario boton-chico" (click)="irAPaso(2)">Volver</button>
+              </div>
+            </section>
+          }
+        }
+      }
+    </div>
+
+    <!-- Resumen de compra -->
+    <aside class="panel panel-resumen">
+      <app-resumen-compra
+        [enPreventa]="enPreventa()"
+        [lineasEntradas]="lineasEntradas()"
+        [lineasCandy]="lineasCandy()"
+        [descuentoCombosPesos]="descuentoCombosPesos()"
+        [descuentoCombosPuntos]="descuentoCombosPuntos()"
+        [descuentoCupon]="descuentoCupon()"
+        [codigoCuponAplicado]="cuponAplicado()?.codigo ?? null"
+        [creditoUsado]="creditoUsado()"
+        [totalPesos]="totalPesos()"
+        [totalPuntos]="totalPuntos()"
+        [puntosDisponibles]="usuario()?.puntos ?? null"
+        [puntosAGanar]="puntosAGanar()"
+        [motivoBloqueo]="motivoBloqueo()"
+        [comprando]="comprando()"
+        (pagar)="pagar()"
+      />
+    </aside>
+  </div>
+} @else if (!cargando()) {
+  <div class="sin-funcion">
+    <app-estado-vacio mensaje="No encontramos esa función." />
+  </div>
+}
+
+<!-- Si no se pudo comprar, el motivo va en un modal -->
+@if (errorCompra(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se hizo la compra" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="errorCompra.set(null)" />
+  </div>
+}
+
+<!-- Otra compra ocupó una butaca que tenía elegida (llega en tiempo real) -->
+@if (butacaOcupada(); as butaca) {
+  <div class="superposicion">
+    <app-alerta
+      titulo="Butaca ocupada"
+      [descripcion]="'La butaca ' + butaca + ' la acaba de comprar otra persona. La sacamos de tu selección.'"
+      textoBoton="Entendido"
+      (continuar)="butacaOcupada.set(null)"
+    />
+  </div>
+}

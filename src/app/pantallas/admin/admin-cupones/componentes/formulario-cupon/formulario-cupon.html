@@ -1,0 +1,67 @@
+<!-- Cupón nuevo o editado, en un recuadro arriba de la lista -->
+<form class="modal-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+  <h2 class="titulo-panel">{{ cupon() ? 'Editar ' + cupon()?.codigo : 'Nuevo cupón' }}</h2>
+
+  <div class="fila-campos">
+    <div class="campo">
+      <label for="codigo">Código</label>
+      <input id="codigo" type="text" placeholder="JUBILADOS" formControlName="codigo" />
+    </div>
+    <div class="campo">
+      <label for="porcentaje">Descuento (%)</label>
+      <input id="porcentaje" type="number" min="1" max="100" formControlName="porcentaje" />
+    </div>
+  </div>
+  <p class="error-campo">
+    @if (formulario.controls.codigo.invalid && intentoGuardar()) {
+      Poné el código del cupón
+    } @else if (formulario.controls.porcentaje.invalid && intentoGuardar()) {
+      El descuento va de 1 a 100
+    }
+  </p>
+
+  <!-- Para quién es: el de primera compra lo recibe cada usuario al registrarse, y hay uno solo -->
+  <div class="campo">
+    <label for="audiencia">Para quién</label>
+    <select id="audiencia" formControlName="audiencia">
+      <option [ngValue]="audiencias.MAYORES_50">Mayores de 50 años</option>
+      <option [ngValue]="audiencias.PRIMERA_COMPRA" [disabled]="primeraCompraOcupada()">Primera compra (al registrarse)</option>
+    </select>
+  </div>
+  <p class="error-campo"></p>
+  @if (primeraCompraOcupada()) {
+    <p class="aviso-formulario">Ya hay un cupón de primera compra: para cambiarle el descuento, editá ese.</p>
+  }
+
+  <label class="casilla">
+    <input type="checkbox" formControlName="activo" />
+    Activo
+  </label>
+
+  <div class="botones-modal">
+    <!-- Eliminar solo al editar, y pide confirmar. Si ya se usó en una compra, la base no lo deja borrar -->
+    <div>
+      @if (cupon()) {
+        @if (confirmandoEliminar()) {
+          <button type="button" class="boton-secundario boton-chico" (click)="confirmandoEliminar.set(false)">No</button>
+          <button type="button" class="boton-principal boton-chico" (click)="eliminar()">Sí, eliminar</button>
+        } @else {
+          <button type="button" class="boton-secundario boton-chico" (click)="confirmandoEliminar.set(true)">Eliminar</button>
+        }
+      }
+    </div>
+    <div>
+      <button type="button" class="boton-secundario boton-chico" (click)="cancelado.emit()">Cancelar</button>
+      <button type="submit" class="boton-principal boton-chico" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Si no se pudo guardar o eliminar, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se guardaron los cambios" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

@@ -2,3 +2,83 @@
 :host {
   display: block;
 }
+
+/* más ancho que el de productos: lleva dos columnas */
+.modal-combo {
+  width: 840px;
+}
+
+/* la de productos un poco más ancha, para que el select muestre el nombre entero */
+.columnas-combo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 0 28px;
+}
+
+.columna-combo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* qué significa que incluya una entrada, abajo del checkbox */
+.aviso-combo {
+  margin: 0 0 4px 24px;
+  font-size: 12.5px;
+  color: var(--color-texto-apagado);
+}
+
+/* producto, cuántos y el botón, en una fila */
+.fila-agregar {
+  display: flex;
+  gap: 10px;
+}
+
+.fila-agregar select {
+  flex: 1;
+  min-width: 0;
+}
+
+.fila-agregar input {
+  flex-shrink: 0;
+  width: 76px;
+}
+
+/* lo que ya trae el combo. Con muchos productos scrollea por dentro y el recuadro no crece */
+.productos-combo {
+  max-height: 168px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.producto-combo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--borde-panel);
+  font-size: 14.5px;
+}
+
+.quitar-producto {
+  padding: 2px 8px;
+  border: 0;
+  background: none;
+  color: var(--color-texto-apagado);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.quitar-producto:hover {
+  color: var(--color-error);
+}
+
+.sin-productos {
+  padding: 6px 4px;
+  font-size: 13px;
+  color: var(--color-placeholder);
+}

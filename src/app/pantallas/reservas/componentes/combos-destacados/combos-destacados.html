@@ -1,0 +1,17 @@
+@for (combo of combos(); track combo.id) {
+  <div class="tarjeta-combo">
+    <app-badge texto="Combo" color="dorado" />
+    <h3 class="nombre-combo">{{ combo.nombre }}</h3>
+    <p class="descripcion-combo">{{ combo | queIncluye }}</p>
+    <div class="pie-combo">
+      <span class="precio-combo">{{ conPuntos() ? (combo.precio_puntos | puntos) : (combo.precio | precio) }}</span>
+      <!-- en puntos, lo que no se canjea no se puede agregar (salvo para sacarlo, si ya estaba) -->
+      @if (!conPuntos() || combo.precio_puntos || cantidades()[combo.id]) {
+        <app-contador
+          [cantidad]="cantidades()[combo.id] ?? 0"
+          (cantidadChange)="cambiarCantidad(combo.id, $event)"
+        />
+      }
+    </div>
+  </div>
+}

@@ -1,26 +1,31 @@
 /* la lista y sus filas usan las clases globales del admin (.lista-admin, .fila-admin) */
 
-/* ancho fijo para que los títulos queden alineados, sin partir la fecha de la hora */
-.horario-funcion {
+/* las salas en chips, como los géneros de una película, con el campo para agregar una al final */
+.salas-cine {
   flex-shrink: 0;
-  width: 185px;
-  white-space: nowrap;
-  font-size: 19px;
-  font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
 
-/* en la base se guarda en minúscula ("castellano"), acá se muestra con mayúscula */
-.idioma-funcion {
-  text-transform: capitalize;
+.salas-cine .etiqueta {
+  margin-right: 4px;
+}
+
+/* el input usa los estilos globales de .campo, con el alto de los botones */
+.salas-cine input {
+  width: 170px;
+  height: 44px;
+}
+
+.confirmar-sala {
+  font-size: 14px;
+  color: var(--color-texto-suave);
 }
 
 /* el ancho y la alineación los pone la clase global .precio-fila */
 .precio-funcion {
   font-size: 18px;
   color: var(--color-texto-suave);
-}
-
-/* además del número lleva "VIP", necesita más lugar */
-.precio-vip {
-  width: 118px;
 }

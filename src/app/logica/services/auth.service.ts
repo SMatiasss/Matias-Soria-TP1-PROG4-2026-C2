@@ -21,6 +21,12 @@ export class AuthService {
     });
   }
 
+  // Después de una compra cambian los puntos, el crédito o el cupón de primera compra: se vuelve a leer el perfil
+  async recargarPerfil() {
+    const usuario = this.usuarioActual();
+    if (usuario) this.usuarioActual.set(await this.db.findById('usuarios', usuario.id));
+  }
+
   // Si el perfil no existe (primer login después del registro) se crea con los datos que mandó signUp.
   // Así funciona tenga o no activada la confirmación por email en Supabase.
   private async cargarPerfil(usuario: User) {

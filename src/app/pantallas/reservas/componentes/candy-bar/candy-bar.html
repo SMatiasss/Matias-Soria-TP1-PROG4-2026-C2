@@ -1,0 +1,20 @@
+@for (categoria of categorias(); track categoria.nombre) {
+  <div class="categoria-candy">
+    <h3 class="titulo-categoria">{{ categoria.nombre }}</h3>
+    @for (producto of categoria.productos; track producto.id) {
+      <div class="item-candy">
+        <div class="info-candy">
+          <span class="nombre-candy">{{ producto.nombre }}</span>
+          <span class="precio-candy">{{ conPuntos() ? (producto.precio_puntos | puntos) : (producto.precio | precio) }}</span>
+        </div>
+        <!-- en puntos, lo que no se canjea no se puede agregar (salvo para sacarlo, si ya estaba) -->
+        @if (!conPuntos() || producto.precio_puntos || cantidades()[producto.id]) {
+          <app-contador
+            [cantidad]="cantidades()[producto.id] ?? 0"
+            (cantidadChange)="cambiarCantidad(producto.id, $event)"
+          />
+        }
+      </div>
+    }
+  </div>
+}

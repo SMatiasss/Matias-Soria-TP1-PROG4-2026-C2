@@ -1,0 +1,59 @@
+<!-- Empleado nuevo o editado, en un recuadro arriba de la lista -->
+<form class="modal-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+  <h2 class="titulo-panel">{{ empleado() ? 'Editar a ' + empleado()?.nombre : 'Nueva cuenta de empleado' }}</h2>
+
+  <div class="fila-campos">
+    <div class="campo">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" formControlName="nombre" />
+    </div>
+    <div class="campo">
+      <label for="apellido">Apellido</label>
+      <input id="apellido" type="text" formControlName="apellido" />
+    </div>
+  </div>
+  <p class="error-campo">
+    @if ((formulario.controls.nombre.invalid || formulario.controls.apellido.invalid) && intentoGuardar()) {
+      Poné el nombre y el apellido
+    }
+  </p>
+
+  <!-- El correo y la contraseña son de la cuenta: al editar, el correo solo se muestra -->
+  <div class="campo">
+    <label for="email">Correo electrónico</label>
+    <input id="email" type="email" placeholder="empleado@correo.com" formControlName="email" />
+  </div>
+  <p class="error-campo">
+    @if (formulario.controls.email.invalid && intentoGuardar()) {
+      Poné un correo válido
+    }
+  </p>
+
+  @if (!empleado()) {
+    <div class="campo">
+      <label for="contrasena">Contraseña</label>
+      <input id="contrasena" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" formControlName="contrasena" />
+    </div>
+    <p class="error-campo">
+      @if (formulario.controls.contrasena.invalid && intentoGuardar()) {
+        Mínimo 6 caracteres
+      }
+    </p>
+  }
+
+  <div class="botones-modal">
+    <div>
+      <button type="button" class="boton-secundario boton-chico" (click)="cancelado.emit()">Cancelar</button>
+      <button type="submit" class="boton-principal boton-chico" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando...' : empleado() ? 'Guardar' : 'Crear cuenta' }}
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Si no se pudo crear o guardar, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se guardaron los cambios" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

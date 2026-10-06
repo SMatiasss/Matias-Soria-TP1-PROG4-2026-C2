@@ -11,7 +11,7 @@
     <select class="selector-filtro" #selectorIdioma (change)="filtroIdioma.set(selectorIdioma.value)">
       <option value="">Todos los idiomas</option>
       @for (idioma of opcionesIdioma(); track idioma) {
-        <option [value]="idioma">{{ idioma }}</option>
+        <option [value]="idioma">{{ idioma | titlecase }}</option>
       }
     </select>
     <button type="button" class="boton-flecha" [disabled]="primerDiaVisible() === 0" (click)="moverDias(-1)">‹</button>
@@ -33,7 +33,7 @@
   <div class="lista-grupos">
     @for (grupo of gruposDeFunciones(); track grupo.formato + grupo.idioma) {
       <div class="grupo-funciones">
-        <p class="etiqueta-grupo"><b>{{ grupo.formato }}</b> · {{ grupo.idioma }}</p>
+        <p class="etiqueta-grupo"><b>{{ grupo.formato }}</b> · {{ grupo.idioma | titlecase }}</p>
         <div class="horarios">
           @for (funcion of grupo.funciones; track funcion.id) {
             <a class="horario" [routerLink]="['/reservas', funcion.id]">

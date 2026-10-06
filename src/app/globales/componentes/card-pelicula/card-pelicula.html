@@ -4,7 +4,10 @@
     <app-badge class="badge-duracion" [texto]="pelicula().duracion_minutos + ' min'" />
     
     @if (pelicula().restriccion_edad) { <!-- Sin restricción de edad no se muestra el badge rojo -->
-      <app-badge class="badge-restriccion" [texto]="pelicula().restriccion_edad + '+'" color="rojo" />
+      <app-badge class="badge-restriccion" [texto]="pelicula().restriccion_edad | edad" color="rojo" />
+    }
+    @if (proximamente()) { <!-- Todavía no se estrenó -->
+      <app-badge class="badge-proximamente" texto="Próximamente" color="dorado" />
     }
   </div>
 </div>

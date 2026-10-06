@@ -1,0 +1,45 @@
+/* excepción al display:block: las barras una debajo de la otra */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* el nombre, la barra y el número en tres columnas: todas las barras arrancan en el mismo lugar */
+.barra {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 12px;
+  font-size: 14.5px;
+}
+
+.etiqueta-barra {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-texto-suave);
+}
+
+.fondo-barra {
+  height: 14px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-texto) 8%, transparent);
+}
+
+.relleno-barra {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-acento);
+}
+
+/* la primera es la más alta: va en dorado para que se vea cuál es la que más */
+.barra:first-child .relleno-barra {
+  background: var(--color-dorado);
+}
+
+.valor-barra {
+  text-align: right;
+  font-weight: 600;
+}

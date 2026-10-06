@@ -1,4 +1,51 @@
-<app-seccion-admin titulo="Cupones y recompensas" descripcion="El cupón de primera compra, los cupones para mayores de 50 y cuántos puntos cuesta cada canje">
-  <!-- Pendiente -->
-  <app-estado-vacio mensaje="Todavía no hay nada acá." />
+<app-seccion-admin titulo="Cupones" descripcion="El cupón de primera compra y los cupones para mayores de 50">
+  <!-- Lista de cupones -->
+  <div class="columna-lista lista-cupones">
+    <div class="cabecera-seccion">
+      <h2 class="titulo-panel">Todos los cupones</h2>
+      <button type="button" class="boton-principal boton-chico" (click)="agregar()">Agregar cupón</button>
+    </div>
+
+    @if (cupones().length) {
+      <ul class="lista-admin">
+        @for (cupon of cupones(); track cupon.id) {
+          <li class="fila-admin">
+            <div class="datos-fila">
+              <span class="titulo-fila">{{ cupon.codigo }}</span>
+              <span class="detalle-fila">{{ paraQuien(cupon) }}</span>
+            </div>
+            <div class="dato-fila">
+              <span class="etiqueta-dato-fila">Descuento</span>
+              {{ cupon.porcentaje }}%
+            </div>
+            <!-- Apagado, el cliente no lo ve al comprar -->
+            <label class="casilla">
+              <input type="checkbox" [checked]="cupon.activo" (change)="cambiarActivo(cupon, $event)" />
+              Activo
+            </label>
+            <button type="button" class="boton-secundario boton-chico" (click)="editar(cupon)">Editar</button>
+          </li>
+        }
+      </ul>
+    } @else if (!cargando()) {
+      <app-estado-vacio mensaje="Todavía no hay cupones." />
+    }
+
+    <!-- Agregar o editar: un recuadro arriba de la lista, que queda de fondo -->
+    @if (formularioAbierto()) {
+      <div class="superposicion-admin">
+        <app-formulario-cupon
+          [cupon]="cuponEditado()" [hayPrimeraCompra]="hayPrimeraCompra()"
+          (cancelado)="formularioAbierto.set(false)" (guardado)="alGuardar()" (eliminado)="alGuardar()"
+        />
+      </div>
+    }
+  </div>
 </app-seccion-admin>
+
+<!-- Si no se pudo activar o desactivar, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se guardó el cambio" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

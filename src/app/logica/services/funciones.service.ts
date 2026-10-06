@@ -1,6 +1,5 @@
 import { inject, Service } from '@angular/core';
 import { SupabaseService } from './supabase';
-import { Funcion } from '../modelos/peliculas';
 
 @Service()
 export class FuncionesService {
@@ -33,23 +32,5 @@ export class FuncionesService {
       return [];
     }
     return data;
-  }
-
-  // Crea una función sin sala: la elige el trigger sala_y_horario_funcion de la base.
-  // Devuelve el error de la base (o null si salió bien) para mostrar su mensaje, ej: "No hay ninguna sala libre en ese horario"
-  async crearFuncion(datos: object) {
-    const { error } = await this.sup.Sup.from('funciones').insert(datos);
-
-    if (error) console.error('No se pudo crear la función', error);
-    return error;
-  }
-
-  // Borra una función. Devuelve el error de la base y si de verdad se borró: si RLS no la deja borrar no hay error,
-  // pero tampoco vuelve ninguna fila (para eso el .select())
-  async cancelarFuncion(id: string) {
-    const { data, error } = await this.sup.Sup.from('funciones').delete().eq('id', id).select('id');
-
-    if (error) console.error('No se pudo cancelar la función', error);
-    return { error, borrada: data !== null && data.length > 0 };
   }
 }

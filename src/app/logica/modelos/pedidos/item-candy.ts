@@ -1,4 +1,4 @@
-// aún no se usa (puedo modificarlo)
+// actualmente en uso en: pedido.ts
 
 export interface ItemCandy {
   id: string;
@@ -9,4 +9,6 @@ export interface ItemCandy {
   cantidad: number;
   precio: number;
   usado: boolean;
+  // los puntos que costó cada unidad si se canjeó (0 = se pagó con plata). Sirve para el historial de canjes
+  puntos: number;
 }

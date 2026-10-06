@@ -12,4 +12,6 @@ import { Pelicula } from '../../../../logica/modelos/peliculas';
 export class MasVendidas {
   // Ya vienen ordenadas de la más vendida a la menos vendida
   peliculas = input.required<Pelicula[]>();
+  // las que todavía no se estrenaron (se venden en preventa) llevan "Próximamente"
+  idsPeliculasPorEstrenar = input.required<string[]>();
 }

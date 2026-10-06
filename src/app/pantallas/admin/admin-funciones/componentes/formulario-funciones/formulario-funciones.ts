@@ -1,12 +1,12 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SelectorFecha } from '../../../../../globales/componentes/selector-fecha/selector-fecha';
 import { Alerta } from '../../../../../globales/componentes/alerta/alerta';
+import { FechaPipe } from '../../../../../globales/pipes/fecha.pipe';
 import { DbService } from '../../../../../logica/services/db.service';
-import { FuncionesService } from '../../../../../logica/services/funciones.service';
-import { FORMATOS_FUNCION, FuncionFormulario, IDIOMAS_FUNCION, Pelicula } from '../../../../../logica/modelos/peliculas';
-// date-fns, la misma que usa el selector de fecha: format arma el texto de una fecha ("AAAA-MM-DD", "DD/MM HH:mm")
-// y parseISO lee "AAAA-MM-DD" como fecha local
+import { FORMATOS_FUNCION, Funcion, FuncionFormulario, IDIOMAS_FUNCION, Pelicula } from '../../../../../logica/modelos/peliculas';
+// date-fns: format arma el texto de una fecha y parseISO lee "AAAA-MM-DD" como fecha local
 import { format, parseISO } from 'date-fns';
 
 // La butaca VIP tiene que costar más que la normal. Si falta alguno de los dos, ya avisa el required
@@ -17,19 +17,29 @@ function vipMasCaroValidator(grupo: AbstractControl) {
   return vip > base ? null : { vipMasBarato: true };
 }
 
+// Lo mismo con los puntos: canjear una butaca VIP cuesta más puntos que una normal
+function puntosVipValidator(grupo: AbstractControl) {
+  const base = grupo.get('precio_puntos')?.value;
+  const vip = grupo.get('precio_puntos_vip')?.value;
+  if (!base || !vip) return null;
+  return vip > base ? null : { puntosVipMenor: true };
+}
+
 @Component({
-  imports: [SelectorFecha, Alerta, ReactiveFormsModule],
+  imports: [SelectorFecha, Alerta, ReactiveFormsModule, FechaPipe, TitleCasePipe],
   selector: 'app-formulario-funciones',
   styleUrl: './formulario-funciones.css',
   templateUrl: './formulario-funciones.html',
 })
-export class FormularioFunciones {
+export class FormularioFunciones implements OnInit {
   private db = inject(DbService);
-  private fs = inject(FuncionesService);
 
+  // null = programar nuevas. Si viene una, se editan su formato, idioma, precios y puntos.
+  // La película, el día y la hora no: la sala la eligió la base para ese horario
+  funcion = input<Funcion | null>(null);
   cancelado = output<void>();
-  // avisa a la lista que se crearon funciones, para que cierre el formulario y recargue
-  programadas = output<void>();
+  // avisa a la lista que se crearon o se editaron, para que cierre el formulario y recargue
+  guardado = output<void>();
 
   // todas, también las que todavía no son visibles (se pueden programar antes de mostrarlas)
   peliculas = signal<Pelicula[]>([]);
@@ -52,7 +62,7 @@ export class FormularioFunciones {
     { nombre: 'Sáb', numero: 6 },
     { nombre: 'Dom', numero: 0 },
   ];
-  // las 24 horas, de 00 a 23 (se llenan en el constructor). Dos selects cortos en vez de un reloj nativo: se elige rápido y sin scroll
+  // las horas de 00 a 23 (se llenan en el constructor). Dos selects en vez de un reloj, se elige rápido
   readonly horas: number[] = [];
   readonly minutos = [0, 15, 30, 45];
   // se programa desde hoy hasta 1 año para adelante
@@ -65,6 +75,9 @@ export class FormularioFunciones {
       idioma: new FormControl(IDIOMAS_FUNCION.CASTELLANO),
       precio_base: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
       precio_vip: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
+      // cuántos puntos cuesta canjear una entrada de estas funciones, en vez de pagarla
+      precio_puntos: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
+      precio_puntos_vip: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
       // los elegidos, se agregan y se sacan con alternarDia
       dias: new FormControl<number[]>([], Validators.required),
       hora: new FormControl<number | null>(null, Validators.required),
@@ -73,12 +86,21 @@ export class FormularioFunciones {
       desde: new FormControl(format(new Date(), 'yyyy-MM-dd'), Validators.required),
       semanas: new FormControl(1, [Validators.required, Validators.min(1), Validators.max(12)]),
     },
-    { validators: vipMasCaroValidator },
+    { validators: [vipMasCaroValidator, puntosVipValidator] },
   );
 
   constructor() {
     for (let hora = 0; hora < 24; hora++) this.horas.push(hora);
     this.cargarPeliculas();
+  }
+
+  // Al editar arranca con los datos de la función, y lo que no se puede cambiar queda deshabilitado:
+  // un control deshabilitado no cuenta para validar ni va en formulario.value
+  ngOnInit() {
+    const funcion = this.funcion();
+    if (!funcion) return;
+    this.formulario.reset(funcion);
+    for (const campo of ['pelicula_id', 'dias', 'hora', 'minutos', 'desde', 'semanas']) this.formulario.get(campo)?.disable();
   }
 
   private async cargarPeliculas() {
@@ -109,12 +131,6 @@ export class FormularioFunciones {
     return estreno !== null && desde !== null && desde < estreno;
   }
 
-  // el estreno como DD/MM/AAAA, para el aviso
-  estrenoTexto() {
-    const estreno = this.estrenoElegido();
-    return estreno ? format(parseISO(estreno), 'dd/MM/yyyy') : '';
-  }
-
   async programar() {
     this.intentoGuardar.set(true);
     if (this.formulario.invalid || this.desdeAntesDelEstreno()) {
@@ -122,9 +138,21 @@ export class FormularioFunciones {
       return;
     }
 
+    // al editar se guarda lo que quedó habilitado: formato, idioma, precios y puntos
+    const funcion = this.funcion();
+    if (funcion) {
+      this.programando.set(true);
+      const error = await this.db.guardar('funciones', funcion.id, this.formulario.value);
+      this.programando.set(false);
+      if (!error) this.guardado.emit();
+      else if (error.code === 'P0001') this.error.set(error.message);
+      else this.error.set('No se pudo guardar la función. Intentá de nuevo.');
+      return;
+    }
+
     const valores = this.formulario.value as FuncionFormulario;
 
-    // Un inicio por cada día elegido en esas semanas. Si el día se pasa del mes, new Date sigue en el próximo (32/10 = 1/11)
+    // un inicio por cada día elegido. Si el día se pasa del mes, new Date sigue en el próximo
     const desde = parseISO(valores.desde);
     const inicios: Date[] = [];
     for (let i = 0; i < valores.semanas * 7; i++) {
@@ -138,28 +166,31 @@ export class FormularioFunciones {
     }
 
     this.programando.set(true);
-    // De a una (sin Promise.all): así cada una ya cuenta las anteriores al buscar sala libre, y se sabe cuáles fallaron
+    // de a una y no con Promise.all: así cada una ya cuenta las anteriores al buscar sala
     const noCreadas: string[] = [];
     let motivo = '';
     for (const inicio of inicios) {
-      const error = await this.fs.crearFuncion({
+      // sin sala: la elige el trigger sala_y_horario_funcion
+      const error = await this.db.guardar('funciones', null, {
         pelicula_id: valores.pelicula_id,
         formato: valores.formato,
         idioma: valores.idioma,
         precio_base: valores.precio_base,
         precio_vip: valores.precio_vip,
+        precio_puntos: valores.precio_puntos,
+        precio_puntos_vip: valores.precio_puntos_vip,
         inicio: inicio.toISOString(),
       });
       if (error) {
         noCreadas.push(format(inicio, 'dd/MM HH:mm'));
-        // P0001 es el "raise exception" del trigger (ej: no hay sala libre), su mensaje ya está escrito para el admin
+        // P0001: el mensaje del trigger (ej: no hay sala libre)
         motivo = error.code === 'P0001' ? error.message : 'error inesperado de la base';
       }
     }
     this.programando.set(false);
 
     if (!noCreadas.length) {
-      this.programadas.emit();
+      this.guardado.emit();
       return;
     }
 

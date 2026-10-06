@@ -1,12 +1,27 @@
-<app-seccion-admin titulo="Candy bar" descripcion="Productos por categoría y combos con precio fijo">
+<app-seccion-admin titulo="Productos" descripcion="El candy bar por categoría y los combos con precio fijo, que pueden incluir una entrada">
   <!-- Productos de la categoría elegida, o los combos -->
   <div class="columna-lista lista-candy">
     <div class="cabecera-seccion">
-      <div class="pestanas-candy">
-        @for (pestana of pestanas; track pestana) {
-          <button type="button" class="pestana-candy" [class.activa]="pestana === pestanaActiva()" (click)="pestanaActiva.set(pestana)">
+      <div class="pestanas-admin">
+        @for (pestana of pestanas(); track pestana) {
+          <button type="button" class="pestana-admin" [class.activa]="pestana === pestanaActiva()" (click)="pestanaElegida.set(pestana)">
             {{ pestana }}
           </button>
+        }
+        <!-- Categoría nueva: se escribe en el lugar del "+" y queda como pestaña vacía hasta que se le agrega el primer producto -->
+        @if (agregandoCategoria()) {
+          <div class="campo nueva-categoria">
+            <input
+              type="text" placeholder="Nueva categoría" #campoCategoria [formControl]="nuevaCategoria"
+              (keydown.enter)="agregarCategoria()" (keydown.escape)="cancelarCategoria()"
+              (blur)="nuevaCategoria.valid ? agregarCategoria() : cancelarCategoria()"
+            />
+          </div>
+          @if (nuevaCategoria.hasError('nombreUsado')) {
+            <span class="error-campo">Ya hay una pestaña con ese nombre</span>
+          }
+        } @else {
+          <button type="button" class="pestana-admin" title="Agregar una categoría" (click)="agregandoCategoria.set(true)">+</button>
         }
       </div>
       <button type="button" class="boton-principal boton-chico" (click)="agregar()">
@@ -21,9 +36,13 @@
             <li class="fila-admin">
               <div class="datos-fila">
                 <span class="titulo-fila">{{ combo.nombre }}</span>
-                <span class="detalle-fila">{{ combo.descripcion }}</span>
+                <span class="detalle-fila">{{ combo | queIncluye }}</span>
               </div>
-              <span class="precio-fila precio-candy"><span>$</span>{{ combo.precio }}</span>
+              <!-- El precio fijo y, abajo, lo que cuesta canjearlo con puntos -->
+              <div class="dato-fila">
+                <span class="precio-fila precio-candy"><span>$</span>{{ combo.precio | precio: 'sin signo' }}</span>
+                <span class="puntos-fila">{{ combo.precio_puntos | puntos }}</span>
+              </div>
               <label class="casilla">
                 <input type="checkbox" [checked]="combo.disponible" (change)="cambiarDisponible('combos', combo, $event)" />
                 Disponible
@@ -43,7 +62,11 @@
               <div class="datos-fila">
                 <span class="titulo-fila">{{ producto.nombre }}</span>
               </div>
-              <span class="precio-fila precio-candy"><span>$</span>{{ producto.precio }}</span>
+              <!-- El precio en pesos y, abajo, lo que cuesta canjearlo con puntos -->
+              <div class="dato-fila">
+                <span class="precio-fila precio-candy"><span>$</span>{{ producto.precio | precio: 'sin signo' }}</span>
+                <span class="puntos-fila">{{ producto.precio_puntos | puntos }}</span>
+              </div>
               <label class="casilla">
                 <input type="checkbox" [checked]="producto.disponible" (change)="cambiarDisponible('productos', producto, $event)" />
                 Disponible
@@ -53,21 +76,21 @@
           }
         </ul>
       } @else if (!cargando()) {
-        <app-estado-vacio mensaje="Todavía no hay productos en esta categoría." />
+        <app-estado-vacio [mensaje]="pestanaActiva() ? 'Todavía no hay productos en esta categoría.' : 'Todavía no hay productos.'" />
       }
     }
 
     <!-- Agregar o editar: un recuadro arriba de la lista, que queda de fondo -->
     @if (formularioAbierto()) {
-      <div class="superposicion-candy">
+      <div class="superposicion-admin">
         @if (esCombos()) {
           <app-formulario-combo
-            [combo]="comboEditado()"
+            [combo]="comboEditado()" [productos]="productos()" [categorias]="categorias()"
             (cancelado)="formularioAbierto.set(false)" (guardado)="alGuardar()" (eliminado)="alGuardar()"
           />
         } @else {
           <app-formulario-producto
-            [producto]="productoEditado()" [categoria]="pestanaActiva()"
+            [producto]="productoEditado()" [categoria]="pestanaActiva()" [categorias]="categorias()"
             (cancelado)="formularioAbierto.set(false)" (guardado)="alGuardar()" (eliminado)="alGuardar()"
           />
         }

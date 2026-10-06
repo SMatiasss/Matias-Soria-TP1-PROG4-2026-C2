@@ -1,4 +1,4 @@
-// actualmente en uso en: mapa-butacas.ts, sala.ts
+// actualmente en uso en: mapa-butacas.ts, sala.ts, item-entrada.ts
 // tipo usa los valores de TIPOS_BUTACA (tipo-butaca.ts)
 
 export interface Butaca {

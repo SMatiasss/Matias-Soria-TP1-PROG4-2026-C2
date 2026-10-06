@@ -9,7 +9,6 @@
     <div class="columna-lista">
       <div class="cabecera-seccion">
         <h2 class="titulo-panel">Todas las películas</h2>
-        <p class="error-campo">{{ errorLista() }}</p>
         <button type="button" class="boton-principal boton-chico" (click)="abrirNueva()">Agregar película</button>
       </div>
 
@@ -25,7 +24,7 @@
               <!-- Cada dato en su columna, para que la fila se reparta a lo ancho -->
               <div class="dato-fila">
                 <span class="etiqueta-dato-fila">Estreno</span>
-                {{ fechaTexto(pelicula.fecha_estreno) }}
+                {{ pelicula.fecha_estreno | fecha }}
               </div>
               <div class="dato-fila">
                 <span class="etiqueta-dato-fila">Duración</span>
@@ -33,11 +32,11 @@
               </div>
               <div class="dato-fila">
                 <span class="etiqueta-dato-fila">Edad</span>
-                {{ pelicula.restriccion_edad ? '+' + pelicula.restriccion_edad : 'Todo público' }}
+                {{ pelicula.restriccion_edad | edad }}
               </div>
               <div class="dato-fila">
                 <span class="etiqueta-dato-fila">Preventa</span>
-                {{ pelicula.preventa_habilitada ? '$ ' + pelicula.preventa_precio : 'No' }}
+                {{ pelicula.preventa_habilitada ? (pelicula.preventa_precio | precio) : 'No' }}
               </div>
               <label class="casilla">
                 <input type="checkbox" [checked]="pelicula.visible" (change)="cambiarVisible(pelicula, $event)" />
@@ -53,3 +52,10 @@
     </div>
   }
 </app-seccion-admin>
+
+<!-- Si no se pudo cambiar la visibilidad, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se guardó el cambio" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

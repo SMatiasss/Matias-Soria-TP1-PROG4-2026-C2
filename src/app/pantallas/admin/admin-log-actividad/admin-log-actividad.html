@@ -1,4 +1,26 @@
 <app-seccion-admin titulo="Log de actividad" descripcion="Quién creó una función, cambió un precio o validó un QR, con fecha y hora">
-  <!-- Pendiente -->
-  <app-estado-vacio mensaje="Todavía no hay nada acá." />
+  <!-- Todo lo registrado, lo más nuevo arriba -->
+  <div class="columna-lista">
+    <div class="cabecera-seccion">
+      <h2 class="titulo-panel">Todo lo registrado</h2>
+    </div>
+
+    @if (registros().length) {
+      <ul class="lista-admin">
+        @for (registro of registros(); track registro.id) {
+          <li class="fila-admin">
+            <!-- la base guarda la fecha en UTC, el pipe fecha la muestra en hora local -->
+            <span class="fecha-fila">{{ registro.fecha_hora | fecha: 'dd/MM/yyyy HH:mm' }}</span>
+            <div class="datos-fila">
+              <span class="titulo-fila">{{ registro.accion }}</span>
+              <span class="detalle-fila">{{ registro.detalle }}</span>
+            </div>
+            <span class="actor-registro" [title]="registro.email_actor">{{ registro.email_actor }}</span>
+          </li>
+        }
+      </ul>
+    } @else if (!cargando()) {
+      <app-estado-vacio mensaje="Todavía no hay nada registrado." />
+    }
+  </div>
 </app-seccion-admin>

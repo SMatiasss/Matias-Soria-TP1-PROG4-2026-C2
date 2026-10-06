@@ -21,8 +21,10 @@ export class Inicio {
   private router = inject(Router);
 
   peliculasMasVendidas = this.ps.peliculasMasVendidas;
-  peliculasEnCartelera = this.ps.peliculasVisibles; // Toodas las peliculas
+  peliculasEnCartelera = this.ps.peliculasVisibles; // Todas las películas
   proximosEstrenos = this.ps.proximosEstrenos;
+  // las que todavía no se estrenaron llevan "Próximamente" en la cartelera y en más vendidas
+  idsPeliculasPorEstrenar = this.ps.idsPeliculasPorEstrenar;
   idsPeliculasConAlerta = this.ps.idsPeliculasConAlerta;
 
   constructor() {

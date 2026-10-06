@@ -2,33 +2,48 @@
 <form class="modal-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
   <h2 class="titulo-panel">{{ producto() ? 'Editar ' + producto()?.nombre : 'Nuevo producto' }}</h2>
 
-  <div class="campo">
-    <label for="nombre">Nombre</label>
-    <input id="nombre" type="text" placeholder="Pochoclos mediano" formControlName="nombre" />
-    <p class="error-campo">
-      @if (formulario.controls.nombre.invalid && intentoGuardar()) {
-        Campo obligatorio
-      }
-    </p>
-  </div>
-
   <div class="fila-campos">
     <div class="campo">
-      <label for="categoria">Categoría</label>
-      <select id="categoria" formControlName="categoria">
-        @for (categoria of categorias; track categoria) {
-          <option [ngValue]="categoria">{{ categoria }}</option>
-        }
-      </select>
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" placeholder="Pochoclos mediano" formControlName="nombre" />
     </div>
+    <!-- Como los géneros de una película: el navegador sugiere las que ya hay, y una que no existe se crea -->
+    <div class="campo">
+      <label for="categoria">Categoría</label>
+      <input id="categoria" type="text" list="categorias-existentes" placeholder="Escribí o elegí una" formControlName="categoria" />
+      <datalist id="categorias-existentes">
+        @for (categoria of categorias(); track categoria) {
+          <option [value]="categoria"></option>
+        }
+      </datalist>
+    </div>
+  </div>
+  <p class="error-campo">
+    @if (formulario.controls.nombre.invalid && intentoGuardar()) {
+      Poné el nombre del producto
+    } @else if (formulario.controls.categoria.hasError('nombreUsado') && intentoGuardar()) {
+      "Combos" es la pestaña de los combos, usá otro nombre
+    } @else if (formulario.controls.categoria.invalid && intentoGuardar()) {
+      Poné la categoría
+    }
+  </p>
+
+  <!-- El precio en pesos y lo que cuesta canjearlo con puntos. Sin puntos, no se puede canjear -->
+  <div class="fila-campos">
     <div class="campo">
       <label for="precio">Precio</label>
       <input id="precio" type="number" min="1" formControlName="precio" />
+    </div>
+    <div class="campo">
+      <label for="puntos">Precio en puntos</label>
+      <input id="puntos" type="number" min="1" placeholder="Sin canje" formControlName="precio_puntos" />
     </div>
   </div>
   <p class="error-campo">
     @if (formulario.controls.precio.invalid && intentoGuardar()) {
       Poné el precio
+    } @else if (formulario.controls.precio_puntos.invalid && intentoGuardar()) {
+      Los puntos tienen que ser 1 o más, o dejalo vacío
     }
   </p>
 

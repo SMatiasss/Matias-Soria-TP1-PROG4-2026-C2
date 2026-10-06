@@ -18,6 +18,8 @@ export class Listado {
   private ps = inject(PeliculasService);
 
   generosDisponibles = this.ps.generosDisponibles;
+  // las que todavía no se estrenaron llevan el badge "Próximamente"
+  idsPeliculasPorEstrenar = this.ps.idsPeliculasPorEstrenar;
   hayPeliculas = computed(() => this.ps.peliculasVisibles().length > 0);
   textoBusqueda = signal('');
   generosSeleccionados = signal<string[]>([]);

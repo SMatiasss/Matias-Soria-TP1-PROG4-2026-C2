@@ -1,29 +1,20 @@
 /* la lista y sus filas usan las clases globales del admin (.lista-admin, .fila-admin) */
 
-/* las pestañas ocupan el lugar del título y empujan el botón de agregar a la derecha */
-.pestanas-candy {
+/* las pestañas (clase global) ocupan el lugar del título y empujan el botón de agregar a la derecha */
+.pestanas-admin {
   flex: 1;
-  display: flex;
-  gap: 4px;
+  align-items: center;
 }
 
-.pestana-candy {
-  padding: 8px 16px;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  background: none;
-  color: var(--color-texto-apagado);
-  font: 500 18px var(--fuente);
-  cursor: pointer;
+/* el campo de la categoría nueva, en el lugar del "+": usa los estilos globales de .campo, con el alto de una pestaña */
+.nueva-categoria input {
+  width: 180px;
+  height: 40px;
 }
 
-.pestana-candy:hover {
-  color: var(--color-texto);
-}
-
-.pestana-candy.activa {
-  color: var(--color-texto);
-  border-bottom-color: var(--color-acento);
+/* el aviso de que ya existe, al lado del campo (y no estirado a la derecha, como en el resto de la cabecera) */
+.pestanas-admin .error-campo {
+  flex: none;
 }
 
 /* el ancho y la alineación los pone la clase global .precio-fila */
@@ -32,18 +23,7 @@
   font-weight: 600;
 }
 
-/* el recuadro de agregar o editar aparece arriba de la lista, sin salir del panel */
+/* el recuadro de agregar o editar (.superposicion-admin) tapa la lista, sin salir del panel */
 .lista-candy {
   position: relative;
-}
-
-.superposicion-candy {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radio);
-  background: rgba(0, 0, 0, 0.6);
 }

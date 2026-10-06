@@ -1,1 +1,66 @@
-<p>validar works!</p>
+<app-header seccionActiva="Validar QR" />
+
+<main class="contenedor-formulario">
+  <section class="panel validar">
+    <h1 class="titulo-panel">Validar QR</h1>
+
+    <!-- El código: se escanea con la cámara o, si no anda, se escribe a mano -->
+    <form class="buscar-codigo" (submit)="$event.preventDefault(); buscar()">
+      <div class="campo">
+        <label for="codigo">Código de la compra</label>
+        <input id="codigo" type="text" placeholder="Escaneá el QR o escribí el código" autocomplete="off" [formControl]="codigo" />
+      </div>
+      <button type="submit" class="boton-principal" [disabled]="buscando()">Buscar</button>
+      <button type="button" class="boton-secundario" (click)="escaneando() ? cerrarCamara() : escanear()">
+        {{ escaneando() ? 'Cerrar cámara' : 'Escanear' }}
+      </button>
+    </form>
+
+    <!-- La cámara, mientras busca un QR -->
+    <video #video class="camara" [hidden]="!escaneando()" muted playsinline></video>
+
+    @if (aviso(); as mensaje) {
+      <p class="aviso-validar">{{ mensaje }}</p>
+    }
+
+    <!-- La compra encontrada -->
+    @if (pedido(); as compra) {
+      <div class="compra">
+        <span class="titulo-fila">{{ compra.funcion.pelicula.titulo }}</span>
+        <span class="detalle-fila">{{ compra.funcion.inicio | fecha: 'dd/MM/yyyy HH:mm' }} · {{ compra.funcion.sala.nombre }}</span>
+
+        @if (compra.estado !== confirmado) {
+          <p class="error-campo">Esta compra se canceló: el QR ya no sirve.</p>
+        } @else {
+          <!-- Entradas: cada butaca, tachada si ya se usó -->
+          <div class="bloque-validar">
+            <span class="etiqueta">Entradas</span>
+            <ul class="items-validar">
+              @for (entrada of compra.entradas; track entrada.id) {
+                <li [class.usado]="entrada.usado">{{ entrada.butaca.fila }}{{ entrada.butaca.columna }}</li>
+              }
+            </ul>
+            <button type="button" class="boton-principal boton-chico" [disabled]="!quedaSinUsar(compra.entradas)" (click)="validar('entradas')">
+              Validar entradas
+            </button>
+          </div>
+
+          <!-- Candy: lo mismo, en el mostrador -->
+          @if (compra.items_candy.length) {
+            <div class="bloque-validar">
+              <span class="etiqueta">Candy</span>
+              <ul class="items-validar">
+                @for (item of compra.items_candy; track item.id) {
+                  <li [class.usado]="item.usado">{{ item.cantidad }} × {{ item.nombre }}</li>
+                }
+              </ul>
+              <button type="button" class="boton-principal boton-chico" [disabled]="!quedaSinUsar(compra.items_candy)" (click)="validar('items_candy')">
+                Entregar candy
+              </button>
+            </div>
+          }
+        }
+      </div>
+    }
+  </section>
+</main>

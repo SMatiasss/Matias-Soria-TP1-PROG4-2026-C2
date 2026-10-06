@@ -1,0 +1,4 @@
+/* el recuadro lo arma la clase global .modal-admin, y admin-cupones lo centra arriba de la lista */
+:host {
+  display: block;
+}

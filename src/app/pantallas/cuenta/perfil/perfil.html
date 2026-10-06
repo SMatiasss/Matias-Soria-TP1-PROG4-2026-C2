@@ -1,47 +1,172 @@
-<!-- El pipe currency usa 'es-AR', registrado con registerLocaleData en app.config.ts -->
 <app-header seccionActiva="Perfil" />
 
 @if (usuario(); as usuario) {
   <main class="pagina-perfil">
-    <h1 class="titulo-perfil">{{ usuario.nombre }} {{ usuario.apellido }}</h1>
+    <!-- Mis datos, con los puntos y el crédito bien a la vista -->
+    <aside class="panel tarjeta-usuario">
+      <div class="inicial-usuario">{{ usuario.nombre[0] }}</div>
+      <h1 class="nombre-usuario">{{ usuario.nombre }} {{ usuario.apellido }}</h1>
+      <p class="correo-usuario">{{ usuario.email }}</p>
+      @if (usuario.fecha_nacimiento) {
+        <p class="correo-usuario">Nacimiento: {{ usuario.fecha_nacimiento | fecha }}</p>
+      }
 
-    <div class="grilla-perfil">
-      <section class="panel">
-        <h2 class="titulo-panel">Mis datos</h2>
-        <dl class="datos-perfil">
-          <dt>Correo</dt>
-          <dd>{{ usuario.email }}</dd>
-          <dt>Fecha de nacimiento</dt>
-          <dd>{{ fechaNacimientoTexto() }}</dd>
-        </dl>
-      </section>
+      <div class="saldo">
+        <span class="etiqueta-saldo">Puntos</span>
+        <span class="valor-saldo">{{ usuario.puntos.toLocaleString('es-AR') }}</span>
+        <span class="nota-saldo">Sumás 1 por cada peso que pagás, y los canjeás por entradas y candy.</span>
+      </div>
+      <div class="saldo">
+        <span class="etiqueta-saldo">Crédito</span>
+        <span class="valor-saldo">{{ usuario.credito | precio }}</span>
+        <span class="nota-saldo">Lo que te devolvimos de compras canceladas. Se usa al pagar.</span>
+      </div>
+    </aside>
 
-      <!-- Puntos y crédito -->
-      <section class="panel">
-        <h2 class="titulo-panel">Puntos y crédito</h2>
-        <div class="saldos">
-          <div class="saldo">
-            <span class="valor-saldo">{{ usuario.puntos }}</span>
-            <span class="etiqueta-saldo">puntos</span>
-          </div>
-          <div class="saldo">
-            <span class="valor-saldo">{{ usuario.credito | currency: 'ARS' : 'symbol' : '1.0-2' : 'es-AR' }}</span>
-            <span class="etiqueta-saldo">de crédito</span>
-          </div>
-        </div>
-      </section>
+    <section class="panel panel-perfil">
+      <!-- Pestañas -->
+      <nav class="pestanas-perfil">
+        <button type="button" class="pestana-perfil" [class.activa]="pestana() === 'compras'" (click)="pestana.set('compras')">
+          Mis compras
+        </button>
+        <button type="button" class="pestana-perfil" [class.activa]="pestana() === 'peliculas'" (click)="pestana.set('peliculas')">
+          Mis películas
+        </button>
+        <button type="button" class="pestana-perfil" [class.activa]="pestana() === 'canjes'" (click)="pestana.set('canjes')">
+          Canjes
+        </button>
+      </nav>
 
-      <!-- Historial de canjes -->
-      <section class="panel">
-        <h2 class="titulo-panel">Historial de canjes</h2>
-        <app-estado-vacio mensaje="Todavía no canjeaste puntos." />
-      </section>
+      <div class="contenido-perfil">
+        @switch (pestana()) {
+          <!-- Mis compras: cada una con su código, y Cancelar si todavía se puede -->
+          @case ('compras') {
+            @for (compra of compras(); track compra.id) {
+              <article class="fila-perfil" [class.cancelada]="compra.estado !== confirmada">
+                <img class="poster-fila" [src]="compra.funcion.pelicula.imagen_url" alt="" />
+                <div class="datos-fila-perfil">
+                  <span class="titulo-fila-perfil">{{ compra.funcion.pelicula.titulo }}</span>
+                  <span class="detalle-fila-perfil">
+                    {{ compra.funcion.inicio | fecha: 'dd/MM/yyyy HH:mm' }} · {{ compra.funcion.sala.nombre }}
+                  </span>
+                  @if (compra.estado === confirmada) {
+                    <span class="detalle-fila-perfil">Butacas {{ butacas(compra) }}</span>
+                    @if (compra.items_candy.length) {
+                      <span class="detalle-fila-perfil">{{ candy(compra) }}</span>
+                    }
+                    <span class="codigo-fila">Código {{ compra.codigo }}</span>
+                  }
+                </div>
+                <div class="pago-fila">
+                  <span class="monto-fila">{{ compra.total | precio }}</span>
+                  @if (compra.puntos_usados) {
+                    <span class="detalle-fila-perfil">+ {{ compra.puntos_usados | puntos }}</span>
+                  }
+                </div>
+                <div class="acciones-fila">
+                  @if (compra.estado !== confirmada) {
+                    <app-badge texto="Cancelada" color="rojo" />
+                    <span class="detalle-fila-perfil">Te devolvimos {{ compra.total + compra.credito_usado | precio }} de crédito</span>
+                  } @else if (idACancelar() === compra.id) {
+                    <!-- Cancelar pide confirmar en la misma fila -->
+                    <span class="pregunta-cancelar">¿Cancelar la compra?</span>
+                    <div class="botones-cancelar">
+                      <button type="button" class="boton-secundario" (click)="idACancelar.set(null)">No</button>
+                      <button type="button" class="boton-principal" [disabled]="cancelando()" (click)="cancelar(compra)">Sí, cancelar</button>
+                    </div>
+                  } @else if (puedeCancelar(compra)) {
+                    <button type="button" class="boton-secundario" (click)="descargarPdf(compra)">Descargar PDF</button>
+                    <button type="button" class="boton-secundario" (click)="idACancelar.set(compra.id)">Cancelar compra</button>
+                  } @else if (yaPaso(compra)) {
+                    <span class="detalle-fila-perfil">Función pasada</span>
+                  } @else if (algoUsado(compra)) {
+                    <!-- ya se validó en la entrada o en el candy: lo usado no se devuelve -->
+                    <button type="button" class="boton-secundario" (click)="descargarPdf(compra)">Descargar PDF</button>
+                    <span class="detalle-fila-perfil">Ya se usó: no se puede cancelar</span>
+                  } @else {
+                    <button type="button" class="boton-secundario" (click)="descargarPdf(compra)">Descargar PDF</button>
+                    <span class="detalle-fila-perfil">Faltan menos de 2 horas: ya no se puede cancelar</span>
+                  }
+                </div>
+              </article>
+            } @empty {
+              @if (!cargando()) {
+                <app-estado-vacio mensaje="Todavía no compraste entradas." />
+              }
+            }
+          }
 
-      <!-- Mis películas -->
-      <section class="panel">
-        <h2 class="titulo-panel">Mis películas</h2>
-        <app-estado-vacio mensaje="Todavía no viste ninguna película." />
-      </section>
-    </div>
+          <!-- Mis películas: el póster, cuándo la vio y la calificación que le puso -->
+          @case ('peliculas') {
+            @if (peliculasVistas().length) {
+              <div class="grilla-peliculas">
+                @for (vista of peliculasVistas(); track vista.id) {
+                  <div class="pelicula-vista">
+                    <app-card-pelicula [pelicula]="vista.funcion.pelicula" />
+                    <span class="titulo-vista">{{ vista.funcion.pelicula.titulo }}</span>
+                    <span class="detalle-fila-perfil">{{ vista.funcion.inicio | fecha }}</span>
+                    @if (calificacion(vista.funcion.pelicula.id); as estrellas) {
+                      <app-calificacion-estrellas [valor]="estrellas" [tamano]="18" />
+                    } @else {
+                      <span class="detalle-fila-perfil">Sin calificar</span>
+                    }
+                  </div>
+                }
+              </div>
+            } @else if (!cargando()) {
+              <app-estado-vacio mensaje="Todavía no viste ninguna película." />
+            }
+          }
+
+          <!-- Canjes: lo que pagó con puntos en cada compra -->
+          @case ('canjes') {
+            @for (compra of comprasConCanjes(); track compra.id) {
+              <article class="fila-perfil">
+                <div class="datos-fila-perfil">
+                  <span class="titulo-fila-perfil">{{ compra.funcion.pelicula.titulo }}</span>
+                  <span class="detalle-fila-perfil">Compra del {{ compra.creado_en | fecha }}</span>
+                  <ul class="lista-canjes">
+                    @for (entrada of compra.entradas; track entrada.id) {
+                      @if (entrada.puntos) {
+                        <li>Entrada {{ entrada.butaca.fila }}{{ entrada.butaca.columna }} · {{ entrada.puntos | puntos }}</li>
+                      }
+                    }
+                    @for (item of compra.items_candy; track item.id) {
+                      @if (item.puntos) {
+                        <li>{{ item.cantidad }} × {{ item.nombre }} · {{ item.puntos * item.cantidad | puntos }}</li>
+                      }
+                    }
+                  </ul>
+                </div>
+                <div class="pago-fila">
+                  <span class="monto-fila">{{ compra.puntos_usados | puntos }}</span>
+                </div>
+              </article>
+            } @empty {
+              @if (!cargando()) {
+                <app-estado-vacio mensaje="Todavía no canjeaste puntos." />
+              }
+            }
+          }
+        }
+      </div>
+    </section>
   </main>
+}
+
+<!-- Cancelar: cuánto crédito se le dio, o por qué no se pudo -->
+@if (creditoDevuelto() !== null) {
+  <div class="superposicion">
+    <app-alerta
+      titulo="Compra cancelada"
+      [descripcion]="'Te devolvimos ' + (creditoDevuelto() | precio) + ' de crédito para tu próxima compra. Las butacas quedaron libres.'"
+      textoBoton="Listo"
+      (continuar)="creditoDevuelto.set(null)"
+    />
+  </div>
+}
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se canceló la compra" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
 }

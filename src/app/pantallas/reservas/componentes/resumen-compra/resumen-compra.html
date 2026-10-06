@@ -1,0 +1,101 @@
+<h3 class="titulo-panel">Resumen de compra</h3>
+@if (enPreventa()) {
+  <app-badge class="etiqueta-preventa" texto="Precio de preventa" color="dorado" />
+}
+
+<!-- Líneas del resumen: lo canjeado con puntos va en puntos -->
+<div class="lineas-resumen">
+  @for (linea of lineasEntradas(); track linea.tipo + linea.conPuntos) {
+    <div class="fila-resumen" [class.vip]="linea.tipo === tipos.VIP">
+      <span class="etiqueta-resumen">
+        @if (linea.tipo === tipos.NORMAL) {
+          Entradas normales
+        } @else if (linea.tipo === tipos.ACCESIBLE) {
+          Entradas accesibles
+        } @else {
+          Entradas <app-badge texto="VIP" color="dorado" />
+        }
+        <span class="cantidad-linea">×{{ linea.cantidad }}</span>
+      </span>
+      <span>{{ monto(linea.subtotal, linea.conPuntos) }}</span>
+    </div>
+  } @empty {
+    <p class="nota-vacia">Todavía no seleccionaste butacas.</p>
+  }
+
+  @if (lineasCandy().length) {
+    <div class="divisor-resumen"></div>
+    @for (linea of lineasCandy(); track linea.id + linea.conPuntos) {
+      <div class="fila-resumen">
+        <span class="etiqueta-resumen">
+          {{ linea.nombre }} <span class="cantidad-linea">×{{ linea.cantidad }}</span>
+        </span>
+        <!-- canjeado y sin precio en puntos (dejó de canjearse) suma 0 -->
+        <span>{{ linea.conPuntos && !linea.subtotal ? 'Sin canje' : monto(linea.subtotal, linea.conPuntos) }}</span>
+      </div>
+    }
+  }
+
+  @if (descuentoCombosPesos() || descuentoCombosPuntos() || descuentoCupon() || creditoUsado()) {
+    <div class="divisor-resumen"></div>
+    @if (descuentoCombosPesos()) {
+      <div class="fila-resumen descuento">
+        <span>Entradas en combos</span>
+        <span>−{{ monto(descuentoCombosPesos(), false) }}</span>
+      </div>
+    }
+    @if (descuentoCombosPuntos()) {
+      <div class="fila-resumen descuento">
+        <span>Entradas en combos</span>
+        <span>−{{ monto(descuentoCombosPuntos(), true) }}</span>
+      </div>
+    }
+    @if (descuentoCupon()) {
+      <div class="fila-resumen descuento">
+        <span>Cupón {{ codigoCuponAplicado() }}</span>
+        <span>−{{ monto(descuentoCupon(), false) }}</span>
+      </div>
+    }
+    @if (creditoUsado()) {
+      <div class="fila-resumen descuento">
+        <span>Crédito</span>
+        <span>−{{ monto(creditoUsado(), false) }}</span>
+      </div>
+    }
+  }
+</div>
+
+<div class="pie-resumen">
+  <div class="total-resumen">
+    <span>Total</span>
+    <span>{{ monto(totalPesos(), false) }}</span>
+  </div>
+  @if (totalPuntos()) {
+    <div class="total-resumen total-puntos">
+      <span>Con puntos</span>
+      <span>{{ monto(totalPuntos(), true) }}</span>
+    </div>
+  }
+  <!-- Los puntos: cuántos tiene si canjea algo, y cuántos suma por lo que paga con plata -->
+  @if (puntosDisponibles() !== null) {
+    @if (totalPuntos()) {
+      <p class="puntos-resumen">Tenés {{ puntosDisponibles()?.toLocaleString('es-AR') }} puntos</p>
+    }
+    @if (puntosAGanar()) {
+      <p class="puntos-resumen">Con esta compra sumás {{ puntosAGanar().toLocaleString('es-AR') }} puntos</p>
+    }
+  }
+
+  @if (motivoBloqueo(); as motivo) {
+    <p class="motivo-bloqueo">{{ motivo }}</p>
+  }
+  <!-- Botón de pago -->
+  <button
+    type="button"
+    class="boton-principal ancho-completo boton-pagar"
+    [disabled]="lineasEntradas().length === 0 || motivoBloqueo() || comprando()"
+    (click)="pagar.emit()"
+  >
+    {{ comprando() ? 'Pagando...' : 'Pagar' }}
+  </button>
+</div>

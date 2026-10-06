@@ -8,6 +8,8 @@ export interface FuncionFormulario {
   idioma: string;
   precio_base: number;
   precio_vip: number;
+  precio_puntos: number;
+  precio_puntos_vip: number;
   // días de la semana como los numera getDay(): 0 = domingo, 1 = lunes ... 6 = sábado
   dias: number[];
   hora: number;

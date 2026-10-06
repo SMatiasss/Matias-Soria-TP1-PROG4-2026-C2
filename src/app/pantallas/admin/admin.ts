@@ -11,10 +11,9 @@ import { Header } from '../../globales/componentes/header/header';
 export class Admin {
   readonly secciones = [
     { ruta: 'peliculas', texto: 'Películas' },
-    { ruta: 'salas', texto: 'Salas' },
     { ruta: 'funciones', texto: 'Funciones' },
-    { ruta: 'candy', texto: 'Candy bar' },
-    { ruta: 'cupones', texto: 'Cupones y recompensas' },
+    { ruta: 'productos', texto: 'Productos' },
+    { ruta: 'cupones', texto: 'Cupones' },
     { ruta: 'empleados', texto: 'Empleados' },
     { ruta: 'reportes', texto: 'Reportes' },
     { ruta: 'actividad', texto: 'Log de actividad' },

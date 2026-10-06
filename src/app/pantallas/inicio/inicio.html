@@ -7,7 +7,7 @@
       <h2 class="titulo-columna">Más vendidas</h2>
     </div>
     @if (peliculasMasVendidas().length) {
-      <app-mas-vendidas [peliculas]="peliculasMasVendidas()" />
+      <app-mas-vendidas [peliculas]="peliculasMasVendidas()" [idsPeliculasPorEstrenar]="idsPeliculasPorEstrenar()" />
     } @else {
       <app-estado-vacio mensaje="Todavía no hay ventas registradas." />
     }
@@ -22,7 +22,10 @@
       <div class="tablero-cartelera-de-inicio">
         @for (pelicula of peliculasEnCartelera(); track pelicula.id) {
           <div class="item-cartelera-de-inicio">
-            <app-card-pelicula class="tarjeta-con-enlace" [pelicula]="pelicula" [routerLink]="['/pelicula', pelicula.id]" />
+            <app-card-pelicula
+              class="tarjeta-con-enlace" [pelicula]="pelicula" [routerLink]="['/pelicula', pelicula.id]"
+              [proximamente]="idsPeliculasPorEstrenar().includes(pelicula.id)"
+            />
             <h3 class="titulo-tarjeta-pelicula" [routerLink]="['/pelicula', pelicula.id]">{{ pelicula.titulo }}</h3>
           </div>
         }

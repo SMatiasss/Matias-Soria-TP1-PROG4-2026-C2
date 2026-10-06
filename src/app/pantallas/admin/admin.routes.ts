@@ -8,15 +8,11 @@ export const adminRoutes: Routes = [
     loadComponent: () => import('./admin-peliculas/admin-peliculas').then((a) => a.AdminPeliculas),
   },
   {
-    path: 'salas',
-    loadComponent: () => import('./admin-salas/admin-salas').then((a) => a.AdminSalas),
-  },
-  {
     path: 'funciones',
     loadComponent: () => import('./admin-funciones/admin-funciones').then((a) => a.AdminFunciones),
   },
   {
-    path: 'candy',
+    path: 'productos',
     loadComponent: () => import('./admin-candy/admin-candy').then((a) => a.AdminCandy),
   },
   {

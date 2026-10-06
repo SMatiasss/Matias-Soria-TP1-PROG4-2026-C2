@@ -23,19 +23,6 @@
   --tamano-badge: 12px;
 }
 
-/* el botón no se ve, solo el badge de adentro */
-.quitar-genero {
-  display: flex;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.quitar-genero:hover {
-  opacity: 0.7;
-}
-
 /* la sinopsis ocupa lo que queda de su columna, sin pasarse de 240px */
 .campo-sinopsis {
   flex: 1;
@@ -122,12 +109,6 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.aviso-preventa {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-texto-apagado);
 }
 
 /* pantallas angostas: una sola columna, y si no entra scrollea el panel */

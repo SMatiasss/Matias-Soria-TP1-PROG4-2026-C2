@@ -2,8 +2,8 @@ import { Component, inject, input, OnInit, output, signal } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Alerta } from '../../../../../globales/componentes/alerta/alerta';
 import { DbService } from '../../../../../logica/services/db.service';
-import { CandyService } from '../../../../../logica/services/candy.service';
-import { CATEGORIAS_PRODUCTO, Producto } from '../../../../../logica/modelos/candy';
+import { Producto } from '../../../../../logica/modelos/candy';
+import { nombreEnLista, nombreLibreValidator } from '../../../../../logica/utilidades/nombre-en-lista.util';
 
 @Component({
   imports: [Alerta, ReactiveFormsModule],
@@ -13,12 +13,13 @@ import { CATEGORIAS_PRODUCTO, Producto } from '../../../../../logica/modelos/can
 })
 export class FormularioProducto implements OnInit {
   private db = inject(DbService);
-  private cs = inject(CandyService);
 
   // null = producto nuevo
   producto = input<Producto | null>(null);
   // la pestaña desde la que se abrió: un producto nuevo arranca en esa categoría
   categoria = input.required<string>();
+  // las que ya hay, para sugerirlas mientras se escribe
+  categorias = input<string[]>([]);
   // avisan a la lista para que cierre el formulario (y recargue, si se guardó o se eliminó)
   cancelado = output<void>();
   guardado = output<void>();
@@ -31,12 +32,13 @@ export class FormularioProducto implements OnInit {
   // tocó Eliminar y falta que confirme
   confirmandoEliminar = signal(false);
 
-  readonly categorias = Object.values(CATEGORIAS_PRODUCTO);
-
   formulario = new FormGroup({
-    nombre: new FormControl('', Validators.required),
-    categoria: new FormControl('', Validators.required),
+    nombre: new FormControl('', [Validators.required, Validators.pattern(/\S/)]),
+    // pattern: que tenga algo más que espacios. Y no puede llamarse "Combos", que es la pestaña de los combos
+    categoria: new FormControl('', [Validators.required, Validators.pattern(/\S/), nombreLibreValidator(() => ['Combos'])]),
     precio: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
+    // vacío = no se puede canjear con puntos
+    precio_puntos: new FormControl<number | null>(null, Validators.min(1)),
     disponible: new FormControl(true),
   });
 
@@ -55,14 +57,15 @@ export class FormularioProducto implements OnInit {
     }
 
     this.guardando.set(true);
+    // si ya hay una categoría igual, sin contar mayúsculas ni tildes, se usa esa. Una nueva va con la primera en mayúscula
+    const categoria = nombreEnLista((this.formulario.controls.categoria.value as string).trim(), this.categorias());
+    const datos = { ...this.formulario.value, categoria };
     // el cambio de precio lo anota en el log un trigger de la base (log_precio_producto)
     const producto = this.producto();
-    const salioBien = producto
-      ? await this.db.update('productos', producto.id, this.formulario.value)
-      : await this.db.create('productos', this.formulario.value);
+    const error = await this.db.guardar('productos', producto ? producto.id : null, datos);
     this.guardando.set(false);
 
-    if (!salioBien) {
+    if (error) {
       this.error.set('No se pudo guardar el producto. Revisá los datos e intentá de nuevo.');
       return;
     }
@@ -73,9 +76,9 @@ export class FormularioProducto implements OnInit {
     this.confirmandoEliminar.set(false);
     const producto = this.producto();
     if (!producto) return;
-    const { error, borrado } = await this.cs.eliminar('productos', producto.id);
+    const { error, borrado } = await this.db.eliminar('productos', producto.id);
 
-    // P0001 es el "raise exception" del trigger que no deja borrar el producto si ya se vendió o es premio de un canje.
+    // P0001 es el "raise exception" del trigger que no deja borrar el producto si ya se vendió o si es parte de un combo.
     // Ese mensaje ya está escrito para el admin. Sin error y sin fila borrada, RLS no lo dejó borrar
     if (error && error.code === 'P0001') this.error.set(error.message);
     else if (!borrado) this.error.set('No se pudo eliminar el producto. Intentá de nuevo.');

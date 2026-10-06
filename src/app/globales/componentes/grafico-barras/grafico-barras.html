@@ -1,1 +1,10 @@
-<p>grafico-barras works!</p>
+@for (dato of datos(); track dato.etiqueta) {
+  <div class="barra">
+    <span class="etiqueta-barra" [title]="dato.etiqueta">{{ dato.etiqueta }}</span>
+    <!-- El largo de la barra, en % del valor más alto -->
+    <div class="fondo-barra">
+      <div class="relleno-barra" [style.width.%]="(dato.valor / maximo()) * 100"></div>
+    </div>
+    <span class="valor-barra">{{ dato.valor }}</span>
+  </div>
+}

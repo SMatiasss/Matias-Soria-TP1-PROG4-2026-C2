@@ -1,1 +1,4 @@
-<p>codigo-qr works!</p>
+<!-- El QR de la compra, para mostrarlo desde el celular -->
+@if (imagen(); as src) {
+  <img class="imagen-qr" [src]="src" [alt]="'Código QR ' + texto()" />
+}

@@ -186,6 +186,13 @@ textarea {
   border-color: var(--color-texto);
 }
 
+/* lo que no se puede cambiar se ve apagado, como los botones deshabilitados */
+.campo input:disabled,
+.campo select:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .campo input.ng-invalid.ng-touched,
 .campo select.ng-invalid.ng-touched {
   border-color: var(--color-error);
@@ -219,7 +226,7 @@ textarea {
   cursor: pointer;
 }
 
-/* ===== Cabecera dentro del panel del admin: título a la izquierda, botones a la derecha y el error al lado de los botones (lista y formulario) ===== */
+/* ===== Cabecera de los paneles del admin: título a la izquierda y botones a la derecha ===== */
 
 .cabecera-seccion {
   flex-shrink: 0;
@@ -293,7 +300,7 @@ textarea {
   color: var(--color-texto-apagado);
 }
 
-/* un dato en su propia columna, con su nombre chico arriba (estreno, duración...): reparte la fila a lo ancho como una tabla */
+/* un dato con su nombre chico arriba (estreno, duración...), en su propia columna */
 .dato-fila {
   flex-shrink: 0;
   width: 125px;
@@ -310,7 +317,13 @@ textarea {
   letter-spacing: 0.06em;
 }
 
-/* los botones y checkboxes de las filas, más grandes que en los formularios: la lista ocupa todo el ancho del panel */
+/* lo que cuesta canjearlo con puntos, chico y debajo del precio en pesos */
+.puntos-fila {
+  font-size: 13.5px;
+  color: var(--color-texto-apagado);
+}
+
+/* botones y checkboxes de las filas, más grandes que en los formularios */
 .fila-admin .boton-chico {
   height: 50px;
   padding: 0 26px;
@@ -327,6 +340,40 @@ textarea {
   height: 19px;
 }
 
+/* fecha y hora con ancho fijo, para que lo de al lado quede alineado */
+.fecha-fila {
+  flex-shrink: 0;
+  width: 185px;
+  white-space: nowrap;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+/* pestañas con la línea roja abajo en la elegida (candy, reportes) */
+.pestanas-admin {
+  display: flex;
+  gap: 4px;
+}
+
+.pestana-admin {
+  padding: 8px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--color-texto-apagado);
+  font: 500 18px var(--fuente);
+  cursor: pointer;
+}
+
+.pestana-admin:hover {
+  color: var(--color-texto);
+}
+
+.pestana-admin.activa {
+  color: var(--color-texto);
+  border-bottom-color: var(--color-acento);
+}
+
 /* precio en una columna de ancho fijo: el $ siempre en el mismo lugar y el número pegado a la derecha,
    así no se corre aunque cambie la cantidad de cifras (en esta fuente cada número tiene su propio ancho) */
 .precio-fila {
@@ -336,7 +383,7 @@ textarea {
   justify-content: space-between;
 }
 
-/* formulario chico (candy bar): un recuadro que aparece arriba de la lista, en vez de reemplazarla */
+/* formulario chico que aparece arriba de la lista (productos, cupones, empleados) */
 .modal-admin {
   width: 440px;
   max-width: 100%;
@@ -366,6 +413,38 @@ textarea {
   gap: 10px;
 }
 
+/* chip que se saca tocándolo (géneros, salas) */
+.quitar-chip {
+  display: flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.quitar-chip:hover {
+  opacity: 0.7;
+}
+
+/* fondo oscuro detrás del recuadro: tapa solo la lista, no todo el panel */
+.superposicion-admin {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radio);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* aclaración chica dentro de un formulario del admin (ej: cuándo se puede habilitar la preventa) */
+.aviso-formulario {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-texto-apagado);
+}
+
 /* tres columnas para que entre todo sin scroll */
 .columnas-formulario {
   flex: 1;
@@ -388,7 +467,7 @@ textarea {
   gap: 14px;
 }
 
-/* el mismo aspecto que un label de .campo, para lo que no es un campo de texto (selector de fecha, imagen, días) */
+/* como un label de .campo, para lo que no es un campo de texto */
 .etiqueta {
   font-size: 14px;
   color: var(--color-texto-suave);
@@ -406,7 +485,7 @@ textarea {
   }
 }
 
-/* ===== Cabecera de una columna: título a la izquierda y botones a la derecha (inicio y carrusel de estrenos) ===== */
+/* ===== Cabecera de una columna: título a la izquierda y botones a la derecha ===== */
 
 .cabecera-columna {
   flex-shrink: 0;

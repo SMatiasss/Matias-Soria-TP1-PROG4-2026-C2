@@ -1,0 +1,68 @@
+<div class="panel">
+  <!-- Los cupones y el crédito descuentan de lo que se paga con plata -->
+  <h3 class="titulo-panel">Cupones</h3>
+
+  <!-- Cupón de primera compra -->
+  @if (cuponPrimeraCompra(); as cupon) {
+    <div class="bloque-beneficio">
+      <div class="fila-beneficio">
+        <div>
+          <div class="titulo-beneficio">Cupón de primera compra</div>
+          <p class="subtitulo-beneficio">{{ cupon.porcentaje }}% OFF en tu primera compra</p>
+        </div>
+        <button
+          type="button"
+          class="boton-chip"
+          [class.activo]="cuponAplicado()?.id === cupon.id"
+          (click)="alternarCupon(cupon)"
+        >
+          {{ cuponAplicado()?.id === cupon.id ? 'Aplicado' : 'Aplicar' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Cupones para mayores de 50 -->
+  @if (cuponesMayores().length) {
+    <div class="bloque-beneficio">
+      <div class="titulo-beneficio">Cupones disponibles</div>
+      <div class="lista-cupones">
+        @for (cupon of cuponesMayores(); track cupon.id) {
+          <div class="cupon">
+            <div class="info-cupon">
+              <span class="nombre-cupon">{{ cupon.porcentaje }}% OFF · {{ cupon.codigo }}</span>
+              <app-badge texto="Exclusivo +50" color="dorado" />
+            </div>
+            <button
+              type="button"
+              class="boton-chip"
+              [class.activo]="cuponAplicado()?.id === cupon.id"
+              (click)="alternarCupon(cupon)"
+            >
+              {{ cuponAplicado()?.id === cupon.id ? 'Usado' : 'Usar' }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (!cuponPrimeraCompra() && !cuponesMayores().length) {
+    <p class="subtitulo-beneficio">No tenés cupones disponibles.</p>
+  }
+</div>
+
+<div class="panel">
+  <h3 class="titulo-panel">Crédito</h3>
+
+  <!-- Crédito disponible -->
+  @if (usuario().credito > 0) {
+    <div class="bloque-beneficio">
+      <div class="titulo-beneficio">Crédito disponible: {{ usuario().credito | precio }}</div>
+      <!-- se usa siempre, no hay que elegirlo: ver creditoUsado en reservas.ts -->
+      <p class="subtitulo-beneficio">Se usa solo en esta compra, antes que cualquier otro medio de pago.</p>
+    </div>
+  } @else {
+    <p class="subtitulo-beneficio">No tenés crédito a favor.</p>
+  }
+</div>

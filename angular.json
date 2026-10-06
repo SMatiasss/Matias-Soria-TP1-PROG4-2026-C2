@@ -30,6 +30,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "allowedCommonJsDependencies": ["jsqr", "qrcode", "dijkstrajs", "core-js", "raf", "rgbcolor", "html2canvas"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -44,7 +45,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "550kB",
                   "maximumError": "1MB"
                 },
                 {
@@ -53,7 +54,8 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,

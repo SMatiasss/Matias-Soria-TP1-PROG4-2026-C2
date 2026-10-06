@@ -1,4 +1,4 @@
-// actualmente en uso en: resenas.service.ts
+// actualmente en uso en: resenas.service.ts, perfil.ts
 
 export interface Reseña {
   id: string;

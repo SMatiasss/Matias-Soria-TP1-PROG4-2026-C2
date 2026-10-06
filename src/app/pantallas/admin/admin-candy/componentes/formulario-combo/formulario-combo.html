@@ -1,39 +1,101 @@
 <!-- Combo nuevo o editado, en un recuadro arriba de la lista -->
-<form class="modal-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+<form class="modal-admin modal-combo" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
   <h2 class="titulo-panel">{{ combo() ? 'Editar ' + combo()?.nombre : 'Nuevo combo' }}</h2>
 
-  <div class="fila-campos">
-    <div class="campo">
-      <label for="nombre">Nombre</label>
-      <input id="nombre" type="text" placeholder="Combo Solo" formControlName="nombre" />
-    </div>
-    <div class="campo">
-      <label for="precio">Precio fijo</label>
-      <input id="precio" type="number" min="1" formControlName="precio" />
-    </div>
-  </div>
-  <p class="error-campo">
-    @if (formulario.controls.nombre.invalid && intentoGuardar()) {
-      Poné el nombre del combo
-    } @else if (formulario.controls.precio.invalid && intentoGuardar()) {
-      Poné el precio
-    }
-  </p>
+  <!-- Dos columnas para que el recuadro no sea tan alto: nombre y precios a la izquierda, productos y opciones a la derecha -->
+  <div class="columnas-combo">
+    <div class="columna-combo">
+      <div class="campo">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" placeholder="Combo Solo" formControlName="nombre" />
+        <p class="error-campo">
+          @if (formulario.controls.nombre.invalid && intentoGuardar()) {
+            Poné el nombre del combo
+          }
+        </p>
+      </div>
 
-  <div class="campo">
-    <label for="descripcion">Qué incluye</label>
-    <input id="descripcion" type="text" placeholder="Pochoclos grande + gaseosa grande" formControlName="descripcion" />
-    <p class="error-campo">
-      @if (formulario.controls.descripcion.invalid && intentoGuardar()) {
-        Contá qué trae el combo
+      <!-- El precio fijo y lo que cuesta canjearlo con puntos (entero, con la entrada si la incluye). Sin puntos, no se canjea -->
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="precio">Precio fijo</label>
+          <input id="precio" type="number" min="1" formControlName="precio" />
+        </div>
+        <div class="campo">
+          <label for="puntos">Precio en puntos</label>
+          <input id="puntos" type="number" min="1" placeholder="Sin canje" formControlName="precio_puntos" />
+        </div>
+      </div>
+      <p class="error-campo">
+        @if (formulario.controls.precio.invalid && intentoGuardar()) {
+          Poné el precio
+        } @else if (formulario.controls.precio_puntos.invalid && intentoGuardar()) {
+          Los puntos tienen que ser 1 o más, o dejalo vacío
+        }
+      </p>
+    </div>
+
+    <div class="columna-combo">
+      <!-- Productos: se elige uno, cuántos trae, y se agrega. Si ya estaba, se suman -->
+      <div class="campo">
+        <label for="producto-combo">Productos</label>
+        <div class="fila-agregar">
+          <select id="producto-combo" #productoElegido>
+            @for (categoria of categorias(); track categoria) {
+              <!-- una categoría recién creada con el "+" todavía no tiene productos: no va en el select -->
+              @if (productosDe(categoria).length) {
+                <optgroup [label]="categoria">
+                  @for (producto of productosDe(categoria); track producto.id) {
+                    <option [value]="producto.id">{{ producto.nombre }}{{ producto.disponible ? '' : ' (no disponible)' }}</option>
+                  }
+                </optgroup>
+              }
+            }
+          </select>
+          <input type="number" min="1" value="1" aria-label="Cantidad" #cantidadElegida />
+          <button type="button" class="boton-secundario" (click)="agregarProducto(productoElegido, cantidadElegida)">Agregar</button>
+        </div>
+        @if (errorCantidad()) {
+          <p class="error-campo">La cantidad tiene que ser un número entero, de 1 para arriba</p>
+        }
+      </div>
+      <ul class="productos-combo">
+        @for (elegido of productosElegidos(); track elegido.producto_id) {
+          <li class="producto-combo">
+            <span>{{ elegido.cantidad }} × {{ nombreProducto(elegido.producto_id) }}</span>
+            <button
+              type="button" class="quitar-producto"
+              [title]="'Sacar ' + nombreProducto(elegido.producto_id)" (click)="quitarProducto(elegido.producto_id)"
+            >
+              ✕
+            </button>
+          </li>
+        } @empty {
+          <li class="sin-productos">
+            @if (intentoGuardar()) {
+              <span class="error-campo">Agregá al menos un producto</span>
+            } @else {
+              Todavía no agregaste productos
+            }
+          </li>
+        }
+      </ul>
+
+      <!-- Con entrada: en la compra, el combo reemplaza el precio de una de las entradas -->
+      <label class="casilla">
+        <input type="checkbox" formControlName="incluye_entrada" />
+        Incluye una entrada
+      </label>
+      @if (formulario.controls.incluye_entrada.value) {
+        <p class="aviso-combo">Reemplaza el precio de una entrada. Si la butaca es VIP, se suma la diferencia</p>
       }
-    </p>
-  </div>
 
-  <label class="casilla">
-    <input type="checkbox" formControlName="disponible" />
-    Disponible para la venta
-  </label>
+      <label class="casilla">
+        <input type="checkbox" formControlName="disponible" />
+        Disponible para la venta
+      </label>
+    </div>
+  </div>
 
   <div class="botones-modal">
     <!-- Eliminar solo al editar, y pide confirmar. Si ya se vendió, la base no lo deja borrar -->

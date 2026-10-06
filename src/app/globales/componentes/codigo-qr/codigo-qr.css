@@ -1,0 +1,11 @@
+/* el tamaño lo pone el que lo usa (width en el host), la imagen ocupa todo */
+:host {
+  display: block;
+  aspect-ratio: 1;
+}
+
+.imagen-qr {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+}

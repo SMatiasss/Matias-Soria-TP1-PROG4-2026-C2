@@ -1,0 +1,6 @@
+/* la lista y sus filas usan las clases globales del admin (.lista-admin, .fila-admin) */
+
+/* el recuadro de agregar o editar (.superposicion-admin) tapa la lista, sin salir del panel */
+.lista-cupones {
+  position: relative;
+}

@@ -1,0 +1,51 @@
+/* el host mismo es la grilla de combos */
+:host {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.tarjeta-combo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-dorado) 40%, transparent);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--color-dorado) 14%, transparent),
+    color-mix(in srgb, var(--color-dorado) 3%, transparent)
+  );
+}
+
+.nombre-combo {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.descripcion-combo {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-texto-suave);
+}
+
+.pie-combo {
+  align-self: stretch;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.precio-combo {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-dorado);
+}

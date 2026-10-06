@@ -1,0 +1,9 @@
+/* el recuadro lo arma la clase global .modal-admin, y admin-empleados lo centra arriba de la lista */
+:host {
+  display: block;
+}
+
+/* no hay Eliminar a la izquierda: los botones van a la derecha */
+.botones-modal {
+  justify-content: flex-end;
+}

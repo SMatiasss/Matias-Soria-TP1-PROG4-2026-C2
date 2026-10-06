@@ -1,17 +1,18 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { registerLocaleData } from '@angular/common';
-import localeEsAr from '@angular/common/locales/es-AR';
 
 import { routes } from './app.routes';
-
-// Formato argentino para el pipe currency (ej: "$ 4.500" y no "$4,500.00"), una sola vez para toda la app
-// Si no puedo usar esto, hago una pipecustom?
-registerLocaleData(localeEsAr);
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withComponentInputBinding())
+    provideRouter(routes, withComponentInputBinding()),
+    // PWA: el service worker deja instalar la app y que funcione en segundo plano.
+    // Solo anda en el build de producción (con ng serve está apagado)
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    })
   ]
 };

@@ -5,14 +5,9 @@
     </a>
     <nav class="navegacion-sitio">
       <a routerLink="/cartelera" [class.activo]="seccionActiva() === 'Cartelera'">Cartelera</a>
-      @if (usuarioActual()?.rol === roles.EMPLEADO) {
-        <a routerLink="/validar" [class.activo]="seccionActiva() === 'Validar QR'">Validar QR</a> <!-- Placeholder para lo del QR, capaz lo pongo en otro lado -->
-      } @else if (usuarioActual()?.rol === roles.ADMIN) {
-        <a routerLink="/admin" [class.activo]="seccionActiva() === 'Admin'">Admin</a> <!-- Otro placeholder -->
-      }
-      @for (enlace of enlaces(); track enlace) { <!-- Este es un placeholder viejo, me parece que va a desaparecer. -->
-        <!-- Enlaces extra (ruta = texto en minúsculas) -->
-        <a [routerLink]="'/' + enlace.toLowerCase()" [class.activo]="seccionActiva() === enlace">{{ enlace }}</a>
+      <!-- La pantalla del rol (Validar QR o Admin), si tiene -->
+      @if (enlace(); as enlace) {
+        <a [routerLink]="enlace.ruta" [class.activo]="seccionActiva() === enlace.texto">{{ enlace.texto }}</a>
       }
     </nav>
   </div>

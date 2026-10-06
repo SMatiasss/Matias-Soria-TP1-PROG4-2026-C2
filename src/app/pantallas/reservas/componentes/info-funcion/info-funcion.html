@@ -1,0 +1,14 @@
+<app-card-pelicula [pelicula]="funcion().pelicula" />
+<h3 class="titulo-tarjeta-pelicula">{{ funcion().pelicula.titulo }}</h3>
+<!-- Datos de la función -->
+<div class="etiquetas-funcion">
+  <app-badge [texto]="funcion().formato" />
+  <app-badge [texto]="funcion().idioma" />
+</div>
+<p class="dato-funcion">{{ fechaTexto() }} · {{ horaTexto() }}</p>
+<p class="dato-funcion">{{ funcion().sala.nombre }}</p>
+@if (funcion().pelicula.restriccion_edad) {
+  <p class="aviso-edad">
+    Película apta para mayores de {{ funcion().pelicula.restriccion_edad }} años. Debe ir acompañado de un adulto.
+  </p>
+}

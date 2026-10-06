@@ -43,10 +43,8 @@ export class Detalle {
     // Si la película no existe o no está visible, RLS no la devuelve y se muestra "No encontramos esa película"
     const pelicula = await this.db.findById('peliculas', id);
 
-    // Consulta, mi funciones service tiene un sola sola función, conviene borrar el service
-    // y colocar "cargarFuncionesDePelicula()" acá ya que solo se usa acá?
     const funciones = await this.fs.cargarFuncionesDePelicula(id); 
-    // Otra consulta, podría usar await Promise.all() ? para que las cargas de arriba se hagan a la vez en vez de que espere a la anterior.
+    // Consulta, podría usar await Promise.all() ? para que las cargas de arriba se hagan a la vez en vez de que espere a la anterior.
 
     this.pelicula.set(pelicula);
     this.funciones.set(funciones);

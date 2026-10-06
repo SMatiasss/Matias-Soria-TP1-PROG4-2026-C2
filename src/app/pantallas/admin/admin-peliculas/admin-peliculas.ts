@@ -2,11 +2,15 @@ import { Component, inject, signal } from '@angular/core';
 import { SeccionAdmin } from '../componentes/seccion-admin/seccion-admin';
 import { FormularioPelicula } from './componentes/formulario-pelicula/formulario-pelicula';
 import { EstadoVacio } from '../../../globales/componentes/estado-vacio/estado-vacio';
+import { Alerta } from '../../../globales/componentes/alerta/alerta';
+import { FechaPipe } from '../../../globales/pipes/fecha.pipe';
+import { PrecioPipe } from '../../../globales/pipes/precio.pipe';
+import { EdadPipe } from '../../../globales/pipes/edad.pipe';
 import { DbService } from '../../../logica/services/db.service';
 import { Pelicula } from '../../../logica/modelos/peliculas';
 
 @Component({
-  imports: [SeccionAdmin, FormularioPelicula, EstadoVacio],
+  imports: [SeccionAdmin, FormularioPelicula, EstadoVacio, Alerta, FechaPipe, PrecioPipe, EdadPipe],
   selector: 'app-admin-peliculas',
   styleUrl: './admin-peliculas.css',
   templateUrl: './admin-peliculas.html',
@@ -17,7 +21,8 @@ export class AdminPeliculas {
   // Todas, también las que no son visibles (al admin RLS se las devuelve)
   peliculas = signal<Pelicula[]>([]);
   cargando = signal(true);
-  errorLista = signal<string | null>(null);
+  // si no se pudo cambiar la visibilidad, se avisa en un modal
+  error = signal<string | null>(null);
   // para sugerirlos en el formulario, en orden alfabético como en la cartelera
   generosExistentes = signal<string[]>([]);
 
@@ -66,20 +71,13 @@ export class AdminPeliculas {
   }
 
   async cambiarVisible(pelicula: Pelicula, evento: Event) {
-    this.errorLista.set(null);
     const cambiada = await this.db.update('peliculas', pelicula.id, { visible: !pelicula.visible });
     if (!cambiada) {
-      this.errorLista.set(`No se pudo cambiar la visibilidad de ${pelicula.titulo}.`);
+      this.error.set(`No se pudo cambiar la visibilidad de ${pelicula.titulo}.`);
       // vuelve el tilde a como estaba
       (evento.target as HTMLInputElement).checked = pelicula.visible;
       return;
     }
     await this.cargarPeliculas();
-  }
-
-  // la base la guarda como AAAA-MM-DD y acá se muestra como DD/MM/AAAA
-  fechaTexto(fecha: string) {
-    const [año, mes, dia] = fecha.split('-');
-    return `${dia}/${mes}/${año}`;
   }
 }

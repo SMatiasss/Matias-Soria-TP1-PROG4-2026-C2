@@ -3,22 +3,22 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { SelectorFecha } from '../../../../../globales/componentes/selector-fecha/selector-fecha';
 import { Badge } from '../../../../../globales/componentes/badge/badge';
 import { Alerta } from '../../../../../globales/componentes/alerta/alerta';
-import { PeliculasService } from '../../../../../logica/services/peliculas.service';
+import { DbService } from '../../../../../logica/services/db.service';
 import { StorageService } from '../../../../../logica/services/storage.service';
+import { PeliculasService } from '../../../../../logica/services/peliculas.service';
 import { Pelicula, PeliculaFormulario, RESTRICCIONES_EDAD } from '../../../../../logica/modelos/peliculas';
-import { sinTildes } from '../../../../../logica/utilidades/sin-tildes.util';
+import { nombreEnLista } from '../../../../../logica/utilidades/nombre-en-lista.util';
 // date-fns, la misma que usa el selector de fecha: addYears suma o resta años,
 // format arma el texto "AAAA-MM-DD" y parseISO lo vuelve a leer como fecha local
 import { addYears, format, parseISO } from 'date-fns';
 
-// La preventa solo sirve si la película todavía no se estrenó: el estreno tiene que ser después de hoy.
-// Las fechas "AAAA-MM-DD" se pueden comparar como texto: "2026-10-04" > "2026-10-03"
+// la preventa solo sirve si el estreno es después de hoy (las fechas AAAA-MM-DD se comparan como texto)
 function estrenaDespuesDeHoy(fecha: string | null) {
   if (!fecha) return false;
   return fecha > format(new Date(), 'yyyy-MM-dd');
 }
 
-// Con la preventa habilitada (y un estreno que todavía no pasó), tiene que tener precio y cuántos días antes abre
+// con preventa (y el estreno todavía no pasó) tiene que tener precio y días
 function preventaCompletaValidator(grupo: AbstractControl) {
   if (!grupo.get('preventa_habilitada')?.value || !estrenaDespuesDeHoy(grupo.get('fecha_estreno')?.value)) return null;
   const precio = grupo.get('preventa_precio')?.value;
@@ -33,8 +33,9 @@ function preventaCompletaValidator(grupo: AbstractControl) {
   templateUrl: './formulario-pelicula.html',
 })
 export class FormularioPelicula implements OnInit {
-  private ps = inject(PeliculasService);
+  private db = inject(DbService);
   private stg = inject(StorageService);
+  private ps = inject(PeliculasService);
 
   // null = película nueva
   pelicula = input<Pelicula | null>(null);
@@ -45,8 +46,7 @@ export class FormularioPelicula implements OnInit {
   guardado = output<void>();
 
   imagen = signal<File | null>(null);
-  // Lo que se ve en el recuadro de la imagen: la recién elegida o, al editar, la que ya tenía.
-  // createObjectURL es del navegador: arma una dirección temporal para mostrar el archivo antes de subirlo
+  // la imagen del recuadro: la recién elegida o la que ya tenía. createObjectURL la muestra antes de subirla
   vistaPrevia = computed(() => {
     const archivo = this.imagen();
     if (archivo) return URL.createObjectURL(archivo);
@@ -67,19 +67,19 @@ export class FormularioPelicula implements OnInit {
     if (pelicula) return pelicula.fecha_estreno;
     return format(new Date(), 'yyyy-MM-dd');
   });
-  // y dejan elegir de 1 año antes a 1 año después de esa fecha: el rango del selector empieza 1 año antes y dura 2
+  // y dejan elegir un año para cada lado de esa fecha
   fechaBaseEstreno = computed(() => addYears(parseISO(this.fechaInicial()), -1));
 
   formulario = new FormGroup(
     {
-      titulo: new FormControl('', Validators.required),
-      sinopsis: new FormControl('', Validators.required),
+      titulo: new FormControl('', [Validators.required, Validators.pattern(/\S/)]),
+      sinopsis: new FormControl('', [Validators.required, Validators.pattern(/\S/)]),
       duracion_minutos: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
       // los elegidos, se agregan y se sacan con agregarGenero y quitarGenero
       generos: new FormControl<string[]>([], Validators.required),
       restriccion_edad: new FormControl<number | null>(null),
-      // la llena el selector de fecha
-      fecha_estreno: new FormControl<string | null>(null, Validators.required),
+      // arranca en la fecha que muestran las ruedas (ngOnInit) y la cambia el selector al moverlas
+      fecha_estreno: new FormControl<string | null>(null),
       visible: new FormControl(true),
       preventa_habilitada: new FormControl(false),
       preventa_precio: new FormControl<number | null>(null),
@@ -88,8 +88,10 @@ export class FormularioPelicula implements OnInit {
     { validators: preventaCompletaValidator },
   );
 
-  // al editar, el formulario arranca con los datos de la película
+  // el estreno arranca en la fecha que muestran las ruedas (hoy si es nueva), así se guarda sin moverlas.
+  // Al editar arranca con los datos de la película
   ngOnInit() {
+    this.formulario.controls.fecha_estreno.setValue(this.fechaInicial());
     const pelicula = this.pelicula();
     if (!pelicula) return;
     this.formulario.reset(pelicula);
@@ -102,10 +104,10 @@ export class FormularioPelicula implements OnInit {
     return estrenaDespuesDeHoy(this.formulario.controls.fecha_estreno.value);
   }
 
-  // Si ya hay un género igual, sin importar mayúsculas ni tildes, se usa ese. Uno nuevo va con la primera letra en mayúscula.
-  // La base hace lo mismo al guardar (compara con clave_genero y crea los nuevos), acá es para ver el nombre final antes
+  // si ya hay un género igual (sin contar mayúsculas ni tildes) se usa ese, si no va con mayúscula al principio
   agregarGenero(campo: HTMLInputElement) {
-    const escrito = campo.value.trim();
+    // sin espacios de más: la tabla generos acepta uno solo entre palabras
+    const escrito = campo.value.trim().replace(/\s+/g, ' ');
     if (!escrito) return;
     // la tabla generos solo acepta letras y espacios: con otra cosa fallaría todo el guardado
     const soloLetras = /^[a-záéíóúüñ ]+$/i;
@@ -114,9 +116,7 @@ export class FormularioPelicula implements OnInit {
     campo.value = '';
 
     const elegidos = this.formulario.controls.generos.value as string[];
-    const comparable = (genero: string) => sinTildes(genero).toLowerCase();
-    const existente = [...this.generosExistentes(), ...elegidos].find((genero) => comparable(genero) === comparable(escrito));
-    const genero = existente ? existente : escrito[0].toUpperCase() + escrito.slice(1).toLowerCase();
+    const genero = nombreEnLista(escrito, [...this.generosExistentes(), ...elegidos]);
 
     if (!elegidos.includes(genero)) this.formulario.controls.generos.setValue([...elegidos, genero]);
   }
@@ -169,12 +169,19 @@ export class FormularioPelicula implements OnInit {
       preventa_dias_antes: conPreventa ? valores.preventa_dias_antes : null,
     };
 
-    const error = await this.ps.guardarPelicula(editada ? editada.id : null, datos);
+    // los géneros que todavía no están en la tabla se agregan antes, para que aparezcan como sugerencia
+    const nuevos = valores.generos.filter((genero) => !this.generosExistentes().includes(genero));
+    if (nuevos.length && (await this.ps.agregarGeneros(nuevos))) {
+      this.guardando.set(false);
+      this.error.set('No se pudieron guardar los géneros nuevos. Intentá de nuevo.');
+      return;
+    }
+
+    const error = await this.db.guardar('peliculas', editada ? editada.id : null, datos);
 
     this.guardando.set(false);
     if (error) {
-      // P0001 es el código de los "raise exception" de nuestros triggers (ej: la duración nueva pisa otra función).
-      // Ese mensaje ya está escrito para el admin. Cualquier otro error es técnico, por eso va uno general
+      // P0001: el mensaje de un trigger (ej: la duración nueva pisa otra función), si no uno general
       if (error.code === 'P0001') this.error.set(error.message);
       else this.error.set('No se pudo guardar la película. Revisá los datos e intentá de nuevo.');
       return;

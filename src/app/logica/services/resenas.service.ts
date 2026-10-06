@@ -20,6 +20,16 @@ export class ReseñasService {
     this.resenasDePelicula().length ? this.promedio().toFixed(1).replace('.', ',') : '–',
   );
 
+  // Las reseñas que escribió un usuario: de ahí sale la calificación que le puso a cada película que vio (perfil)
+  async cargarReseñasDeUsuario(usuarioId: string) {
+    const { data, error } = await this.sup.Sup.from('resenas').select('*').eq('usuario_id', usuarioId);
+    if (error) {
+      console.error('No se pudieron cargar tus reseñas', error);
+      return [];
+    }
+    return data as Reseña[];
+  }
+
   async cargarReseñasDePelicula(peliculaId: string) {
     const { data, error } = await this.sup.Sup.from('resenas')
       .select('*')

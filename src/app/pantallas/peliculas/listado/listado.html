@@ -17,7 +17,11 @@
   <div class="grilla-cartelera">
     @for (p of peliculasFiltradas(); track p.id) {
       <div class="item-cartelera">
-        <app-card-pelicula class="tarjeta-con-enlace" [pelicula]="p" [routerLink]="['/pelicula', p.id]" />
+        <!-- Si todavía no se estrenó, el póster lleva "Próximamente" -->
+        <app-card-pelicula
+          class="tarjeta-con-enlace" [pelicula]="p" [routerLink]="['/pelicula', p.id]"
+          [proximamente]="idsPeliculasPorEstrenar().includes(p.id)"
+        />
         <h3 class="titulo-tarjeta-pelicula" [routerLink]="['/pelicula', p.id]">{{ p.titulo }}</h3>
         <!-- Géneros de la película, no lo tiene la card. -->
         <div class="generos-pelicula">

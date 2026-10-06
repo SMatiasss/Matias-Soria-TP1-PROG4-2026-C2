@@ -56,22 +56,6 @@ a {
   font-size: 15px;
 }
 
-.navegacion-sitio a {
-  text-decoration: none;
-  padding: 12px 0;
-  color: var(--color-texto-suave);
-  border-bottom: 2px solid transparent;
-}
-
-.navegacion-sitio a:hover {
-  color: var(--color-texto);
-}
-
-.navegacion-sitio a.active {
-  color: var(--color-texto);
-  border-bottom-color: var(--color-acento);
-}
-
 .cuenta-usuario {
   display: flex;
   align-items: center;
@@ -79,14 +63,21 @@ a {
   font-size: 15px;
 }
 
+/* los links y el nombre del usuario: grises, blancos al apuntarlos y con el subrayado rojo en la pantalla en la que está */
+.navegacion-sitio a,
 .nombre-usuario {
   padding: 12px 0;
-  color: var(--color-texto);
+  color: var(--color-texto-suave);
   border-bottom: 2px solid transparent;
 }
 
-.nombre-usuario:hover,
-.nombre-usuario.active {
+.navegacion-sitio a:hover,
+.nombre-usuario:hover {
+  color: var(--color-texto);
+}
+
+.navegacion-sitio a.activo,
+.nombre-usuario.activo {
   border-bottom-color: var(--color-acento);
 }
 

@@ -48,3 +48,11 @@
 .badge-restriccion {
   right: 4px;
 }
+
+/* "Próximamente" abajo a la izquierda, también a 4px del borde. Siempre en 11px: con más letra no entra en los pósters chicos (más vendidas) */
+.badge-proximamente {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  --tamano-badge: 11px;
+}

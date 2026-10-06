@@ -1,4 +1,82 @@
 <app-seccion-admin titulo="Reportes" descripcion="Facturación y entradas vendidas por día, lo más visto y lo más vendido">
-  <!-- Pendiente -->
-  <app-estado-vacio mensaje="Todavía no hay nada acá." />
+  <div class="reportes">
+    <!-- Período: semana o mes, con flechas para ir al anterior o al siguiente. Exportar baja la tabla de facturación -->
+    <div class="cabecera-seccion">
+      <div class="pestanas-admin">
+        <button type="button" class="pestana-admin" [class.activa]="modo() === 'semana'" (click)="cambiarModo('semana')">Semana</button>
+        <button type="button" class="pestana-admin" [class.activa]="modo() === 'mes'" (click)="cambiarModo('mes')">Mes</button>
+      </div>
+      <button type="button" class="boton-flecha" (click)="moverPeriodo(-1)">‹</button>
+      <span class="nombre-periodo">{{ nombrePeriodo() }}</span>
+      <button type="button" class="boton-flecha" (click)="moverPeriodo(1)">›</button>
+      <div class="botones-exportar">
+        <button type="button" class="boton-secundario boton-chico" [disabled]="cargando() || !ventasPorDia().length" (click)="exportarPdf()">
+          Exportar PDF
+        </button>
+        <button type="button" class="boton-secundario boton-chico" [disabled]="cargando() || !ventasPorDia().length" (click)="exportarExcel()">
+          Exportar Excel
+        </button>
+      </div>
+    </div>
+
+    <div class="columnas-reportes">
+      <!-- Facturación y entradas vendidas de cada día -->
+      <section class="bloque-reporte">
+        <h3 class="titulo-panel">Facturación por día</h3>
+        @if (ventasPorDia().length) {
+          <div class="tabla-reporte">
+            <table>
+              <thead>
+                <tr><th>Día</th><th>Entradas vendidas</th><th>Facturación</th></tr>
+              </thead>
+              <tbody>
+                @for (venta of ventasPorDia(); track venta.dia) {
+                  <tr>
+                    <td>{{ venta.dia | fecha }}</td>
+                    <td>{{ venta.entradas }}</td>
+                    <td>{{ venta.facturacion | precio }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr><th>Total</th><th>{{ totalEntradas() }}</th><th>{{ totalFacturado() | precio }}</th></tr>
+              </tfoot>
+            </table>
+          </div>
+        } @else if (!cargando()) {
+          <app-estado-vacio mensaje="No hubo ventas en este período." />
+        }
+      </section>
+
+      <div class="columna-graficos">
+        <!-- Películas más vistas: las entradas vendidas para las funciones de esos días -->
+        <section class="bloque-reporte">
+          <h3 class="titulo-panel">Películas más vistas (entradas)</h3>
+          @if (peliculasMasVistas().length) {
+            <app-grafico-barras [datos]="peliculasMasVistas()" />
+          } @else if (!cargando()) {
+            <app-estado-vacio mensaje="No hubo funciones con entradas vendidas en este período." />
+          }
+        </section>
+
+        <!-- Lo más vendido del candy, contando también lo que viene adentro de los combos -->
+        <section class="bloque-reporte">
+          <h3 class="titulo-panel">Lo más vendido del candy (unidades)</h3>
+          @if (candyMasVendido().length) {
+            <p class="destacado-reporte">El que más se vende: <b>{{ candyMasVendido()[0].etiqueta }}</b></p>
+            <app-grafico-barras [datos]="candyMasVendido()" />
+          } @else if (!cargando()) {
+            <app-estado-vacio mensaje="No se vendió nada del candy en este período." />
+          }
+        </section>
+      </div>
+    </div>
+  </div>
 </app-seccion-admin>
+
+<!-- Si no se pudo abrir la ventana del PDF, el aviso va en un modal -->
+@if (error(); as mensaje) {
+  <div class="superposicion">
+    <app-alerta titulo="No se pudo exportar" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
+  </div>
+}

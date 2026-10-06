@@ -1,0 +1,231 @@
+/* excepción al display:block: en escritorio la compra entra justa en el alto de la ventana */
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+/* pasos a la izquierda, resumen fijo a la derecha */
+.pagina-reservas {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 20px;
+}
+
+.columna-pasos {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== pestañas de pasos ===== */
+
+.pasos {
+  flex-shrink: 0;
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--borde-panel);
+}
+
+.paso {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 18px;
+  border: 0;
+  background: transparent;
+  color: var(--color-texto-apagado);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.paso:hover:enabled,
+.paso.activo {
+  color: var(--color-texto);
+}
+
+.paso:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.numero-paso {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--borde-fuerte);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.paso.activo .numero-paso {
+  border-color: var(--color-acento);
+  background: var(--color-acento);
+}
+
+/* línea roja debajo del paso activo */
+.paso.activo::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-acento);
+}
+
+.paso.hecho .numero-paso {
+  border-color: var(--color-ok);
+  color: var(--color-ok);
+}
+
+/* ===== contenido de cada paso ===== */
+
+.contenido-paso {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.contenido-paso-butacas {
+  gap: 20px;
+}
+
+.panel-butacas {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
+/* espacio reservado: el aviso aparece sin mover el botón */
+.aviso-butacas {
+  height: 18px;
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 18px;
+  color: var(--color-error);
+  white-space: nowrap;
+}
+
+.contenido-paso-columna {
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cuerpo-paso {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+.subtitulo-paso {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pie-paso {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* el botón de pesos o puntos va a la izquierda, lejos de Volver y Continuar */
+.boton-moneda {
+  margin-right: auto;
+}
+
+/* ===== resumen ===== */
+
+.panel-resumen {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sin-funcion {
+  padding: 96px 16px;
+}
+
+/* pantallas angostas: se apila y vuelve el scroll de página */
+@media (max-width: 1100px) {
+  :host {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .pagina-reservas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cuerpo-paso {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 760px) {
+  .pagina-reservas {
+    padding: 16px;
+  }
+
+  .contenido-paso-butacas {
+    flex-direction: column;
+  }
+
+  .paso {
+    padding: 0 10px;
+    font-size: 13.5px;
+  }
+}
+
+/* ===== compra hecha ===== */
+
+.compra-lista {
+  width: 460px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.compra-lista p {
+  margin: 0;
+}
+
+.codigo-compra {
+  font-size: 22px;
+  letter-spacing: 2px;
+}
+
+.qr-compra {
+  width: 200px;
+}
+
+.botones-compra {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}

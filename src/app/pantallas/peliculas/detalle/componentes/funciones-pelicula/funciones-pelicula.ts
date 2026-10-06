@@ -1,16 +1,17 @@
 import { Component, computed, input, signal } from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Funcion } from '../../../../../logica/modelos/peliculas';
 import { sinRepetidos } from '../../../../../logica/utilidades/sin-repetidos.util';
 
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, TitleCasePipe],
   selector: 'app-funciones-pelicula',
   styleUrl: './funciones-pelicula.css',
   templateUrl: './funciones-pelicula.html',
 })
 export class FuncionesPelicula {
-  // Vienen ordenadas por fecha y sin las que ya empezaron, viene como ["3 oct 13:00", "3 oct 18:00", ...]
+  // Vienen ordenadas por fecha y sin las que ya empezaron. El inicio de cada una trae fecha y hora en UTC, ej: "2026-10-05T16:00:00+00:00"
   funciones = input.required<Funcion[]>();
 
   // 'sv-SE' da la fecha local como AAAA-MM-DD: sirve como clave de cada día
@@ -25,7 +26,7 @@ export class FuncionesPelicula {
   primerDiaVisible = signal(0); 
 
   // Solo los días que tienen funciones, no un calendario fijo
-  // funciones viene con un formato como "3 oct 13:00", hay que extraer el dia exacto para los botones de los dias.
+  // De cada inicio se saca solo el día en hora local (AAAA-MM-DD, con diaDeFuncion) para los botones de los días.
   diasConFunciones = computed(() => sinRepetidos(this.funciones().map((f) => this.diaDeFuncion(f))));
   
   // Se muestran 7 días a la vez, las flechas corren la tira
@@ -41,7 +42,7 @@ export class FuncionesPelicula {
   opcionesFormato = computed(() => sinRepetidos(this.funciones().map((f) => f.formato)));
   opcionesIdioma = computed(() => sinRepetidos(this.funciones().map((f) => f.idioma)));
 
-  // Funciones del día elegido que pasan los filtros, agrupadas por formato + idioma (ej: "2D · castellano")
+  // Funciones del día elegido que pasan los filtros, agrupadas por formato + idioma (ej: "2D · Castellano")
   gruposDeFunciones = computed(() => {
     const grupos: { formato: string; idioma: string; funciones: Funcion[] }[] = []; // Es el array que se ve cada fila con las funciones.
     for (const funcion of this.funciones()) { 
@@ -51,7 +52,7 @@ export class FuncionesPelicula {
       if (this.filtroFormato() && funcion.formato !== this.filtroFormato()) continue;
       if (this.filtroIdioma() && funcion.idioma !== this.filtroIdioma()) continue;
 
-      // Busca si ya existen filas con el formato y genero selecionado y la elige.
+      // Busca si ya existe la fila con ese formato e idioma y la elige.
       const grupo = grupos.find((g) => g.formato === funcion.formato && g.idioma === funcion.idioma); 
 
       // Si encontró la fila en el paso anterior, agrega la nueva funcion a la fila. 

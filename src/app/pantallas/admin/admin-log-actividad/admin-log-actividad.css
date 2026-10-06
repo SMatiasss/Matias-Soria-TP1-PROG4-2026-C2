@@ -1,0 +1,12 @@
+/* la lista y sus filas usan las clases globales del admin (.lista-admin, .fila-admin, .fecha-fila) */
+
+/* quién lo hizo, a la derecha. Un correo muy largo se corta con "..." */
+.actor-registro {
+  flex-shrink: 0;
+  max-width: 280px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  color: var(--color-texto-suave);
+}

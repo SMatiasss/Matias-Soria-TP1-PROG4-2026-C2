@@ -1,0 +1,113 @@
+/* la cabecera arriba, y las dos columnas ocupan el resto del panel */
+.reportes {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* el período entre las flechas. Ancho fijo para que las flechas no se muevan al cambiarlo */
+.nombre-periodo {
+  display: inline-block;
+  width: 210px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* "octubre de 2026" → "Octubre de 2026" */
+.nombre-periodo::first-letter {
+  text-transform: uppercase;
+}
+
+/* los botones de exportar, a la derecha */
+.botones-exportar {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+/* la facturación a la izquierda, y los dos gráficos uno arriba del otro a la derecha */
+.columnas-reportes {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.columna-graficos {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* cada reporte en su recuadro */
+.bloque-reporte {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--borde-panel);
+}
+
+/* el estado vacío, centrado en lo que queda del recuadro */
+.bloque-reporte app-estado-vacio {
+  margin: auto 0;
+}
+
+.destacado-reporte {
+  margin: -6px 0 14px;
+  font-size: 14.5px;
+  color: var(--color-texto-suave);
+}
+
+/* con muchos días la tabla scrollea por dentro, y los nombres de las columnas y el total quedan fijos */
+.tabla-reporte {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.tabla-reporte table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.tabla-reporte th,
+.tabla-reporte td {
+  padding: 9px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde-panel);
+}
+
+/* los números a la derecha, así se comparan fácil */
+.tabla-reporte th + th,
+.tabla-reporte td + td {
+  text-align: right;
+}
+
+.tabla-reporte thead th {
+  position: sticky;
+  top: 0;
+  background: var(--color-superficie);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--color-placeholder);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tabla-reporte tfoot th {
+  position: sticky;
+  bottom: 0;
+  border-top: 1px solid var(--borde-fuerte);
+  border-bottom: 0;
+  background: var(--color-superficie);
+  font-weight: 600;
+}

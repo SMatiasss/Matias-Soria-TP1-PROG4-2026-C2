@@ -1,4 +1,34 @@
 <app-seccion-admin titulo="Empleados" descripcion="Las cuentas de los empleados, que validan los QR de las entradas y del candy bar">
-  <!-- Pendiente -->
-  <app-estado-vacio mensaje="Todavía no hay nada acá." />
+  <!-- Lista de empleados -->
+  <div class="columna-lista lista-empleados">
+    <div class="cabecera-seccion">
+      <h2 class="titulo-panel">Todos los empleados</h2>
+      <button type="button" class="boton-principal boton-chico" (click)="agregar()">Agregar empleado</button>
+    </div>
+
+    @if (empleados().length) {
+      <ul class="lista-admin">
+        @for (empleado of empleados(); track empleado.id) {
+          <li class="fila-admin">
+            <div class="datos-fila">
+              <span class="titulo-fila">{{ empleado.nombre }} {{ empleado.apellido }}</span>
+              <span class="detalle-fila">{{ empleado.email }}</span>
+            </div>
+            <button type="button" class="boton-secundario boton-chico" (click)="editar(empleado)">Editar</button>
+          </li>
+        }
+      </ul>
+    } @else if (!cargando()) {
+      <app-estado-vacio mensaje="Todavía no hay empleados." />
+    }
+
+    <!-- Agregar o editar: un recuadro arriba de la lista, que queda de fondo -->
+    @if (formularioAbierto()) {
+      <div class="superposicion-admin">
+        <app-formulario-empleado
+          [empleado]="empleadoEditado()" (cancelado)="formularioAbierto.set(false)" (guardado)="alGuardar()"
+        />
+      </div>
+    }
+  </div>
 </app-seccion-admin>

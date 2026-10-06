@@ -3,6 +3,7 @@ import { Pelicula } from '../modelos/peliculas';
 import { SupabaseService } from './supabase';
 import { DbService } from './db.service';
 import { sinRepetidos } from '../utilidades/sin-repetidos.util';
+import { addDays } from 'date-fns';
 
 @Service()
 export class PeliculasService {
@@ -22,10 +23,19 @@ export class PeliculasService {
   // Top 3 por entradas vendidas, ya ordenadas desde la consulta
   peliculasMasVendidas = signal<Pelicula[]>([]);
 
-  // Estrenan después de hoy. T00:00 hace que la fecha del estreno se lea en hora local y no en UTC
-  proximosEstrenos = computed(() =>
+  // las que todavía no se estrenaron (con T00:00 la fecha se lee en hora local)
+  peliculasPorEstrenar = computed(() =>
     this.peliculasVisibles().filter((p) => new Date(`${p.fecha_estreno}T00:00`) > new Date()),
   );
+
+  // sus ids, para marcarlas con "Próximamente"
+  idsPeliculasPorEstrenar = computed(() => this.peliculasPorEstrenar().map((p) => p.id));
+
+  // "Próximamente" del inicio: solo las que se estrenan en las próximas 3 semanas
+  proximosEstrenos = computed(() => {
+    const enTresSemanas = addDays(new Date(), 21);
+    return this.peliculasPorEstrenar().filter((p) => new Date(`${p.fecha_estreno}T00:00`) <= enTresSemanas);
+  });
 
   async cargarPeliculasVisibles() {
     const { data, error } = await this.sup.Sup.from('peliculas')
@@ -52,7 +62,7 @@ export class PeliculasService {
       console.error('No se pudieron cargar las películas más vendidas', error);
       return;
     }
-    // sin tipos generados, supabase-js cree que la relación es un array, pero en runtime es un objeto (muchos-a-uno)
+    // supabase-js lo tipa como array pero llega un objeto
     this.peliculasMasVendidas.set(data.map((fila) => fila.pelicula as unknown as Pelicula));
   }
 
@@ -68,6 +78,17 @@ export class PeliculasService {
     this.idsPeliculasConAlerta.set(data.map((a) => a.pelicula_id));
   }
 
+  // agrega géneros a la tabla. Si ya hay uno igual (sin contar mayúsculas ni tildes, columna clave) no lo repite.
+  // Devuelve el error o null
+  async agregarGeneros(nombres: string[]) {
+    const { error } = await this.sup.Sup.from('generos').upsert(
+      nombres.map((nombre) => ({ nombre })),
+      { onConflict: 'clave', ignoreDuplicates: true },
+    );
+    if (error) console.error('No se pudieron agregar los géneros', error);
+    return error;
+  }
+
   async activarAlertaDeEstreno(peliculaId: string, usuarioId: string) {
     const creada = await this.db.create('alertas_estreno', {
       pelicula_id: peliculaId,
@@ -75,16 +96,5 @@ export class PeliculasService {
     });
 
     if (creada) this.idsPeliculasConAlerta.update((ids) => [...ids, peliculaId]);
-  }
-
-  // Crea (id null) o modifica una película. Como db.create / db.update, pero devuelve el error de la base
-  // (o null si salió bien) para que el admin pueda ver el mensaje de un trigger que rechazó el cambio
-  async guardarPelicula(id: string | null, datos: object) {
-    const { error } = id
-      ? await this.sup.Sup.from('peliculas').update(datos).eq('id', id)
-      : await this.sup.Sup.from('peliculas').insert(datos);
-
-    if (error) console.error('No se pudo guardar la película', error);
-    return error;
   }
 }

@@ -64,7 +64,7 @@
             <p class="error-campo">Solo letras y espacios</p>
           }
           @for (genero of formulario.controls.generos.value; track genero) {
-            <button type="button" class="quitar-genero" [title]="'Sacar ' + genero" (click)="quitarGenero(genero)">
+            <button type="button" class="quitar-chip" [title]="'Sacar ' + genero" (click)="quitarGenero(genero)">
               <app-badge [texto]="genero + ' ✕'" />
             </button>
           } @empty {
@@ -123,11 +123,8 @@
           [fecha]="fechaInicial()"
           (fechaChange)="formulario.controls.fecha_estreno.setValue($event)"
         />
-        <p class="error-campo">
-          @if (formulario.controls.fecha_estreno.invalid && intentoGuardar()) {
-            Mové las ruedas para elegir la fecha de estreno
-          }
-        </p>
+        <!-- sin mensaje: el estreno siempre tiene fecha. Queda el lugar para que no se corra lo de abajo -->
+        <p class="error-campo"></p>
       </div>
 
       <!-- Preventa: solo si el estreno es después de hoy. Sus campos aparecen solo si está tildada, y lo de abajo se corre solo -->
@@ -156,7 +153,7 @@
           }
         </div>
       } @else {
-        <p class="aviso-preventa">La preventa solo se puede habilitar si el estreno es después de hoy</p>
+        <p class="aviso-formulario">La preventa solo se puede habilitar si el estreno es después de hoy</p>
       }
 
       <label class="casilla">

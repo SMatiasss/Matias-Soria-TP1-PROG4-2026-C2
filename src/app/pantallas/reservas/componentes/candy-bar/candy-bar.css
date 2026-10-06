@@ -1,0 +1,66 @@
+/* el host mismo es la grilla: una columna por categoría, separadas por una línea */
+:host {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+  width: 100%;
+}
+
+.categoria-candy {
+  min-width: 0;
+  padding-left: 24px;
+  border-left: 1px solid color-mix(in srgb, var(--color-texto) 6%, transparent);
+}
+
+.categoria-candy:nth-child(3n + 1) {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.titulo-categoria {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.item-candy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-texto) 6%, transparent);
+}
+
+.item-candy:last-child {
+  border-bottom: 0;
+}
+
+.info-candy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nombre-candy {
+  font-size: 14px;
+}
+
+.precio-candy {
+  font-size: 12.5px;
+  color: var(--color-placeholder);
+}
+
+@media (max-width: 760px) {
+  :host {
+    grid-template-columns: 1fr;
+  }
+
+  .categoria-candy {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
