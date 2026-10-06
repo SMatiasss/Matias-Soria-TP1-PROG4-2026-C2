@@ -1,0 +1,24 @@
+/* como en login: el recuadro se centra en el alto que queda debajo del header */
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+.panel-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 32px 48px;
+  text-align: center;
+}
+
+.codigo-error {
+  margin: 0;
+  font-size: 64px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-acento);
+}

@@ -8,7 +8,7 @@ import { EmpleadoNuevo } from '../modelos/usuarios';
 export class UsuariosService {
   private sup = inject(SupabaseService);
 
-  // Profe, puedo usar un segundo cliente de Supabase? signUp deja logueado con la cuenta nueva, y con el de
+  // Un segundo cliente de Supabase solo para crear cuentas: signUp deja logueado con la cuenta nueva, y con el de
   // siempre el admin pasaría a ser el empleado. Este no guarda la sesión, así la del admin no se toca
   private altaDeCuentas = createClient(environment.SUPABASE_URL, environment.SUPABASE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false, storageKey: 'alta-de-empleados' },

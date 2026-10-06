@@ -8,6 +8,8 @@ export class ReseñasService {
 
   // Las reseñas de la película que se está mirando
   resenasDePelicula = signal<Reseña[]>([]);
+  // la película de la última carga: si llega tarde la respuesta de una anterior, no se usa
+  private peliculaPedida = '';
 
   // El promedio sale de las reseñas ya cargadas para la lista, no hace falta otra consulta
   promedio = computed(() => {
@@ -31,10 +33,14 @@ export class ReseñasService {
   }
 
   async cargarReseñasDePelicula(peliculaId: string) {
+    // al cambiar de película la lista se vacía mientras carga, así no se ven las reseñas de la anterior
+    if (peliculaId !== this.peliculaPedida) this.resenasDePelicula.set([]);
+    this.peliculaPedida = peliculaId;
     const { data, error } = await this.sup.Sup.from('resenas')
       .select('*')
       .eq('pelicula_id', peliculaId);
 
+    if (peliculaId !== this.peliculaPedida) return;
     if (error) {
       console.error('No se pudieron cargar las reseñas', error);
       return;

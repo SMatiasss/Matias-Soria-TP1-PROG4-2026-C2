@@ -1,5 +1,5 @@
 <!-- Cupón nuevo o editado, en un recuadro arriba de la lista -->
-<form class="modal-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+<form class="modal-admin" [formGroup]="formulario" (ngSubmit)="guardar()">
   <h2 class="titulo-panel">{{ cupon() ? 'Editar ' + cupon()?.codigo : 'Nuevo cupón' }}</h2>
 
   <div class="fila-campos">

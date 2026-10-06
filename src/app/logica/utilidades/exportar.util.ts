@@ -12,8 +12,7 @@ function escribir(pdf: import('jspdf').jsPDF, texto: string, y: number, tamano: 
   return y + renglones.length * tamano * 0.42 + 2.5;
 }
 
-// Profe, puedo usar jspdf y qrcode? qrcode arma la imagen del QR y jsPDF arma el .pdf y lo baja.
-// Se cargan recién al tocar el botón, con import()
+// qrcode arma la imagen del QR y jsPDF arma el .pdf y lo baja. Se cargan recién al tocar el botón, con import()
 export async function descargarEntradaPdf(entrada: EntradaPdf) {
   const { jsPDF } = await import('jspdf');
   const qrcode = await import('qrcode');
@@ -52,8 +51,8 @@ export async function descargarExcel(filas: object[], hoja: string, archivo: str
   writeFile(libro, archivo);
 }
 
-// Profe, puedo usar window.open() y print()? abro una ventana con la tabla y el navegador la imprime
-// ("Guardar como PDF"). Devuelve false si el navegador no dejó abrir la ventana
+// window.open() abre una ventana con la tabla y print() la imprime ("Guardar como PDF").
+// Devuelve false si el navegador no dejó abrir la ventana
 export function imprimirPdf(titulo: string, contenido: string) {
   const ventana = window.open('', '_blank');
   if (!ventana) return false;

@@ -111,7 +111,6 @@
   gap: 6px;
 }
 
-/* pantallas angostas: una sola columna, y si no entra scrollea el panel */
 /* pantallas angostas: las columnas quedan una abajo de la otra (global) y la sinopsis deja de estirarse */
 @media (max-width: 1100px) {
   .campo-sinopsis {

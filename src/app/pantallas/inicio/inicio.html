@@ -8,6 +8,8 @@
     </div>
     @if (peliculasMasVendidas().length) {
       <app-mas-vendidas [peliculas]="peliculasMasVendidas()" [idsPeliculasPorEstrenar]="idsPeliculasPorEstrenar()" />
+    } @else if (cargandoMasVendidas()) {
+      <app-estado-vacio mensaje="Cargando..." />
     } @else {
       <app-estado-vacio mensaje="Todavía no hay ventas registradas." />
     }
@@ -32,7 +34,7 @@
       </div>
       <a class="boton-secundario boton-chico" routerLink="/cartelera">Ver más</a>
     } @else {
-      <app-estado-vacio mensaje="No hay películas en cartelera." />
+      <app-estado-vacio [mensaje]="cargandoPeliculas() ? 'Cargando...' : 'No hay películas en cartelera.'" />
     }
   </section>
 
@@ -49,7 +51,7 @@
       <div class="cabecera-columna">
         <h2 class="titulo-columna">Próximamente</h2>
       </div>
-      <app-estado-vacio mensaje="No hay estrenos programados por ahora." />
+      <app-estado-vacio [mensaje]="cargandoPeliculas() ? 'Cargando...' : 'No hay estrenos programados por ahora.'" />
     }
   </section>
 </main>

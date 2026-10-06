@@ -37,7 +37,7 @@ export class AdminPeliculas {
   }
 
   // Los de la tabla generos, también los que todavía no usa ninguna película.
-  // Cuando una película trae uno nuevo, la base lo agrega sola (trigger generos_validos)
+  // Cuando una película trae uno nuevo, el formulario lo agrega a la tabla al guardarla (agregarGeneros)
   private async cargarGeneros() {
     const generos = await this.db.findAll('generos');
     this.generosExistentes.set(generos.map((genero) => genero.nombre).sort((a, b) => a.localeCompare(b)));

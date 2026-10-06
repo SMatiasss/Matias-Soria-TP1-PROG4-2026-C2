@@ -21,6 +21,8 @@ export class Listado {
   // las que todavía no se estrenaron llevan el badge "Próximamente"
   idsPeliculasPorEstrenar = this.ps.idsPeliculasPorEstrenar;
   hayPeliculas = computed(() => this.ps.peliculasVisibles().length > 0);
+  // mientras llegan dice "Cargando..." y no "No hay películas"
+  cargandoPeliculas = this.ps.cargandoVisibles;
   textoBusqueda = signal('');
   generosSeleccionados = signal<string[]>([]);
 

@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Header } from '../../../globales/componentes/header/header';
 import { AuthService } from '../../../logica/services/auth.service';
 import { UsuarioLogin } from '../../../logica/modelos/usuarios';
@@ -14,10 +14,12 @@ import { UsuarioLogin } from '../../../logica/modelos/usuarios';
 export class Login {
   private auths = inject(AuthService);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
 
-  formulario = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    contrasena: new FormControl('', [Validators.required]),
+  // con FormBuilder cada campo es [valor inicial, validators]
+  formulario = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    contrasena: ['', Validators.required],
   });
 
   error = signal<string | null>(null);

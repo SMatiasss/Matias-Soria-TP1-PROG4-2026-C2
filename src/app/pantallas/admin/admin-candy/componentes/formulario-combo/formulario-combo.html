@@ -1,5 +1,5 @@
 <!-- Combo nuevo o editado, en un recuadro arriba de la lista -->
-<form class="modal-admin modal-combo" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+<form class="modal-admin modal-combo" [formGroup]="formulario" (ngSubmit)="guardar()">
   <h2 class="titulo-panel">{{ combo() ? 'Editar ' + combo()?.nombre : 'Nuevo combo' }}</h2>
 
   <!-- Dos columnas para que el recuadro no sea tan alto: nombre y precios a la izquierda, productos y opciones a la derecha -->
@@ -52,7 +52,11 @@
               }
             }
           </select>
-          <input type="number" min="1" value="1" aria-label="Cantidad" #cantidadElegida />
+          <!-- Enter agrega el producto, no guarda el combo (como en los géneros de una película) -->
+          <input
+            type="number" min="1" value="1" aria-label="Cantidad" #cantidadElegida
+            (keydown.enter)="$event.preventDefault(); agregarProducto(productoElegido, cantidadElegida)"
+          />
           <button type="button" class="boton-secundario" (click)="agregarProducto(productoElegido, cantidadElegida)">Agregar</button>
         </div>
         @if (errorCantidad()) {

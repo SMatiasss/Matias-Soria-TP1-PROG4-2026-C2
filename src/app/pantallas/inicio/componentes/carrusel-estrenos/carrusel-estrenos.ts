@@ -18,8 +18,7 @@ export class CarruselEstrenos {
 
   mover(direccion: number) {
     const lista = this.listaEstrenos().nativeElement;
-    
-    // Puedo usar scrollby? es mas que nada para que se vea bien la animacion en la página web.
+    // scrollBy con smooth: la lista se mueve animada, un tercio de su alto (una película)
     lista.scrollBy({ top: (lista.clientHeight / 3) * direccion, behavior: 'smooth' });
   }
 }

@@ -31,7 +31,7 @@ export class ReseñasPelicula {
   error = signal<string | null>(null);
 
   constructor() {
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
+    // carga las reseñas de la película, y otra vez si cambia
     effect(() => {
       this.cargarReseñas(this.peliculaId());
     });

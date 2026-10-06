@@ -31,7 +31,9 @@
         </div>
       </div>
     } @empty {
-      @if (hayPeliculas()) {
+      @if (cargandoPeliculas()) {
+        <app-estado-vacio mensaje="Cargando..." />
+      } @else if (hayPeliculas()) {
         <app-estado-vacio mensaje="No hay películas que coincidan con la búsqueda." />
       } @else {
         <app-estado-vacio mensaje="No hay películas." />

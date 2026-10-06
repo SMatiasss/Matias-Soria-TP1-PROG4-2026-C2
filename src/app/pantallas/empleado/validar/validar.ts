@@ -61,21 +61,31 @@ export class Validar implements OnDestroy {
     else this.aviso.set('Listo: candy entregado.');
   }
 
-  // Profe, puedo usar getUserMedia y un canvas? getUserMedia prende la cámara (el navegador pide permiso).
+  // getUserMedia prende la cámara (el navegador pide permiso).
   // Cada 300 ms copio un cuadro del video a un canvas para tener sus píxeles, y jsQR busca un QR en ellos
   async escanear() {
+    // ya cuenta como escaneando mientras el navegador pide permiso: así un segundo click no prende otra cámara
+    if (this.escaneando()) return;
+    this.escaneando.set(true);
     this.aviso.set(null);
     try {
       // facingMode environment: en el celular, la cámara de atrás
       this.camara = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
     } catch {
+      this.escaneando.set(false);
       this.aviso.set('No se pudo prender la cámara. Escribí el código a mano.');
       return;
     }
-    this.escaneando.set(true);
+    // si mientras se prendía tocó "Cerrar cámara" o salió de la pantalla, se apaga enseguida
+    if (!this.escaneando()) {
+      this.cerrarCamara();
+      return;
+    }
     const video = this.video().nativeElement;
     video.srcObject = this.camara;
     await video.play();
+    // si la cerró mientras arrancaba el video, no se empieza a leer
+    if (!this.escaneando()) return;
 
     const canvas = document.createElement('canvas');
     const contexto = canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D;

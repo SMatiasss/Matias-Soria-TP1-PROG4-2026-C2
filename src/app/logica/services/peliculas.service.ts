@@ -1,16 +1,21 @@
 import { computed, inject, Service, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Pelicula } from '../modelos/peliculas';
 import { SupabaseService } from './supabase';
 import { DbService } from './db.service';
 import { sinRepetidos } from '../utilidades/sin-repetidos.util';
+import { environment } from '../../../environments/environment';
 import { addDays } from 'date-fns';
 
 @Service()
 export class PeliculasService {
   private sup = inject(SupabaseService);
   private db = inject(DbService);
+  private http = inject(HttpClient);
 
   peliculasVisibles = signal<Pelicula[]>([]);
+  // true hasta que llega la primera carga: mientras tanto las pantallas dicen "Cargando..." y no "No hay películas"
+  cargandoVisibles = signal(true);
 
   // ids de películas con alerta de estreno activada por el usuario actual
   idsPeliculasConAlerta = signal<string[]>([]);
@@ -20,7 +25,7 @@ export class PeliculasService {
     sinRepetidos(this.peliculasVisibles().flatMap((p) => p.generos)).sort((a, b) => a.localeCompare(b)),
   );
 
-  // Top 3 por entradas vendidas, ya ordenadas desde la consulta
+  // Top 3 por entradas vendidas, ya ordenadas desde la consulta. Las carga el inicio con traerPeliculasMasVendidas
   peliculasMasVendidas = signal<Pelicula[]>([]);
 
   // las que todavía no se estrenaron (con T00:00 la fecha se lee en hora local)
@@ -44,26 +49,19 @@ export class PeliculasService {
 
     if (error) {
       console.error('No se pudieron cargar las películas', error);
+      this.cargandoVisibles.set(false);
       return;
     }
     this.peliculasVisibles.set(data);
+    this.cargandoVisibles.set(false);
   }
 
-  // Vista ventas_por_pelicula: cuenta las entradas confirmadas sin exponer las entradas de nadie.
-  // El join con peliculas filtra las visibles antes del limit: así siempre llegan 3 visibles (si hay)
-  async cargarPeliculasMasVendidas() {
-    const { data, error } = await this.sup.Sup.from('ventas_por_pelicula')
-      .select('pelicula:peliculas!inner(*)')
-      .eq('pelicula.visible', true)
-      .order('vendidas', { ascending: false })
-      .limit(3);
-
-    if (error) {
-      console.error('No se pudieron cargar las películas más vendidas', error);
-      return;
-    }
-    // supabase-js lo tipa como array pero llega un objeto
-    this.peliculasMasVendidas.set(data.map((fila) => fila.pelicula as unknown as Pelicula));
+  // HttpClient a la API REST de Supabase (la clave la agrega el interceptor). La vista ventas_por_pelicula cuenta las entradas
+  // sin exponer las de nadie, y el join con peliculas filtra las visibles antes del limit: así llegan 3 visibles (si hay)
+  traerPeliculasMasVendidas() {
+    return this.http.get<{ pelicula: Pelicula }[]>(`${environment.SUPABASE_URL}/rest/v1/ventas_por_pelicula`, {
+      params: { select: 'pelicula:peliculas!inner(*)', 'pelicula.visible': 'eq.true', order: 'vendidas.desc', limit: 3 },
+    });
   }
 
   async cargarAlertasDeUsuario(usuarioId: string) {

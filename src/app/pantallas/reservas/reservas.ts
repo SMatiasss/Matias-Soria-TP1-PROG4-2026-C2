@@ -228,13 +228,12 @@ export class Reservas implements OnDestroy {
   });
 
   constructor() {
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
+    // carga la función del id de la ruta, y otra vez si cambia
     effect(() => {
       this.cargarFuncion(this.funcionId());
     });
 
     // Los beneficios solo existen con sesión. Si se cierra la sesión acá, se quitan los aplicados
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
     effect(() => {
       if (this.usuario()) {
         this.cargarCupones();
@@ -253,7 +252,6 @@ export class Reservas implements OnDestroy {
     });
 
     // Guarda lo elegido mientras la pestaña esté abierta, así recargar la página no lo borra
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
     effect(() => {
       if (this.cargando()) return; // mientras carga todavía no se recuperó lo guardado, no hay que pisarlo
       const elegido = {

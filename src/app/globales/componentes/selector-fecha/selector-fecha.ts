@@ -104,7 +104,7 @@ export class SelectorFecha implements OnInit, AfterViewInit {
   private readonly scrollAnio = viewChild.required<ElementRef<HTMLDivElement>>('scrollAnio');
 
   constructor() {
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
+    // cada vez que se mueve una rueda, le avisa la fecha elegida al padre (fechaChange)
     effect(() => {
       // hasta que no se mueve una rueda no hay fecha elegida
       if (!this.ruedaMovida()) return;
@@ -126,7 +126,7 @@ export class SelectorFecha implements OnInit, AfterViewInit {
     this.indiceDia.set(this.dias().indexOf(inicial.getDate()));
   }
 
-  // Profe, puedo usar ngAfterViewInit? pone las ruedas en la fecha inicial cuando ya existe el DOM
+  // cuando ya existe el DOM, pone las ruedas en la fecha inicial
   ngAfterViewInit() {
     this.scrollDia().nativeElement.scrollTop = this.indiceDia() * this.altoItem;
     this.scrollMes().nativeElement.scrollTop = this.indiceMes() * this.altoItem;

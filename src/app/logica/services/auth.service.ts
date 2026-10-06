@@ -24,7 +24,10 @@ export class AuthService {
   // Después de una compra cambian los puntos, el crédito o el cupón de primera compra: se vuelve a leer el perfil
   async recargarPerfil() {
     const usuario = this.usuarioActual();
-    if (usuario) this.usuarioActual.set(await this.db.findById('usuarios', usuario.id));
+    if (!usuario) return;
+    // si la consulta falla queda el perfil que había: con null parecería que se cerró la sesión
+    const perfil = await this.db.findById('usuarios', usuario.id);
+    if (perfil) this.usuarioActual.set(perfil);
   }
 
   // Si el perfil no existe (primer login después del registro) se crea con los datos que mandó signUp.
@@ -37,8 +40,9 @@ export class AuthService {
     }
 
     const metadatos = usuario.user_metadata;
+    // upsert con ignoreDuplicates: si dos llamadas lo crean a la vez, la segunda no hace nada en vez de dar error
     const { data, error } = await this.sup.Sup.from('usuarios')
-      .upsert( // Upsert está mejor porque actualiza si ya existe, aparte acepta opciones
+      .upsert(
         {
           id: usuario.id,
           email: usuario.email,
@@ -49,7 +53,7 @@ export class AuthService {
           color_ojos: metadatos['color_ojos'],
           dias_vacaciones_por_anio: metadatos['dias_vacaciones_por_anio'],
         },
-        { onConflict: 'id', ignoreDuplicates: true }, // onconflict: que busco que sea igual, ignoreduplicates: true, si es duplicada no hace nada
+        { onConflict: 'id', ignoreDuplicates: true },
       )
       .select();
 
@@ -90,9 +94,9 @@ export class AuthService {
     return null;
   }
 
-  // data trae la sesión iniciada. Pero, no hace falta usarla acá porque onAuthStateChange carga el perfil
+  // el perfil lo carga onAuthStateChange cuando se inicia la sesión
   async iniciarSesion(usuario: UsuarioLogin) {
-    const { data, error } = await this.sup.Auth.signInWithPassword({
+    const { error } = await this.sup.Auth.signInWithPassword({
       email: usuario.email,
       password: usuario.contrasena,
     });
@@ -108,7 +112,7 @@ export class AuthService {
     await this.sup.Auth.signOut();
   }
 
-  // Usuario actual es mas lento, con esto tomo dsde el localStorage para que los guards funcionen sin problemas
+  // usuarioActual llega más lento, con esto tomo la sesión desde el localStorage para que los guards funcionen sin problemas
   async haySesion() {
     const { data } = await this.sup.Auth.getSession();
     return data.session !== null;

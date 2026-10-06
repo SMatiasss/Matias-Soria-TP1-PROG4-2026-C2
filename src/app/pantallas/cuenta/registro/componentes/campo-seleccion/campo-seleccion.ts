@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-// Desplegable de una lista cerrada con su etiqueta y el error de campo obligatorio (tipo de sangre, color de ojos)
+// Desplegable de una lista cerrada con su etiqueta (tipo de sangre, color de ojos). Los errores van adentro, con ng-content
 @Component({
   imports: [ReactiveFormsModule],
   selector: 'app-campo-seleccion',

@@ -1,4 +1,4 @@
-// actualmente en uso en: admin-log-actividad.ts
+// actualmente en uso en: admin-log-actividad.ts, log-actividad.service.ts
 
 export interface RegistroActividad {
   id: string;

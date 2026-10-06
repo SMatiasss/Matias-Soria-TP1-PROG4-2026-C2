@@ -31,8 +31,8 @@ export class ReservasService {
     return data?.[0] ?? null;
   }
 
-  // Profe, puedo usar Realtime de Supabase? queda un canal abierto y la base avisa al instante cada butaca
-  // que se vende o se libera. Devuelve el canal para cerrarlo al salir
+  // Realtime: queda un canal abierto y la base avisa al instante cada butaca que se vende o se libera.
+  // Devuelve el canal para cerrarlo al salir
   escucharButacas(funcionId: string, alCambiar: (butacaId: string, ocupada: boolean) => void) {
     return this.sup.Sup.channel('funcion:' + funcionId)
       .on('broadcast', { event: 'butaca' }, (mensaje) => alCambiar(mensaje['payload']['butaca_id'], mensaje['payload']['ocupada']))

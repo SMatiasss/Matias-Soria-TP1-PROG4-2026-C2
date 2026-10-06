@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SelectorFecha } from '../../../../../globales/componentes/selector-fecha/selector-fecha';
 import { Badge } from '../../../../../globales/componentes/badge/badge';
 import { Alerta } from '../../../../../globales/componentes/alerta/alerta';
@@ -75,8 +75,8 @@ export class FormularioPelicula implements OnInit {
       titulo: new FormControl('', [Validators.required, Validators.pattern(/\S/)]),
       sinopsis: new FormControl('', [Validators.required, Validators.pattern(/\S/)]),
       duracion_minutos: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
-      // los elegidos, se agregan y se sacan con agregarGenero y quitarGenero
-      generos: new FormControl<string[]>([], Validators.required),
+      // los elegidos: un FormControl por género, agregarGenero hace push y quitarGenero removeAt
+      generos: new FormArray<FormControl<string | null>>([], Validators.required),
       restriccion_edad: new FormControl<number | null>(null),
       // arranca en la fecha que muestran las ruedas (ngOnInit) y la cambia el selector al moverlas
       fecha_estreno: new FormControl<string | null>(null),
@@ -95,6 +95,8 @@ export class FormularioPelicula implements OnInit {
     const pelicula = this.pelicula();
     if (!pelicula) return;
     this.formulario.reset(pelicula);
+    // reset no crea los controles del FormArray: se agrega uno por cada género que ya tiene
+    for (const genero of pelicula.generos) this.formulario.controls.generos.push(new FormControl(genero));
     // sin preventa los días se guardan vacíos: si la habilita, arranca en 7 como en una película nueva
     if (!pelicula.preventa_dias_antes) this.formulario.controls.preventa_dias_antes.setValue(7);
   }
@@ -118,12 +120,12 @@ export class FormularioPelicula implements OnInit {
     const elegidos = this.formulario.controls.generos.value as string[];
     const genero = nombreEnLista(escrito, [...this.generosExistentes(), ...elegidos]);
 
-    if (!elegidos.includes(genero)) this.formulario.controls.generos.setValue([...elegidos, genero]);
+    if (!elegidos.includes(genero)) this.formulario.controls.generos.push(new FormControl(genero));
   }
 
-  quitarGenero(genero: string) {
-    const elegidos = this.formulario.controls.generos.value as string[];
-    this.formulario.controls.generos.setValue(elegidos.filter((elegido) => elegido !== genero));
+  // i: la posición del género en el FormArray
+  quitarGenero(i: number) {
+    this.formulario.controls.generos.removeAt(i);
   }
 
   alElegirImagen(evento: Event) {

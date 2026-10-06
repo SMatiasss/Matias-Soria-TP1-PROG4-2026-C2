@@ -6,9 +6,10 @@
       <option [value]="opcion">{{ opcion }}</option>
     }
   </select>
+  <!-- Los mensajes de error los pone el padre adentro del componente (ng-content): se ven cuando se tocó el campo -->
   <p class="error-campo">
-    @if (control().invalid && control().touched) {
-      Campo obligatorio
+    @if (control().touched) {
+      <ng-content />
     }
   </p>
 </div>

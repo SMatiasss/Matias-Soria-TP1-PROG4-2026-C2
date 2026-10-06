@@ -54,7 +54,6 @@ export class Perfil {
 
   constructor() {
     // Las compras se cargan cuando llega el usuario, y otra vez si cambia (después de cancelar se recarga el perfil)
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
     effect(() => {
       const usuario = this.usuario();
       if (usuario) this.cargar(usuario.id);

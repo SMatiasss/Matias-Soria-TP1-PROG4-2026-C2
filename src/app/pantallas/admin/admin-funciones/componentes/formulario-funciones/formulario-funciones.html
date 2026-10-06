@@ -1,5 +1,5 @@
 <!-- Programar funciones: ocupa todo el panel, Cancelar vuelve a la lista -->
-<form class="formulario-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); programar()">
+<form class="formulario-admin" [formGroup]="formulario" (ngSubmit)="programar()">
   <div class="cabecera-seccion">
     <h2 class="titulo-panel">
       @if (funcion(); as editada) {

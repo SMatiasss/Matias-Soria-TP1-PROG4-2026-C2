@@ -14,8 +14,8 @@ por empleados y un panel de administración con reportes y log de actividad.
 ## Tecnologías
 
 - **Angular 22**: componentes standalone, signals (`signal`, `computed`, `effect`), formularios reactivos, rutas con
-  carga diferida (`loadComponent` / `loadChildren`) y guards por rol.
-- **Supabase**: Auth (registro e inicio de sesión), Postgres con RLS, Storage (pósters) y Realtime (butacas).
+  carga diferida (`loadComponent` / `loadChildren`), guards por rol y HttpClient con un interceptor (más vendidas del inicio).
+- **Supabase**: Auth (registro e inicio de sesión), Postgres con RLS, Storage (pósters) y Realtime (butacas y log de actividad).
 - **Librerías**, todas cargadas con `import()` recién cuando se usan, para no agrandar la carga inicial:
   - `date-fns`: cuentas con fechas (semanas, meses, días de cada mes del selector de ruedas).
   - `xlsx` (SheetJS): exportar la facturación a Excel.
@@ -73,14 +73,15 @@ src/app/
 - **Un solo QR por compra.** El código del pedido sirve para las entradas y para el candy. Cada cosa se marca como
   usada al validarla y no se puede volver a usar.
 - **Log de actividad por triggers.** Quién creó una función, cambió un precio o validó un QR lo anotan triggers de la
-  base: nadie puede escribir en el log a mano.
+  base: nadie puede escribir en el log a mano. La pantalla del log escucha la tabla con Realtime (`postgres_changes`),
+  así lo nuevo aparece sin recargar.
 - **Reportes.** Lo vendido del candy se guarda en cada venta con lo que traía el combo en ese momento, así editar un
   combo no cambia los reportes viejos.
 - **Fechas sin calendario nativo.** El cliente pidió no usar date-pickers que obliguen a scrollear: hay un selector de
   ruedas propio (`selector-fecha`) que solo deja elegir fechas válidas.
 - **Pantallas sin scroll.** Cada pantalla entra en una ventana de escritorio común, y las listas largas scrollean
   adentro de su panel.
-- **PWA.** La app se puede instalar y funciona en segundo plano (manifest y service worker de Angular).
+- **PWA.** La app se puede instalar y funciona en segundo plano (manifest con el logo de la página y service worker de Angular).
 
 ## Pendiente
 

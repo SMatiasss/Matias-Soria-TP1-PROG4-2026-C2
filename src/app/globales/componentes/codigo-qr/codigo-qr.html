@@ -1,4 +1,4 @@
-<!-- El QR de la compra, para mostrarlo desde el celular -->
-@if (imagen(); as src) {
+<!-- El QR de la compra, para mostrarlo desde el celular. async espera a que la imagen esté lista -->
+@if (imagen() | async; as src) {
   <img class="imagen-qr" [src]="src" [alt]="'Código QR ' + texto()" />
 }

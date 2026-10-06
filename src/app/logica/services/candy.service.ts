@@ -19,7 +19,7 @@ export class CandyService {
     return data;
   }
 
-  // Profe, puedo usar rpc()? llama a la función guardar_combo, que guarda el combo y sus productos juntos.
+  // rpc llama a la función guardar_combo de la base, que guarda el combo y sus productos juntos.
   // id null = combo nuevo. Devuelve el error o null
   async guardarCombo(id: string | null, combo: ComboFormulario) {
     const { error } = await this.sup.Sup.rpc('guardar_combo', {

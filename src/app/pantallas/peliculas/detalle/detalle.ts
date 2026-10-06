@@ -31,7 +31,7 @@ export class Detalle {
   formatos = computed(() => sinRepetidos(this.funciones().map((f) => f.formato)));
 
   constructor() {
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice
+    // carga la película del id de la ruta, y otra vez si cambia
     effect(() => {
       this.cargarPelicula(this.peliculaId());
     });
@@ -43,8 +43,7 @@ export class Detalle {
     // Si la película no existe o no está visible, RLS no la devuelve y se muestra "No encontramos esa película"
     const pelicula = await this.db.findById('peliculas', id);
 
-    const funciones = await this.fs.cargarFuncionesDePelicula(id); 
-    // Consulta, podría usar await Promise.all() ? para que las cargas de arriba se hagan a la vez en vez de que espere a la anterior.
+    const funciones = await this.fs.cargarFuncionesDePelicula(id);
 
     this.pelicula.set(pelicula);
     this.funciones.set(funciones);

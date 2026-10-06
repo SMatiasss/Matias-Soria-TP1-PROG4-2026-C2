@@ -1,5 +1,5 @@
 <!-- Formulario de alta o edición: ocupa todo el panel, Cancelar vuelve a la lista -->
-<form class="formulario-admin" [formGroup]="formulario" (submit)="$event.preventDefault(); guardar()">
+<form class="formulario-admin" [formGroup]="formulario" (ngSubmit)="guardar()">
   <div class="cabecera-seccion">
     <h2 class="titulo-panel">{{ pelicula() ? 'Editar ' + pelicula()?.titulo : 'Nueva película' }}</h2>
     <button type="button" class="boton-secundario boton-chico" (click)="cancelado.emit()">Cancelar</button>
@@ -63,9 +63,9 @@
           @if (errorGenero()) {
             <p class="error-campo">Solo letras y espacios</p>
           }
-          @for (genero of formulario.controls.generos.value; track genero) {
-            <button type="button" class="quitar-chip" [title]="'Sacar ' + genero" (click)="quitarGenero(genero)">
-              <app-badge [texto]="genero + ' ✕'" />
+          @for (genero of formulario.controls.generos.controls; track genero; let i = $index) {
+            <button type="button" class="quitar-chip" [title]="'Sacar ' + genero.value" (click)="quitarGenero(i)">
+              <app-badge [texto]="genero.value + ' ✕'" />
             </button>
           } @empty {
             <p class="error-campo">

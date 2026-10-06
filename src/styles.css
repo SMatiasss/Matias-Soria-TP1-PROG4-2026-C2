@@ -537,7 +537,7 @@ textarea {
   background: var(--color-superficie);
 }
 
-/* ===== Título dentro de un panel (ej: "Resumen de compra", "Beneficios de tu cuenta") ===== */
+/* ===== Título dentro de un panel (ej: "Resumen de compra", "Cupones") ===== */
 
 .titulo-panel {
   margin: 0 0 14px;

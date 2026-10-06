@@ -61,8 +61,7 @@ export class AdminCandy {
 
   constructor() {
     this.cargar();
-    // Profe, puedo usar effect()? es muy práctico que se ejecute cada vez que un signal se actualice:
-    // acá, cuando aparece el campo de la categoría nueva, le pone el cursor para escribir directo
+    // cuando aparece el campo de la categoría nueva, le pone el cursor para escribir directo
     effect(() => this.campoCategoria()?.nativeElement.focus());
   }
 

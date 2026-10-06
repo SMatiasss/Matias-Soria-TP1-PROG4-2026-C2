@@ -1,4 +1,4 @@
-/* el host mismo es la grilla de los 2 paneles: cupones | crédito y puntos */
+/* el host mismo es la grilla de los 2 paneles: cupones | crédito */
 :host {
   display: grid;
   grid-template-columns: 1fr 1fr;

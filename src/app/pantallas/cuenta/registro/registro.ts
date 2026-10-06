@@ -10,6 +10,7 @@ import {
 import { Header } from '../../../globales/componentes/header/header';
 import { Alerta } from '../../../globales/componentes/alerta/alerta';
 import { SelectorFecha } from '../../../globales/componentes/selector-fecha/selector-fecha';
+import { MensajeError } from '../../../globales/componentes/mensaje-error/mensaje-error';
 import { CampoSeleccion } from './componentes/campo-seleccion/campo-seleccion';
 import { AuthService } from '../../../logica/services/auth.service';
 import { UsuarioRegistro } from '../../../logica/modelos/usuarios';
@@ -28,7 +29,7 @@ function edadMinimaValidator(control: AbstractControl) {
 }
 
 @Component({
-  imports: [Header, Alerta, RouterLink, ReactiveFormsModule, SelectorFecha, CampoSeleccion],
+  imports: [Header, Alerta, RouterLink, ReactiveFormsModule, SelectorFecha, MensajeError, CampoSeleccion],
   selector: 'app-registro',
   styleUrl: './registro.css',
   templateUrl: './registro.html',
@@ -60,6 +61,35 @@ export class Registro {
     },
     { validators: contraseñasCoincidenValidator },
   );
+
+  // getters: el HTML usa nombre.touched en vez de formulario.controls.nombre.touched
+  get nombre() {
+    return this.formulario.controls.nombre;
+  }
+  get apellido() {
+    return this.formulario.controls.apellido;
+  }
+  get tipoSangre() {
+    return this.formulario.controls.tipoSangre;
+  }
+  get colorOjos() {
+    return this.formulario.controls.colorOjos;
+  }
+  get diasVacacionesPorAnio() {
+    return this.formulario.controls.diasVacacionesPorAnio;
+  }
+  get email() {
+    return this.formulario.controls.email;
+  }
+  get contrasena() {
+    return this.formulario.controls.contrasena;
+  }
+  get confirmarContrasena() {
+    return this.formulario.controls.confirmarContrasena;
+  }
+  get fechaNacimiento() {
+    return this.formulario.controls.fechaNacimiento;
+  }
 
   error = signal<string | null>(null);
   cargando = signal(false);
