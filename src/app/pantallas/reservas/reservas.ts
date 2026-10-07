@@ -312,7 +312,11 @@ export class Reservas implements OnDestroy {
   private async cargarCupones() {
     // A un cliente RLS ya le da solo los activos, pero al admin le da todos: por eso el filter de abajo
     const cupones = await this.db.findAll('cupones');
+    const primeraCarga = !this.cuponesActivos().length;
     this.cuponesActivos.set(cupones.filter((c) => c.activo));
+    // el de primera compra arranca aplicado: vale solo en esta compra y, si no se usa, se pierde.
+    // Solo en la primera carga, así no vuelve si lo sacó para usar otro cupón
+    if (primeraCarga && !this.cuponAplicado()) this.cuponAplicado.set(this.cuponPrimeraCompra());
   }
 
   // Lo que cuesta una entrada según la butaca, en pesos o en puntos. La preventa solo cambia el precio en pesos

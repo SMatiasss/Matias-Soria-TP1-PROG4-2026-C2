@@ -87,12 +87,17 @@ export class PeliculasService {
     return error;
   }
 
+  // Devuelve true si la creó. La marca antes de guardarla: así un doble click en "Avisarme" no crea dos alertas
   async activarAlertaDeEstreno(peliculaId: string, usuarioId: string) {
+    if (this.idsPeliculasConAlerta().includes(peliculaId)) return false;
+    this.idsPeliculasConAlerta.update((ids) => [...ids, peliculaId]);
     const creada = await this.db.create('alertas_estreno', {
       pelicula_id: peliculaId,
       usuario_id: usuarioId,
     });
 
-    if (creada) this.idsPeliculasConAlerta.update((ids) => [...ids, peliculaId]);
+    // si no se pudo guardar, el botón vuelve a "Avisarme"
+    if (!creada) this.idsPeliculasConAlerta.update((ids) => ids.filter((id) => id !== peliculaId));
+    return creada;
   }
 }

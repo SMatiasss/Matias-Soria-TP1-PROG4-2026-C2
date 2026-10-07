@@ -1,9 +1,10 @@
-import { Component, effect, inject, OnDestroy } from '@angular/core';
+import { Component, effect, inject, OnDestroy, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Header } from '../../globales/componentes/header/header';
 import { CardPelicula } from '../../globales/componentes/card-pelicula/card-pelicula';
 import { EstadoVacio } from '../../globales/componentes/estado-vacio/estado-vacio';
+import { Alerta } from '../../globales/componentes/alerta/alerta';
 import { MasVendidas } from './componentes/mas-vendidas/mas-vendidas';
 import { CarruselEstrenos } from './componentes/carrusel-estrenos/carrusel-estrenos';
 import { PeliculasService } from '../../logica/services/peliculas.service';
@@ -13,7 +14,7 @@ import { NotificacionesService } from '../../logica/services/notificaciones.serv
 import { Pelicula } from '../../logica/modelos/peliculas';
 
 @Component({
-  imports: [Header, CardPelicula, EstadoVacio, MasVendidas, CarruselEstrenos, RouterLink],
+  imports: [Header, CardPelicula, EstadoVacio, Alerta, MasVendidas, CarruselEstrenos, RouterLink],
   selector: 'app-inicio',
   styleUrl: './inicio.css',
   templateUrl: './inicio.html',
@@ -35,6 +36,8 @@ export class Inicio implements OnDestroy {
   // El de más vendidas lo prende y lo apaga el interceptor de HttpClient
   cargandoMasVendidas = this.cgs.cargando;
   cargandoPeliculas = this.ps.cargandoVisibles;
+  // la alerta se guardó pero el navegador no deja mandarle notificaciones: se le avisa en un modal
+  sinNotificaciones = signal(false);
 
   // el pedido de más vendidas: si se sale de la pantalla antes de que llegue, se cancela
   private suscripcion: Subscription;
@@ -65,8 +68,8 @@ export class Inicio implements OnDestroy {
       this.router.navigateByUrl('/login');
       return;
     }
-    await this.ps.activarAlertaDeEstreno(pelicula.id, usuario.id);
+    if (!(await this.ps.activarAlertaDeEstreno(pelicula.id, usuario.id))) return;
     // para que el aviso le llegue como notificación, aunque no tenga la página abierta
-    await this.ns.suscribir(usuario.id);
+    if (!(await this.ns.suscribir(usuario.id))) this.sinNotificaciones.set(true);
   }
 }

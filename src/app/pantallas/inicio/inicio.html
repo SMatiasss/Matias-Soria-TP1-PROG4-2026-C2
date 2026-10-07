@@ -55,3 +55,15 @@
     }
   </section>
 </main>
+
+<!-- La alerta quedó guardada, pero sin permiso para notificaciones el aviso no le va a llegar -->
+@if (sinNotificaciones()) {
+  <div class="superposicion">
+    <app-alerta
+      titulo="Activá las notificaciones"
+      descripcion="La alerta quedó guardada, pero este navegador no nos deja mandarte notificaciones. Para recibir el aviso, permití las notificaciones de esta página."
+      textoBoton="Entendido"
+      (continuar)="sinNotificaciones.set(false)"
+    />
+  </div>
+}

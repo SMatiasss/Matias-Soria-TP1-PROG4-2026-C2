@@ -57,8 +57,8 @@ npm run build      # build de producción, en dist/
 - La conexión a Supabase está en `src/environments/` (URL, clave pública y clave pública VAPID). La base (tablas,
   policies, funciones y triggers) ya está creada en Supabase.
 - El service worker (instalar la app y las notificaciones) solo se activa en el build de producción, no con `ng serve`.
-- El código de la Edge Function está en `supabase/functions/avisar-estrenos/`. Se publica desde el dashboard de
-  Supabase, sin verificación de JWT, con los secretos `VAPID_PUBLIC`, `VAPID_SECRET` y `VAPID_MAIL`.
+- La Edge Function `avisar-estrenos` se edita y se publica desde el dashboard de Supabase, sin verificación de JWT,
+  con los secretos `VAPID_PUBLIC`, `VAPID_SECRET` y `VAPID_MAIL`.
 
 ## Roles
 
@@ -91,7 +91,6 @@ src/app/
     ├── guards/         invitado, sesión, empleado y admin
     ├── interceptors/   agrega la clave de Supabase a los pedidos de HttpClient
     └── utilidades/     funciones sueltas: edad, nombres sin repetir, exportar (PDF, Excel)
-supabase/functions/     la Edge Function de las notificaciones
 ```
 
 ## Decisiones técnicas

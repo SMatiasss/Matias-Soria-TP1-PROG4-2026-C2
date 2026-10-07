@@ -13,9 +13,9 @@ export class NotificacionesService {
   private http = inject(HttpClient);
 
   // Pide permiso para mandarle notificaciones y guarda la suscripción de este navegador.
-  // Si no da permiso (o no hay service worker) no pasa nada: la alerta igual queda guardada
+  // Devuelve false si no se pudo (no dio permiso o el navegador no tiene notificaciones): la alerta igual queda guardada
   async suscribir(usuarioId: string) {
-    if (!this.swPush.isEnabled) return;
+    if (!this.swPush.isEnabled) return false;
     try {
       const suscripcion = await this.swPush.requestSubscription({ serverPublicKey: environment.PUBLIC_VAPID });
       const json = suscripcion.toJSON();
@@ -25,8 +25,9 @@ export class NotificacionesService {
         { onConflict: 'endpoint', ignoreDuplicates: true },
       );
       if (error) console.error('No se pudo guardar la suscripción a las notificaciones', error);
+      return !error;
     } catch {
-      console.warn('No se dio permiso para las notificaciones');
+      return false;
     }
   }
 

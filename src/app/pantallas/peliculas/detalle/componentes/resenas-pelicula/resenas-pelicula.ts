@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, inject, input, OnChanges, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CalificacionEstrellas } from '../../../../../globales/componentes/calificacion-estrellas/calificacion-estrellas';
@@ -13,7 +13,7 @@ import { ReseñasService } from '../../../../../logica/services/resenas.service'
   styleUrl: './resenas-pelicula.css',
   templateUrl: './resenas-pelicula.html',
 })
-export class ReseñasPelicula {
+export class ReseñasPelicula implements OnChanges {
   private auths = inject(AuthService);
   private db = inject(DbService);
   private res = inject(ReseñasService);
@@ -30,11 +30,9 @@ export class ReseñasPelicula {
   publicando = signal(false);
   error = signal<string | null>(null);
 
-  constructor() {
-    // carga las reseñas de la película, y otra vez si cambia
-    effect(() => {
-      this.cargarReseñas(this.peliculaId());
-    });
+  // Angular lo llama cada vez que cambia un input (la primera vez también): carga las reseñas de la película, y otra vez si cambia
+  ngOnChanges() {
+    this.cargarReseñas(this.peliculaId());
   }
 
   private async cargarReseñas(peliculaId: string) {
