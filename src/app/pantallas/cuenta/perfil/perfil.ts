@@ -86,6 +86,7 @@ export class Perfil {
       sala: compra.funcion.sala.nombre,
       butacas: compra.entradas.map((e) => e.butaca.fila + e.butaca.columna + (e.tipo_butaca === TIPOS_BUTACA.VIP ? ' (VIP)' : '')),
       candy: compra.items_candy.map((item) => `${item.cantidad} × ${item.nombre}`),
+      puntos: compra.puntos_ganados,
     });
   }
 

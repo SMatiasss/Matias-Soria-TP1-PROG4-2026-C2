@@ -48,17 +48,21 @@ ng serve
 
 ## Decisiones técnicas
 
-- **La compra y la cancelación las hace la base.** Las funciones `comprar` y `cancelar_compra` de Postgres recalculan
-  todo con los precios guardados y guardan todo junto o nada, así nadie paga menos cambiando el código del navegador.
-- **Permisos con RLS.** Cada tabla tiene sus policies, y lo que solo puede hacer el admin pasa por funciones que lo
-  revisan. Los guards por rol solo ordenan la navegación, lo que protege los datos es la base.
-- **Sala automática.** Un trigger asigna la primera sala libre y rechaza funciones a menos de 30 minutos de la anterior.
-- **Butacas y log en tiempo real.** Con Realtime de Supabase, sin recargar la página.
-- **Log de actividad por triggers.** Lo anota la base, nadie puede escribir en el log a mano.
 - **Alertas de estreno.** Al abrir la página se llama a la Edge Function `avisar-estrenos`, que manda los push.
-- **Lo vendido guarda su precio.** Cada entrada y cada producto del candy se guardan con lo que costaron, así cambiar un
-  precio o un combo no cambia el historial ni los reportes.
+- **Sala automática.** Un trigger asigna la primera sala libre y rechaza funciones a menos de 30 minutos de la anterior.
 - **Un solo QR por compra.** Es el código del pedido, y cada entrada y cada producto se marcan como usados por separado.
-- **Alta de empleados.** Para crear un empleado se usa un cliente de Supabase aparte, porque el registro deja
-  iniciada la sesión con la cuenta nueva y el admin perdería la suya.
 - **Selector de fechas propio.** Unas ruedas que solo dejan elegir fechas válidas, en vez del calendario del navegador.
+- **Log de actividad por triggers.** Lo anota la base, así nadie lo escribe a mano, y aparece sin recargar (Realtime).
+- **Lo vendido guarda su precio.** Así cambiar un precio o un combo no cambia el historial ni los reportes.
+- **Alta de empleados.** Con un cliente de Supabase aparte, porque el registro inicia sesión con la cuenta nueva y el
+  admin perdería la suya.
+- **Permisos con RLS.** Cada tabla tiene sus policies y lo que es solo del admin pasa por funciones que lo revisan. Los
+  guards solo ordenan la navegación: lo que protege los datos es la base.
+- **La compra y la cancelación las hace la base.** `comprar` y `cancelar_compra` recalculan con los precios guardados y
+  guardan todo junto o nada, así nadie paga menos tocando el navegador.
+- **Crédito automático.** Si hay crédito, se usa en cada compra hasta que se termine y el resto se paga con plata. Así
+  se combina con el otro medio de pago, como pidió el cliente, y no queda saldo sin usar.
+- **Butacas en tiempo real al comprar.** Una butaca se marca ocupada cuando se compra, no cuando alguien la elige: si
+  no, cualquiera podría tomar todas sin comprar. Si dos eligen la misma, se la queda el primero que paga.
+- **Puntos al validar.** Se suman con la primera validación del QR, no al comprar. Como una compra con algo validado ya
+  no se puede cancelar, nadie puede gastar sus puntos y después cancelarla. El que compra y no va no suma.

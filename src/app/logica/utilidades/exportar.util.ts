@@ -31,6 +31,7 @@ export async function descargarEntradaPdf(entrada: EntradaPdf) {
     y = escribir(pdf, `Película apta para mayores de ${entrada.restriccionEdad} años. Debe ir acompañado de un adulto.`, y + 1, 10, true);
     pdf.setTextColor(0, 0, 0);
   }
+  if (entrada.puntos) y = escribir(pdf, `Esta compra suma ${entrada.puntos.toLocaleString('es-AR')} puntos cuando se valida el QR.`, y + 1, 10, false);
 
   // el QR centrado, con el código abajo por si hay que escribirlo a mano
   pdf.addImage(qr, 'PNG', 25, y + 4, 55, 55);

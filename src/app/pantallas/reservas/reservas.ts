@@ -352,7 +352,7 @@ export class Reservas implements OnDestroy {
   }
 
   // Las entradas que trae un combo no se cobran aparte (cubre las que se pagan igual que el combo, primero las
-  // comunes). De una VIP se cobra la diferencia
+  // comunes). Cada combo trae una entrada común a precio normal
   private descuentoCombos(conPuntos: boolean) {
     const funcion = this.funcion();
     if (!funcion) return 0;
@@ -365,9 +365,11 @@ export class Reservas implements OnDestroy {
     let vipCubiertas = this.combosConEntrada(conPuntos) - comunesCubiertas;
     if (vipCubiertas > vip) vipCubiertas = vip;
 
-    // de una VIP se descuenta el precio de una normal (sin preventa): la diferencia se sigue cobrando
+    // se descuenta como mucho una entrada normal: lo que cueste de más una VIP o una preventa se sigue cobrando,
+    // y una preventa más barata no se suma al combo
     const normal = conPuntos ? funcion.precio_puntos : funcion.precio_base;
-    return comunesCubiertas * this.precioEntrada(TIPOS_BUTACA.NORMAL, conPuntos) + vipCubiertas * normal;
+    const comun = Math.min(this.precioEntrada(TIPOS_BUTACA.NORMAL, conPuntos), normal);
+    return comunesCubiertas * comun + vipCubiertas * normal;
   }
 
   // Lo que avisa la base en tiempo real: otra compra ocupó una butaca, o una cancelación la liberó
@@ -465,6 +467,7 @@ export class Reservas implements OnDestroy {
       sala: funcion.sala.nombre,
       butacas: this.butacasElegidas().map((b) => b.fila + b.columna + (b.tipo === TIPOS_BUTACA.VIP ? ' (VIP)' : '')),
       candy: this.lineasCandy().map((linea) => `${linea.cantidad} × ${linea.nombre}`),
+      puntos: this.puntosAGanar(),
     });
     // cambiaron los puntos, el crédito o el cupón de primera compra del usuario
     await this.auths.recargarPerfil();

@@ -8,6 +8,9 @@
       <app-codigo-qr class="qr-compra" [texto]="entrada.codigo" />
       <p>Tu código es <b class="codigo-compra">{{ entrada.codigo }}</b></p>
       <p class="aviso-formulario">Mostrá el QR en la entrada de la sala y en el candy bar.</p>
+      @if (entrada.puntos) {
+        <p class="aviso-formulario">Los {{ entrada.puntos.toLocaleString('es-AR') }} puntos de esta compra se suman cuando se valide el QR.</p>
+      }
       <div class="botones-compra">
         <button type="button" class="boton-principal" (click)="descargarPdf(entrada)">Descargar entrada (PDF)</button>
         <a class="boton-secundario" routerLink="/">Volver al inicio</a>

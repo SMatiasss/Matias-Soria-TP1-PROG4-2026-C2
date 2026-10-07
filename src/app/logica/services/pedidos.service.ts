@@ -77,7 +77,7 @@ export class PedidosService {
   async cargarVentasPorDia(desde: Date, hasta: Date) {
     const { data, error } = await this.sup.Sup.from('pedidos')
       // hay dos relaciones entre pedidos y entradas: con el nombre de la FK le digo cuál usar
-      .select('total, creado_en, entradas!entradas_pedido_id_fkey(count)')
+      .select('total, credito_usado, creado_en, entradas!entradas_pedido_id_fkey(count)')
       .eq('estado', ESTADOS_PEDIDO.CONFIRMADO)
       .gte('creado_en', desde.toISOString())
       .lt('creado_en', hasta.toISOString())
@@ -94,12 +94,14 @@ export class PedidosService {
       const dia = format(parseISO(pedido.creado_en), 'yyyy-MM-dd');
       // entradas(count) llega como [{ count: 3 }]
       const entradas = pedido.entradas[0].count;
+      // lo pagado con crédito también cuenta: es plata que se cobró en una compra que después se canceló
+      const facturado = pedido.total + pedido.credito_usado;
       const delDia = dias.find((otro) => otro.dia === dia);
       if (delDia) {
         delDia.entradas += entradas;
-        delDia.facturacion += pedido.total;
+        delDia.facturacion += facturado;
       } else {
-        dias.push({ dia, entradas, facturacion: pedido.total });
+        dias.push({ dia, entradas, facturacion: facturado });
       }
     }
     return dias;
