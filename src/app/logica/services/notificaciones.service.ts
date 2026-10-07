@@ -31,7 +31,7 @@ export class NotificacionesService {
     }
   }
 
-  // Sin cron: cada vez que alguien abre la página, la Edge Function revisa si a alguna película con alertas
+  // Cada vez que alguien abre la página, la Edge Function revisa si a alguna película con alertas
   // se le abrió la venta y les manda el push a los que la pidieron (la clave la agrega el interceptor)
   revisarAvisos() {
     this.http.post(`${environment.SUPABASE_URL}/functions/v1/avisar-estrenos`, {}).subscribe({
