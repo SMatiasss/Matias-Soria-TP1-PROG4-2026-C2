@@ -9,6 +9,7 @@ import { CarruselEstrenos } from './componentes/carrusel-estrenos/carrusel-estre
 import { PeliculasService } from '../../logica/services/peliculas.service';
 import { AuthService } from '../../logica/services/auth.service';
 import { CargandoService } from '../../logica/services/cargando.service';
+import { NotificacionesService } from '../../logica/services/notificaciones.service';
 import { Pelicula } from '../../logica/modelos/peliculas';
 
 @Component({
@@ -21,6 +22,7 @@ export class Inicio implements OnDestroy {
   private ps = inject(PeliculasService);
   private auths = inject(AuthService);
   private cgs = inject(CargandoService);
+  private ns = inject(NotificacionesService);
   private router = inject(Router);
 
   peliculasMasVendidas = this.ps.peliculasMasVendidas;
@@ -64,5 +66,7 @@ export class Inicio implements OnDestroy {
       return;
     }
     await this.ps.activarAlertaDeEstreno(pelicula.id, usuario.id);
+    // para que el aviso le llegue como notificación, aunque no tenga la página abierta
+    await this.ns.suscribir(usuario.id);
   }
 }
