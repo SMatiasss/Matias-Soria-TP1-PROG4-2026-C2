@@ -23,7 +23,7 @@
   width: 100%;
   aspect-ratio: 2 / 3;
   border-radius: 10px;
-  background: #27434a;
+  background: var(--color-superficie);
 }
 
 /* el radio va en la imagen y no overflow: hidden en el póster, así el contorno del hover no se corta */

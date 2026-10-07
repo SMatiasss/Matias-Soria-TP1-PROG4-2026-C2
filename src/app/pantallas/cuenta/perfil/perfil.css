@@ -39,6 +39,7 @@
   place-items: center;
   border-radius: 50%;
   background: var(--color-acento);
+  color: var(--color-fondo);
   font-size: 28px;
   font-weight: 600;
 }

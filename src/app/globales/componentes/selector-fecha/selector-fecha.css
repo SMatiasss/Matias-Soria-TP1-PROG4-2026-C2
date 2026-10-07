@@ -103,8 +103,8 @@
   right: 0;
   top: 72px;
   height: 36px;
-  border-top: 1px solid rgba(243, 239, 231, 0.25);
-  border-bottom: 1px solid rgba(243, 239, 231, 0.25);
+  border-top: 1px solid color-mix(in srgb, var(--color-texto) 25%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-texto) 25%, transparent);
   pointer-events: none;
 }
 

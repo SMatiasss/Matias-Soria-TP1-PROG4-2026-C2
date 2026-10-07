@@ -115,11 +115,11 @@
 }
 
 .butaca.vip {
-  border-color: color-mix(in srgb, var(--color-dorado) 55%, transparent);
+  border-color: var(--color-dorado);
 }
 
 .butaca.accesible {
-  border-color: color-mix(in srgb, var(--color-accesible) 60%, transparent);
+  border-color: var(--color-accesible);
 }
 
 .butaca.seleccionada {
@@ -196,11 +196,11 @@
 }
 
 .muestra-butaca.accesible {
-  border-color: color-mix(in srgb, var(--color-accesible) 60%, transparent);
+  border-color: var(--color-accesible);
 }
 
 .muestra-butaca.vip {
-  border-color: color-mix(in srgb, var(--color-dorado) 55%, transparent);
+  border-color: var(--color-dorado);
 }
 
 @media (max-width: 760px) {

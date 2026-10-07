@@ -62,7 +62,7 @@
   color: var(--color-texto);
 }
 
-/* barra roja a la izquierda del ítem activo */
+/* barra del acento a la izquierda del ítem activo */
 .item-menu.activo::before {
   content: "";
   position: absolute;

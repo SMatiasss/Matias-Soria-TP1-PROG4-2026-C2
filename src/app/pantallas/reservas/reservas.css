@@ -75,9 +75,10 @@
 .paso.activo .numero-paso {
   border-color: var(--color-acento);
   background: var(--color-acento);
+  color: var(--color-fondo);
 }
 
-/* línea roja debajo del paso activo */
+/* línea del acento debajo del paso activo */
 .paso.activo::after {
   content: "";
   position: absolute;

@@ -21,7 +21,7 @@ a {
   color: var(--color-texto);
   font-family: var(--fuente);
   font-weight: 600;
-  border-bottom: 1px solid rgba(243, 239, 231, 0.1);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-texto) 10%, transparent);
 }
 
 .encabezado-izquierda {
@@ -63,7 +63,7 @@ a {
   font-size: 15px;
 }
 
-/* los links y el nombre del usuario: grises, blancos al apuntarlos y con el subrayado rojo en la pantalla en la que está */
+/* los links y el nombre del usuario: grises, más claros al apuntarlos y con el subrayado del acento en la pantalla en la que está */
 .navegacion-sitio a,
 .nombre-usuario {
   padding: 12px 0;

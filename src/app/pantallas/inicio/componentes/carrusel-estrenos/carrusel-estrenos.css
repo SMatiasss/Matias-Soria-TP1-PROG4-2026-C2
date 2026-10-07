@@ -83,7 +83,7 @@
 }
 
 .boton-avisar:hover:enabled {
-  background: #fff;
+  background: color-mix(in srgb, var(--color-texto) 50%, white);
 }
 
 .boton-avisar.activado {

@@ -2,23 +2,25 @@
 
 /* Paleta del proyecto: cambiar un color acá lo cambia en todas las pantallas */
 :root {
+  /* así las casillas y las listas desplegables nativas también salen oscuras */
+  color-scheme: dark;
   --fuente: 'Poppins', sans-serif;
 
-  --color-fondo: #12110f;
-  --color-superficie: #1a1917;
-  --color-texto: #f3efe7;
-  --color-texto-suave: #b9b3a8;
-  --color-texto-apagado: #8a8479;
-  --color-placeholder: #6f6a60;
-  --color-acento: #c8102e;
-  --color-error: #ff5c73;
+  --color-fondo: #1f262e;
+  --color-superficie: #29323c;
+  --color-texto: #ecc8af;
+  --color-texto-suave: #e7ad99;
+  --color-texto-apagado: #a8968b;
+  --color-placeholder: #8a7d76;
+  --color-acento: #ce796b;
+  --color-error: #ff8a80;
   --color-ok: #7fd88f;
-  --color-dorado: #d9b46a;
-  --color-accesible: #6fb3d6;
+  --color-dorado: #c18c5d;
+  --color-accesible: #9fd0ea;
 
-  --borde-panel: rgba(243, 239, 231, 0.15);
-  --borde: rgba(243, 239, 231, 0.2);
-  --borde-fuerte: rgba(243, 239, 231, 0.35);
+  --borde-panel: rgba(236, 200, 175, 0.15);
+  --borde: rgba(236, 200, 175, 0.2);
+  --borde-fuerte: rgba(236, 200, 175, 0.35);
 
   --radio: 8px;
   --alto-header: 76px;
@@ -68,7 +70,7 @@ textarea {
   cursor: pointer;
 }
 
-/* blanco, para la acción principal */
+/* claro, para la acción principal */
 .boton-principal {
   border: 0;
   background: var(--color-texto);
@@ -76,7 +78,7 @@ textarea {
 }
 
 .boton-principal:hover:enabled {
-  background: #ffffff;
+  background: color-mix(in srgb, var(--color-texto) 50%, white);
 }
 
 /* transparente con borde, para acciones secundarias */
@@ -349,7 +351,7 @@ textarea {
   font-weight: 600;
 }
 
-/* pestañas con la línea roja abajo en la elegida (candy, reportes) */
+/* pestañas con la línea del acento abajo en la elegida (candy, reportes) */
 .pestanas-admin {
   display: flex;
   gap: 4px;
