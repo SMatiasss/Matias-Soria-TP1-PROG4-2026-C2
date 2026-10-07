@@ -17,7 +17,7 @@ Navegador (Angular, PWA)  ──►  Supabase
                                └── Edge Function avisar-estrenos: manda las notificaciones push
 ```
 
-- **Frontend:** una SPA en Angular, desplegada en Vercel. No hay un backend propio: la página habla directo con
+- **Frontend:** Angular, desplegado en Vercel. No hay un backend propio: la página habla directo con
   Supabase con la clave pública, y lo que tiene que ser seguro (permisos, precios, compras) lo controla la base.
 - **Comunicación:** casi todo pasa por la librería `supabase-js`. Las "más vendidas" del inicio y la llamada a la Edge
   Function usan `HttpClient`, con un interceptor que les agrega la clave de Supabase.
