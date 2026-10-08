@@ -12,6 +12,7 @@ import { Pelicula } from '../../../../logica/modelos/peliculas';
 export class CarruselEstrenos {
   peliculas = input.required<Pelicula[]>();
   idsPeliculasConAlerta = input.required<string[]>();   // ids de las películas que ya tienen la alerta de estreno activada
+  idsPeliculasEnPreventa = input.required<string[]>(); // las que ya abrieron la preventa: se pueden comprar
   alertaSolicitada = output<Pelicula>();
 
   private readonly listaEstrenos = viewChild.required<ElementRef<HTMLUListElement>>('listaEstrenos');

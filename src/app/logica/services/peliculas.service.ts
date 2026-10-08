@@ -4,6 +4,7 @@ import { Pelicula } from '../modelos/peliculas';
 import { SupabaseService } from './supabase';
 import { DbService } from './db.service';
 import { sinRepetidos } from '../utilidades/sin-repetidos.util';
+import { estaALaVenta } from '../utilidades/esta-a-la-venta.util';
 import { environment } from '../../../environments/environment';
 import { addDays } from 'date-fns';
 
@@ -41,6 +42,9 @@ export class PeliculasService {
     const enTresSemanas = addDays(new Date(), 21);
     return this.peliculasPorEstrenar().filter((p) => new Date(`${p.fecha_estreno}T00:00`) <= enTresSemanas);
   });
+
+  // de esos estrenos, los que ya abrieron la preventa: en vez de "Avisarme" se pueden comprar
+  idsPeliculasEnPreventa = computed(() => this.proximosEstrenos().filter((p) => estaALaVenta(p)).map((p) => p.id));
 
   async cargarPeliculasVisibles() {
     const { data, error } = await this.sup.Sup.from('peliculas')

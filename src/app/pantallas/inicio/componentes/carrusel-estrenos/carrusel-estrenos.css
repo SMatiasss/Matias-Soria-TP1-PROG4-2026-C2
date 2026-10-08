@@ -71,18 +71,24 @@
   line-height: 1.3;
 }
 
+/* también lo usa el link de "En preventa": por eso centra el texto y no lleva subrayado */
 .boton-avisar {
   margin-top: auto;
   height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   border-radius: var(--radio);
   background: var(--color-texto);
   color: var(--color-fondo);
   font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
 }
 
-.boton-avisar:hover:enabled {
+.boton-avisar:hover:not(:disabled) {
   background: color-mix(in srgb, var(--color-texto) 50%, white);
 }
 

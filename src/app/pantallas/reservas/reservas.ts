@@ -23,6 +23,7 @@ import { Cupon, AUDIENCIAS_CUPON } from '../../logica/modelos/cupones';
 import { EntradaPdf, LineaEntrada, LineaCandy } from '../../logica/modelos/pedidos';
 import { sinRepetidos } from '../../logica/utilidades/sin-repetidos.util';
 import { calcularEdad } from '../../logica/utilidades/calcular-edad.util';
+import { estaALaVenta } from '../../logica/utilidades/esta-a-la-venta.util';
 import { descargarEntradaPdf } from '../../logica/utilidades/exportar.util';
 
 @Component({
@@ -99,14 +100,7 @@ export class Reservas implements OnDestroy {
   // Preventa: la venta abre (fecha_estreno - preventa_dias_antes) si la película tiene preventa, si no el día del estreno
   ventaAbierta = computed(() => {
     const pelicula = this.funcion()?.pelicula;
-    if (!pelicula) return false;
-    if (this.hoy >= pelicula.fecha_estreno) return true;
-    if (!pelicula.preventa_habilitada) return false;
-
-    const apertura = new Date(`${pelicula.fecha_estreno}T00:00`);
-    // si no se configuró, 7 días
-    apertura.setDate(apertura.getDate() - (pelicula.preventa_dias_antes ?? 7));
-    return this.hoy >= apertura.toLocaleDateString('sv-SE');
+    return !!pelicula && estaALaVenta(pelicula, this.hoy);
   });
 
   // Después del estreno vuelve el precio normal de la función

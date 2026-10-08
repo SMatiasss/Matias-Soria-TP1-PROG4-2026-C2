@@ -32,6 +32,7 @@ export class Inicio implements OnDestroy {
   // las que todavía no se estrenaron llevan "Próximamente" en la cartelera y en más vendidas
   idsPeliculasPorEstrenar = this.ps.idsPeliculasPorEstrenar;
   idsPeliculasConAlerta = this.ps.idsPeliculasConAlerta;
+  idsPeliculasEnPreventa = this.ps.idsPeliculasEnPreventa;
   // mientras cargan, las columnas dicen "Cargando..." en vez de que no hay nada.
   // El de más vendidas lo prende y lo apaga el interceptor de HttpClient
   cargandoMasVendidas = this.cgs.cargando;

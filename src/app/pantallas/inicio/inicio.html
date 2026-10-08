@@ -45,6 +45,7 @@
       <app-carrusel-estrenos
         [peliculas]="proximosEstrenos()"
         [idsPeliculasConAlerta]="idsPeliculasConAlerta()"
+        [idsPeliculasEnPreventa]="idsPeliculasEnPreventa()"
         (alertaSolicitada)="activarAlertaDeEstreno($event)"
       />
     } @else {

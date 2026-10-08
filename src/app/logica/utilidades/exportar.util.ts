@@ -15,7 +15,8 @@ function escribir(pdf: import('jspdf').jsPDF, texto: string, y: number, tamano: 
 // qrcode arma la imagen del QR y jsPDF arma el .pdf y lo baja. Se cargan recién al tocar el botón, con import()
 export async function descargarEntradaPdf(entrada: EntradaPdf) {
   const { jsPDF } = await import('jspdf');
-  const qrcode = await import('qrcode');
+  // qrcode es CommonJS: en el build de producción viene en default
+  const qrcode = (await import('qrcode')).default;
   const qr = await qrcode.toDataURL(entrada.codigo, { width: 400, margin: 1 });
 
   // 105 mm de ancho como una entrada. compress: si no, el PDF pesa medio mega

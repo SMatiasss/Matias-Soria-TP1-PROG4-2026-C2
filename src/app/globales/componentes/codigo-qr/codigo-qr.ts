@@ -14,9 +14,9 @@ export class CodigoQr {
   // Si cambia el texto, computed arma otra
   imagen = computed(() => this.armar(this.texto()));
 
-  // la librería qrcode se baja recién cuando hay un QR para mostrar
+  // la librería qrcode se baja recién cuando hay un QR para mostrar. Es CommonJS: en el build de producción viene en default
   private async armar(texto: string) {
-    const qrcode = await import('qrcode');
+    const qrcode = (await import('qrcode')).default;
     return qrcode.toDataURL(texto, { width: 360, margin: 1 });
   }
 }
