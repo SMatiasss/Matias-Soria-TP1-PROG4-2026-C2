@@ -25,6 +25,9 @@
       <button type="button" class="dia-funcion" [class.activo]="dia === diaActivo()" (click)="diaElegido.set(dia)">
         <strong>{{ diaNombre(dia) }}</strong>
         <span>{{ diaFecha(dia) }}</span>
+        @if (fechasFeriado().includes(dia)) {
+          <small class="feriado">Feriado</small>
+        }
       </button>
     }
   </div>

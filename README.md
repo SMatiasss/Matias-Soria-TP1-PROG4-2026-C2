@@ -38,6 +38,10 @@ src/app/
   - `jspdf` + `qrcode`: el PDF de la entrada y el QR.
   - `jsqr`: leer el QR con la cámara en Validar QR.
   - `web-push`: mandar las notificaciones desde la Edge Function `avisar-estrenos` (no está en el `package.json`, porque corre en Supabase).
+- **APIs públicas**:
+  - Feriados de Argentina (`api.argentinadatos.com`, sin clave): la ficha de la película marca "Feriado" en los días de
+    función. Se pide con `HttpClient`.
+  - Google Fonts: la letra Poppins de toda la página.
 
 ## Cómo correrlo
 

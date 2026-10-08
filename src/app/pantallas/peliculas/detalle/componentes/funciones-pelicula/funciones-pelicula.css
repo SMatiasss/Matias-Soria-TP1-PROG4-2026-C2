@@ -56,6 +56,7 @@
 }
 
 .dia-funcion {
+  position: relative;
   height: 60px;
   display: flex;
   flex-direction: column;
@@ -92,6 +93,22 @@
 
 .dia-funcion.activo span {
   color: var(--color-fondo);
+}
+
+/* etiqueta sobre el borde de arriba del día, así no le cambia el alto */
+.feriado {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-acento);
+  color: var(--color-fondo);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 15px;
+  white-space: nowrap;
 }
 
 .grupo-funciones {

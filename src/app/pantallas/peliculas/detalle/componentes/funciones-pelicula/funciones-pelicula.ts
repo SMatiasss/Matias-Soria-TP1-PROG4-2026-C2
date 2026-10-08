@@ -1,7 +1,8 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Funcion } from '../../../../../logica/modelos/peliculas';
+import { FeriadosService } from '../../../../../logica/services/feriados.service';
 import { sinRepetidos } from '../../../../../logica/utilidades/sin-repetidos.util';
 
 @Component({
@@ -11,8 +12,24 @@ import { sinRepetidos } from '../../../../../logica/utilidades/sin-repetidos.uti
   templateUrl: './funciones-pelicula.html',
 })
 export class FuncionesPelicula {
+  private frs = inject(FeriadosService);
+
   // Vienen ordenadas por fecha y sin las que ya empezaron. El inicio de cada una trae fecha y hora en UTC, ej: "2026-10-05T16:00:00+00:00"
   funciones = input.required<Funcion[]>();
+
+  // los días feriados (AAAA-MM-DD, igual que los días de la tira), para marcarlos con "Feriado"
+  fechasFeriado = signal<string[]>([]);
+
+  constructor() {
+    const esteAño = new Date().getFullYear();
+    // Se toma un año más adelante en caso de estar en fin de año y tener una función en el año siguiente
+    for (const año of [esteAño, esteAño + 1]) {
+      this.frs.traerFeriados(año).subscribe({
+        next: (feriados) => this.fechasFeriado.update((fechas) => [...fechas, ...feriados.map((f) => f.fecha)]),
+        error: (error) => console.error('No se pudieron traer los feriados', error),
+      });
+    }
+  }
 
   // 'sv-SE' da la fecha local como AAAA-MM-DD: sirve como clave de cada día
   private readonly hoy = new Date().toLocaleDateString('sv-SE');
