@@ -428,6 +428,25 @@ textarea {
   opacity: 0.7;
 }
 
+/* una fila de chips con su etiqueta adelante: las salas en Funciones y los géneros en Películas */
+.fila-chips {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.fila-chips .etiqueta {
+  margin-right: 4px;
+}
+
+/* "¿Sacar ...?" en lugar del chip, mientras pide confirmar */
+.confirmar-chip {
+  font-size: 14px;
+  color: var(--color-texto-suave);
+}
+
 /* fondo oscuro detrás del recuadro: tapa solo la lista, no todo el panel */
 .superposicion-admin {
   position: absolute;

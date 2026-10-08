@@ -91,6 +91,13 @@ export class PeliculasService {
     return error;
   }
 
+  // Saca un género de las sugerencias, para corregir uno mal escrito. Devuelve true si se borró
+  async eliminarGenero(nombre: string) {
+    const { data, error } = await this.sup.Sup.from('generos').delete().eq('nombre', nombre).select('id');
+    if (error) console.error('No se pudo eliminar el género', error);
+    return data !== null && data.length > 0;
+  }
+
   // Devuelve true si la creó. La marca antes de guardarla: así un doble click en "Avisarme" no crea dos alertas
   async activarAlertaDeEstreno(peliculaId: string, usuarioId: string) {
     if (this.idsPeliculasConAlerta().includes(peliculaId)) return false;

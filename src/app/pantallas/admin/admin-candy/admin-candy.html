@@ -24,7 +24,8 @@
           <button type="button" class="pestana-admin" title="Agregar una categoría" (click)="agregandoCategoria.set(true)">+</button>
         }
       </div>
-      <button type="button" class="boton-principal boton-chico" (click)="agregar()">
+      <!-- Un producto va en la categoría de la pestaña: sin ninguna, primero hay que crearla con el "+" -->
+      <button type="button" class="boton-principal boton-chico" [disabled]="!pestanaActiva()" (click)="agregar()">
         {{ esCombos() ? 'Agregar combo' : 'Agregar producto' }}
       </button>
     </div>
@@ -76,7 +77,7 @@
           }
         </ul>
       } @else if (!cargando()) {
-        <app-estado-vacio [mensaje]="pestanaActiva() ? 'Todavía no hay productos en esta categoría.' : 'Todavía no hay productos.'" />
+        <app-estado-vacio [mensaje]="pestanaActiva() ? 'Todavía no hay productos en esta categoría.' : 'Todavía no hay productos. Creá una categoría con el +.'" />
       }
     }
 

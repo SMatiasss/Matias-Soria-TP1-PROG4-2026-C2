@@ -1,27 +1,10 @@
 /* la lista y sus filas usan las clases globales del admin (.lista-admin, .fila-admin) */
 
-/* las salas en chips, como los géneros de una película, con el campo para agregar una al final */
-.salas-cine {
-  flex-shrink: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.salas-cine .etiqueta {
-  margin-right: 4px;
-}
-
-/* el input usa los estilos globales de .campo, con el alto de los botones */
-.salas-cine input {
+/* las salas van en chips (.fila-chips, global), con el campo para agregar una al final.
+   El input usa los estilos globales de .campo, con el alto de los botones */
+.fila-chips input {
   width: 170px;
   height: 44px;
-}
-
-.confirmar-sala {
-  font-size: 14px;
-  color: var(--color-texto-suave);
 }
 
 /* el ancho y la alineación los pone la clase global .precio-fila */

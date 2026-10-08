@@ -48,7 +48,7 @@ export class PedidosService {
   // La compra con ese código (el del QR), o null si no hay ninguna
   async buscarPorCodigo(codigo: string) {
     const { data, error } = await this.sup.Sup.from('pedidos')
-      .select('*, funcion:funciones(inicio, sala:salas(nombre), pelicula:peliculas(titulo)), entradas!entradas_pedido_id_fkey(*, butaca:butacas(fila, columna)), items_candy(*)')
+      .select('*, funcion:funciones(inicio, sala:salas(nombre), pelicula:peliculas(titulo, restriccion_edad)), entradas!entradas_pedido_id_fkey(*, butaca:butacas(fila, columna)), items_candy(*)')
       .eq('codigo', codigo);
 
     if (error) {

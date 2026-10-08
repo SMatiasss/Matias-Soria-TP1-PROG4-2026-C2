@@ -28,6 +28,10 @@
       <div class="compra">
         <span class="titulo-fila">{{ compra.funcion.pelicula.titulo }}</span>
         <span class="detalle-fila">{{ compra.funcion.inicio | fecha: 'dd/MM/yyyy HH:mm' }} · {{ compra.funcion.sala.nombre }}</span>
+        <!-- Con edad mínima, el empleado ve que tiene que entrar con un adulto -->
+        @if (compra.funcion.pelicula.restriccion_edad) {
+          <p class="aviso-edad">Película apta para mayores de {{ compra.funcion.pelicula.restriccion_edad }} años. Debe ir acompañado de un adulto.</p>
+        }
 
         @if (compra.estado !== confirmado) {
           <p class="error-campo">Esta compra se canceló: el QR ya no sirve.</p>

@@ -10,12 +10,12 @@
       </div>
 
       <!-- Salas del cine: la de cada función la elige la base sola. Acá se agregan (con todas sus butacas) o se sacan, como los géneros -->
-      <div class="salas-cine">
+      <div class="fila-chips">
         <span class="etiqueta">Salas</span>
         @for (sala of salas(); track sala.id) {
           <!-- Sacar una sala pide confirmar en el mismo lugar. Si ya tiene funciones, la base no la deja borrar -->
           @if (idSalaASacar() === sala.id) {
-            <span class="confirmar-sala">¿Sacar {{ sala.nombre }}?</span>
+            <span class="confirmar-chip">¿Sacar {{ sala.nombre }}?</span>
             <button type="button" class="boton-secundario boton-chico" (click)="idSalaASacar.set(null)">No</button>
             <button type="button" class="boton-principal boton-chico" (click)="sacarSala(sala)">Sí, sacar</button>
           } @else {

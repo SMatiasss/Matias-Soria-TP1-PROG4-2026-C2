@@ -12,6 +12,22 @@
         <button type="button" class="boton-principal boton-chico" (click)="abrirNueva()">Agregar película</button>
       </div>
 
+      <!-- Los géneros que se sugieren al cargar una película: uno mal escrito se saca acá, como las salas en Funciones -->
+      <div class="fila-chips">
+        <span class="etiqueta">Géneros</span>
+        @for (genero of generosExistentes(); track genero) {
+          @if (generoASacar() === genero) {
+            <span class="confirmar-chip">¿Sacar {{ genero }}?</span>
+            <button type="button" class="boton-secundario boton-chico" (click)="generoASacar.set(null)">No</button>
+            <button type="button" class="boton-principal boton-chico" (click)="sacarGenero(genero)">Sí, sacar</button>
+          } @else {
+            <button type="button" class="quitar-chip" [title]="'Sacar ' + genero" (click)="generoASacar.set(genero)">
+              <app-badge [texto]="genero + ' ✕'" />
+            </button>
+          }
+        }
+      </div>
+
       @if (peliculas().length) {
         <ul class="lista-admin">
           @for (pelicula of peliculas(); track pelicula.id) {
@@ -53,7 +69,7 @@
   }
 </app-seccion-admin>
 
-<!-- Si no se pudo cambiar la visibilidad, el aviso va en un modal -->
+<!-- Si no se pudo cambiar la visibilidad o sacar un género, el aviso va en un modal -->
 @if (error(); as mensaje) {
   <div class="superposicion">
     <app-alerta titulo="No se guardó el cambio" [descripcion]="mensaje" textoBoton="Entendido" (continuar)="error.set(null)" />
