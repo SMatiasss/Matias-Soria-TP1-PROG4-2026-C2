@@ -2,7 +2,7 @@ import { inject, Service } from '@angular/core';
 import { SupabaseService } from './supabase';
 
 // CRUD para cualquier tabla (lo especial va en el servicio de cada tema).
-// create, update y delete devuelven true si salió bien, guardar y eliminar devuelven el error
+// create y update devuelven true si salió bien, guardar y eliminar devuelven el error
 @Service()
 export class DbService {
   private sup = inject(SupabaseService);
@@ -50,15 +50,7 @@ export class DbService {
     return error;
   }
 
-  // DELETE FROM tabla WHERE id = id
-  async delete(tabla: string, id: string) {
-    const { error } = await this.sup.Sup.from(tabla).delete().eq('id', id);
-
-    if (error) console.error(`No se pudo borrar ${tabla} con id ${id}`, error);
-    return !error;
-  }
-
-  // Como delete, pero devuelve el error y si se borró de verdad (si RLS no deja, no hay error pero tampoco fila).
+  // DELETE FROM tabla WHERE id = id. Devuelve el error y si se borró de verdad (si RLS no deja, no hay error pero tampoco fila).
   // Con el código del error se sabe qué pasó, ej: 23503 = otra tabla lo usa
   async eliminar(tabla: string, id: string) {
     const { data, error } = await this.sup.Sup.from(tabla).delete().eq('id', id).select('id');

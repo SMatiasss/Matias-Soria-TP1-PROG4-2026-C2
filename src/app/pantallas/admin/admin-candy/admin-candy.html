@@ -90,7 +90,7 @@
           />
         } @else {
           <app-formulario-producto
-            [producto]="productoEditado()" [categoria]="pestanaActiva()" [categorias]="categorias()"
+            [producto]="productoEditado()" [categoria]="pestanaActiva()"
             (cancelado)="formularioAbierto.set(false)" (guardado)="alGuardar()" (eliminado)="alGuardar()"
           />
         }

@@ -2,3 +2,9 @@
 :host {
   display: block;
 }
+
+/* a la altura del texto del campo Nombre, que está al lado */
+.categoria-producto {
+  line-height: 48px;
+  font-size: 15px;
+}

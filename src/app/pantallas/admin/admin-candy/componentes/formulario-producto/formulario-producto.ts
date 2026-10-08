@@ -3,7 +3,6 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Alerta } from '../../../../../globales/componentes/alerta/alerta';
 import { DbService } from '../../../../../logica/services/db.service';
 import { Producto } from '../../../../../logica/modelos/candy';
-import { nombreEnLista, nombreLibreValidator } from '../../../../../logica/utilidades/nombre-en-lista.util';
 
 @Component({
   imports: [Alerta, ReactiveFormsModule],
@@ -16,10 +15,8 @@ export class FormularioProducto implements OnInit {
 
   // null = producto nuevo
   producto = input<Producto | null>(null);
-  // la pestaña desde la que se abrió: un producto nuevo arranca en esa categoría
+  // la pestaña desde la que se abrió: el producto se guarda en esa categoría
   categoria = input.required<string>();
-  // las que ya hay, para sugerirlas mientras se escribe
-  categorias = input<string[]>([]);
   // avisan a la lista para que cierre el formulario (y recargue, si se guardó o se eliminó)
   cancelado = output<void>();
   guardado = output<void>();
@@ -33,20 +30,18 @@ export class FormularioProducto implements OnInit {
   confirmandoEliminar = signal(false);
 
   formulario = new FormGroup({
+    // pattern: que tenga algo más que espacios
     nombre: new FormControl('', [Validators.required, Validators.pattern(/\S/)]),
-    // pattern: que tenga algo más que espacios. Y no puede llamarse "Combos", que es la pestaña de los combos
-    categoria: new FormControl('', [Validators.required, Validators.pattern(/\S/), nombreLibreValidator(() => ['Combos'])]),
     precio: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
     // vacío = no se puede canjear con puntos
     precio_puntos: new FormControl<number | null>(null, Validators.min(1)),
     disponible: new FormControl(true),
   });
 
-  // al editar arranca con los datos del producto, y uno nuevo en la categoría de la pestaña
+  // al editar arranca con los datos del producto
   ngOnInit() {
     const producto = this.producto();
     if (producto) this.formulario.reset(producto);
-    else this.formulario.controls.categoria.setValue(this.categoria());
   }
 
   async guardar() {
@@ -57,9 +52,7 @@ export class FormularioProducto implements OnInit {
     }
 
     this.guardando.set(true);
-    // si ya hay una categoría igual, sin contar mayúsculas ni tildes, se usa esa. Una nueva va con la primera en mayúscula
-    const categoria = nombreEnLista((this.formulario.controls.categoria.value as string).trim(), this.categorias());
-    const datos = { ...this.formulario.value, categoria };
+    const datos = { ...this.formulario.value, categoria: this.categoria() };
     // el cambio de precio lo anota en el log un trigger de la base (log_precio_producto)
     const producto = this.producto();
     const error = await this.db.guardar('productos', producto ? producto.id : null, datos);

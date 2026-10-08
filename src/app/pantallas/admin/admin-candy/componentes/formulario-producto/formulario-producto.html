@@ -7,24 +7,15 @@
       <label for="nombre">Nombre</label>
       <input id="nombre" type="text" placeholder="Pochoclos mediano" formControlName="nombre" />
     </div>
-    <!-- Como los géneros de una película: el navegador sugiere las que ya hay, y una que no existe se crea -->
+    <!-- La de la pestaña desde la que se abrió. Una categoría nueva se crea con el "+" de las pestañas -->
     <div class="campo">
-      <label for="categoria">Categoría</label>
-      <input id="categoria" type="text" list="categorias-existentes" placeholder="Escribí o elegí una" formControlName="categoria" />
-      <datalist id="categorias-existentes">
-        @for (categoria of categorias(); track categoria) {
-          <option [value]="categoria"></option>
-        }
-      </datalist>
+      <span class="etiqueta">Categoría</span>
+      <span class="categoria-producto">{{ categoria() }}</span>
     </div>
   </div>
   <p class="error-campo">
     @if (formulario.controls.nombre.invalid && intentoGuardar()) {
       Poné el nombre del producto
-    } @else if (formulario.controls.categoria.hasError('nombreUsado') && intentoGuardar()) {
-      "Combos" es la pestaña de los combos, usá otro nombre
-    } @else if (formulario.controls.categoria.invalid && intentoGuardar()) {
-      Poné la categoría
     }
   </p>
 
