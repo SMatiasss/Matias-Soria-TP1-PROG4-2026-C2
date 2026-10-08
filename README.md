@@ -52,7 +52,6 @@ ng serve
 
 ## Decisiones técnicas
 
-- **Alertas de estreno.** Al abrir la página se llama a la Edge Function `avisar-estrenos`, que manda los push.
 - **Sala automática.** Un trigger asigna la primera sala libre y rechaza funciones a menos de 30 minutos de la anterior.
 - **Un solo QR por compra.** Es el código del pedido, y cada entrada y cada producto se marcan como usados por separado.
 - **Selector de fechas propio.** Unas ruedas que solo dejan elegir fechas válidas, en vez del calendario del navegador.
@@ -70,3 +69,6 @@ ng serve
   no, cualquiera podría tomar todas sin comprar. Si dos eligen la misma, se la queda el primero que paga.
 - **Puntos al validar.** Se suman con la primera validación del QR, no al comprar. Como una compra con algo validado ya
   no se puede cancelar, nadie puede gastar sus puntos y después cancelarla. El que compra y no va no suma.
+- **Alertas de estreno sin tarea programada.** Cada vez que alguien abre la página, se llama a la Edge Function
+  `avisar-estrenos`, que manda los push de las películas que ya abrieron la venta. Cada alerta se manda una sola vez.
+  Al que pidió el aviso le llega aunque no tenga la página abierta, y el aviso sale con la visita de cualquiera.
